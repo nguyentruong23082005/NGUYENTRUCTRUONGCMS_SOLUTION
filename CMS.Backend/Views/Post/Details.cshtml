@@ -1,31 +1,40 @@
 @model CMS.Data.Entities.Post
 
-<div class="container mt-5">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/Post">Danh sách bài viết</a></li>
-            <li class="breadcrumb-item active">Chi tiết bài viết</li>
-        </ol>
-    </nav>
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = Model.Title;
+}
 
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <h1 class="display-4 fw-bold text-primary">@Model.Title</h1>
-            <p class="text-muted">Đăng ngày: @Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</p>
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0"><i class="bi bi-eye"></i> CHI TIẾT BÀI VIẾT</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h3 class="text-primary">@Model.Title</h3>
+                    <p class="text-muted">
+                        <i class="bi bi-calendar"></i> Ngày đăng: @Model.CreatedDate.ToString("dd/MM/yyyy")
+                        &nbsp;|&nbsp;
+                        <span class="badge bg-info text-dark">@(Model.Category?.Name ?? "N/A")</span>
+                    </p>
+                    <hr />
+                    <div class="post-content">
+                        @Html.Raw(Model.Content)
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl" alt="@Model.Title" class="img-fluid rounded shadow" />
+                    }
+                </div>
+            </div>
             <hr />
-            
-            <div class="text-center mb-4">
-                <img src="@Model.ImageUrl" class="img-fluid rounded shadow" alt="Post Image" style="width: 100%;">
-            </div>
-
-            <div class="post-content fs-5 leading-lg">
-                @Model.Content
-            </div>
-
-            <div class="mt-5 border-top pt-3">
-                <a href="/Post" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Quay lại danh sách
-                </a>
+            <div class="d-flex gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Sửa bài viết</a>
+                <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
             </div>
         </div>
     </div>

@@ -15,87 +15,113 @@ namespace CMS.Backend.Controllers
             _context = context;
         }
 
-        // Nhận tham số categoryId từ URL (ví dụ: /Post/Index/2)
+        // GET: Post/Index
         public IActionResult Index(int? categoryId)
         {
-            // Bắt đầu truy vấn từ bảng Posts kèm thông tin Category
             var query = _context.Posts
                 .Include(p => p.Category)
                 .AsQueryable();
 
-            // Nếu có truyền categoryId thì lọc theo danh mục
             if (categoryId.HasValue)
             {
                 query = query.Where(p => p.CategoryId == categoryId.Value);
                 ViewBag.FilterCategoryId = categoryId.Value;
             }
 
-            // Sắp xếp bài mới nhất lên đầu
             var posts = query
                 .OrderByDescending(p => p.CreatedDate)
                 .ToList();
 
-            // Gửi danh sách danh mục cho dropdown lọc
             ViewBag.Categories = _context.Categories.ToList();
-
             return View(posts);
         }
 
+        // GET: Post/Details/5
         public IActionResult Details(int id)
         {
             var post = _context.Posts.Include(p => p.Category).FirstOrDefault(p => p.Id == id);
             if (post == null) return NotFound();
-
             return View(post);
         }
 
         // GET: Post/Create
+        [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.Categories = new SelectList(_context.Categories.ToList(), "Id", "Name");
+            ViewBag.CategoryList = new SelectList(_context.Categories.ToList(), "Id", "Name");
             return View();
         }
 
-        // POST: Post/Create
+        // POST: Post/Create with image upload
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Post post)
+        public IActionResult Create(Post model, IFormFile? uploadImage)
         {
-            if (ModelState.IsValid)
+            if (uploadImage != null && uploadImage.Length > 0)
             {
-                _context.Posts.Add(post);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadImage.FileName);
+                string filePath = Path.Combine(folder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    uploadImage.CopyTo(stream);
+                }
+
+                model.ImageUrl = "/uploads/" + fileName;
             }
-            ViewBag.Categories = new SelectList(_context.Categories.ToList(), "Id", "Name", post.CategoryId);
-            return View(post);
+
+            _context.Posts.Add(model);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         // GET: Post/Edit/5
+        [HttpGet]
         public IActionResult Edit(int id)
         {
             var post = _context.Posts.Find(id);
             if (post == null) return NotFound();
 
-            ViewBag.Categories = new SelectList(_context.Categories.ToList(), "Id", "Name", post.CategoryId);
+            ViewBag.CategoryList = new SelectList(_context.Categories.ToList(), "Id", "Name", post.CategoryId);
             return View(post);
         }
 
-        // POST: Post/Edit/5
+        // POST: Post/Edit with optional new image
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Post post)
+        public IActionResult Edit(Post model, IFormFile? uploadImage)
         {
-            if (id != post.Id) return NotFound();
-
-            if (ModelState.IsValid)
+            if (uploadImage != null && uploadImage.Length > 0)
             {
-                _context.Posts.Update(post);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadImage.FileName);
+                string filePath = Path.Combine(folder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    uploadImage.CopyTo(stream);
+                }
+
+                model.ImageUrl = "/uploads/" + fileName;
             }
-            ViewBag.Categories = new SelectList(_context.Categories.ToList(), "Id", "Name", post.CategoryId);
-            return View(post);
+            else
+            {
+                // Giữ lại ảnh cũ nếu không upload ảnh mới
+                var oldPost = _context.Posts.AsNoTracking().FirstOrDefault(p => p.Id == model.Id);
+                if (oldPost != null && string.IsNullOrEmpty(model.ImageUrl))
+                {
+                    model.ImageUrl = oldPost.ImageUrl;
+                }
+            }
+
+            _context.Posts.Update(model);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         // POST: Post/Delete/5
@@ -109,7 +135,7 @@ namespace CMS.Backend.Controllers
                 _context.Posts.Remove(post);
                 _context.SaveChanges();
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
     }
 }

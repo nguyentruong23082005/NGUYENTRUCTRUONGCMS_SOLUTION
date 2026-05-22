@@ -29,6 +29,17 @@ namespace CMS.Backend.Controllers
             return View(latestPosts);
         }
 
+        public IActionResult Dashboard()
+        {
+            ViewBag.PostCount = _context.Posts.Count();
+            ViewBag.CategoryCount = _context.Categories.Count();
+            ViewBag.UserCount = _context.Users.Count();
+            ViewBag.ProductCount = _context.Products.Count();
+            ViewBag.CustomerCount = _context.Customers.Count();
+            ViewBag.OrderCount = _context.Orders.Count();
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
