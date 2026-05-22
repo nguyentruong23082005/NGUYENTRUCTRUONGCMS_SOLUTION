@@ -1,4 +1,4 @@
-﻿using CMS.Data.Entities.CMS.Data.Entities;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
