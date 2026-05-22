@@ -1,0 +1,100 @@
+@model List<CMS.Data.Entities.Post>
+
+@{
+    ViewData["Title"] = "Danh sách bài viết";
+    var categories = ViewBag.Categories as List<CMS.Data.Entities.Category>;
+    int? selectedCategoryId = ViewBag.FilterCategoryId as int?;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Danh sách bài viết</h2>
+        <a asp-action="Create" class="btn btn-primary">Thêm mới Bài viết</a>
+    </div>
+
+    <form asp-action="Index" method="get" class="row g-2 align-items-end mb-3">
+        <div class="col-md-4">
+            <label class="form-label fw-bold">Lọc theo danh mục</label>
+            <select name="categoryId" class="form-select">
+                <option value="">-- Tất cả danh mục --</option>
+                @if (categories != null)
+                {
+                    foreach (var category in categories)
+                    {
+                        if (selectedCategoryId == category.Id)
+                        {
+                            <option value="@category.Id" selected>@category.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-outline-primary">Lọc</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Bỏ lọc</a>
+        </div>
+    </form>
+
+    <hr />
+
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Tiêu đề</th>
+                <th>Hình ảnh</th>
+                <th>Ngày tạo</th>
+                <th>Danh mục</th>
+                <th width="220">Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="6" class="text-center text-muted">Không có bài viết nào.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Title</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" alt="@item.Title" style="max-height: 50px; max-width: 50px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">Không có ảnh</span>
+                            }
+                        </td>
+                        <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <span class="badge bg-info text-dark">
+                                @(item.Category?.Name ?? "N/A")
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">Chi tiết</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Sửa</a>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,43 @@
+@model CMS.Data.Entities.User
+
+@{
+    ViewData["Title"] = "Thêm thành viên";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <h2 class="text-primary mb-4">➕ Thêm Thành Viên Mới</h2>
+
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="display:none;"></div>
+
+        <div class="mb-3">
+            <label asp-for="Username" class="form-label fw-bold">Tên đăng nhập</label>
+            <input asp-for="Username" class="form-control" placeholder="Ví dụ: admin_a" required />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PasswordHash" class="form-label fw-bold">Mật khẩu</label>
+            <input asp-for="PasswordHash" type="password" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="FullName" class="form-label fw-bold">Họ và Tên</label>
+            <input asp-for="FullName" class="form-control" placeholder="Nguyễn Văn A" required />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Role" class="form-label fw-bold">Vai trò</label>
+            <select asp-for="Role" class="form-select" required>
+                <option value="">-- Chọn vai trò --</option>
+                <option value="Admin">Quản trị viên (Admin)</option>
+                <option value="Editor">Biên tập viên (Editor)</option>
+            </select>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Lưu thành viên</button>
+            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+        </div>
+    </form>
+</div>
