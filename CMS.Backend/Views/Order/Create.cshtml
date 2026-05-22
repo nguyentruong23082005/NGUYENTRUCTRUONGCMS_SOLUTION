@@ -1,0 +1,51 @@
+@model CMS.Data.Entities.Order
+
+@{
+    ViewData["Title"] = "Thêm đơn hàng";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <h2 class="text-success mb-4">✨ Thêm Đơn Hàng Mới</h2>
+
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label asp-for="CustomerId" class="form-label fw-bold">Khách hàng</label>
+            <select asp-for="CustomerId" class="form-select" asp-items="ViewBag.CustomerId" required>
+                <option value="">-- Chọn khách hàng --</option>
+            </select>
+            <span asp-validation-for="CustomerId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="OrderDate" class="form-label fw-bold">Ngày đặt</label>
+            <input asp-for="OrderDate" type="datetime-local" class="form-control" />
+            <span asp-validation-for="OrderDate" class="text-danger"></span>
+            <small class="text-muted">Để trống nếu muốn lấy giờ hiện tại.</small>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Status" class="form-label fw-bold">Trạng thái</label>
+            <select asp-for="Status" class="form-select">
+                <option value="0">Chờ duyệt</option>
+                <option value="1">Đang giao</option>
+                <option value="2">Đã xong</option>
+            </select>
+            <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Notes" class="form-label fw-bold">Ghi chú</label>
+            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Notes" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">Lưu vào hệ thống</button>
+            <a asp-action="Index" class="btn btn-secondary">Hủy bỏ</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

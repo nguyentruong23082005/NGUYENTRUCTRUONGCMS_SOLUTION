@@ -1,0 +1,43 @@
+@model CMS.Data.Entities.Post
+
+@{
+    ViewData["Title"] = "Chỉnh sửa Bài viết";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="Edit">
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="CreatedDate" />
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label">Tiêu đề</label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="CategoryId" class="form-label">Danh mục</label>
+                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories"></select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="ImageUrl" class="form-label">Link Hình ảnh</label>
+                    <input asp-for="ImageUrl" class="form-control" />
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Content" class="form-label">Nội dung</label>
+                    <textarea asp-for="Content" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

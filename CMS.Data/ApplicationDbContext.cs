@@ -1,5 +1,4 @@
-﻿using CMS.Data.Entities;
-using CMS.Data.Entities.CMS.Data.Entities;
+using CMS.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
