@@ -1,0 +1,341 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Shopifi-Inspired Cream-Mint Canvas Tokens (Transactional Track) */
+    --colors-primary: #000000;
+    --colors-ink: #111111;
+    --colors-on-primary: #ffffff;
+    --colors-canvas-cream: #fbfbf5;
+    --colors-canvas-light: #ffffff;
+    --colors-aloe-10: #c1fbd4;
+    --colors-pistachio-10: #d4f9e0;
+    
+    /* Muted link colors and borders */
+    --colors-shade-30: #e4e4e7;
+    --colors-shade-50: #71717a;
+    --colors-shade-70: #27272a;
+    --colors-hairline: rgba(0, 0, 0, 0.08);
+
+    /* Elevation Shadows (Level 3 Stacked Soft Shadow Stack) */
+    --shadow-level3: 
+        0 1px 2px rgba(0,0,0,0.02),
+        0 2px 4px rgba(0,0,0,0.02),
+        0 4px 8px rgba(0,0,0,0.02),
+        0 8px 16px rgba(0,0,0,0.02),
+        0 0 0 1px rgba(0,0,0,0.04);
+}
+
+/* 1. Global typography and defaults */
+html, body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-feature-settings: "ss03";
+    -webkit-font-smoothing: antialiased;
+    background-color: var(--colors-canvas-cream);
+    color: var(--colors-ink);
+}
+
+h1, h2, h3, h4, h5, h6, .display-font {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--colors-primary);
+}
+
+/* 2. Premium Keyboard Focus Ring (WCAG 2.1 AA) */
+a:focus-visible, 
+button:focus-visible, 
+input:focus-visible, 
+select:focus-visible, 
+textarea:focus-visible {
+    outline: 2px solid var(--colors-primary) !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 3. Shopify-Inspired Buttons (Pill-only) */
+.btn-premium-primary {
+    background-color: var(--colors-primary);
+    color: var(--colors-on-primary);
+    border-radius: 9999px;
+    padding: 10px 24px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border: 1px solid var(--colors-primary);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-premium-primary:hover {
+    background-color: var(--colors-shade-70);
+    border-color: var(--colors-shade-70);
+    color: var(--colors-on-primary);
+    transform: translateY(-1px);
+}
+
+.btn-premium-outline {
+    background-color: var(--colors-canvas-light);
+    color: var(--colors-primary);
+    border-radius: 9999px;
+    padding: 10px 24px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border: 1px solid var(--colors-primary);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-premium-outline:hover {
+    background-color: #f4f4f5;
+    transform: translateY(-1px);
+}
+
+.btn-premium-aloe {
+    background-color: var(--colors-aloe-10);
+    color: var(--colors-primary);
+    border-radius: 9999px;
+    padding: 10px 24px;
+    font-weight: 550;
+    font-size: 0.95rem;
+    border: 1px solid transparent;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-premium-aloe:hover {
+    background-color: #a3f7be;
+    transform: translateY(-1px);
+}
+
+/* Overwrite standard bootstrap buttons to maintain design cohesion */
+.btn-primary {
+    background-color: var(--colors-primary);
+    border-color: var(--colors-primary);
+    border-radius: 9999px;
+    padding: 8px 20px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--colors-shade-70) !important;
+    border-color: var(--colors-shade-70) !important;
+}
+
+.btn-secondary {
+    background-color: var(--colors-canvas-light);
+    border-color: var(--colors-shade-30);
+    color: var(--colors-ink);
+    border-radius: 9999px;
+    padding: 8px 20px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+.btn-secondary:hover {
+    background-color: var(--colors-shade-30);
+    border-color: var(--colors-shade-30);
+    color: var(--colors-ink);
+}
+
+.btn-warning {
+    background-color: var(--colors-pistachio-10);
+    border-color: var(--colors-pistachio-10);
+    color: var(--colors-primary);
+    border-radius: 9999px;
+    padding: 8px 20px;
+    font-weight: 550;
+}
+.btn-warning:hover {
+    background-color: #b2f5c7;
+    border-color: #b2f5c7;
+    color: var(--colors-primary);
+}
+
+.btn-danger {
+    background-color: #fee2e2;
+    border-color: #fee2e2;
+    color: #991b1b;
+    border-radius: 9999px;
+    padding: 8px 20px;
+    font-weight: 550;
+}
+.btn-danger:hover {
+    background-color: #fca5a5;
+    border-color: #fca5a5;
+    color: #7f1d1d;
+}
+
+.btn-sm {
+    padding: 6px 14px !important;
+    font-size: 0.85rem !important;
+}
+
+/* 4. Glassmorphism and Mesh Background for Login */
+.login-bg {
+    background: linear-gradient(135deg, #fbfbf5 0%, #d4f9e0 50%, #c1fbd4 100%);
+    background-size: 400% 400%;
+    animation: meshMovement 15s ease infinite;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes meshMovement {
+    0% { background-position: 0% 50% }
+    50% { background-position: 100% 50% }
+    100% { background-position: 0% 50% }
+}
+
+.login-card-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 16px;
+    box-shadow: var(--shadow-level3);
+    overflow: hidden;
+}
+
+/* 5. Modern Card & Container Styling */
+.card-premium {
+    background-color: var(--colors-canvas-light);
+    border: 1px solid var(--colors-hairline);
+    border-radius: 12px;
+    box-shadow: var(--shadow-level3);
+    padding: 24px;
+    margin-bottom: 24px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-premium-featured {
+    background-color: var(--colors-aloe-10);
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+/* 6. Form Controls styling */
+.form-control, .form-select {
+    background-color: var(--colors-canvas-light);
+    color: var(--colors-ink);
+    border: 1px solid var(--colors-shade-30);
+    border-radius: 8px; /* rounded.md */
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--colors-canvas-light);
+    border-color: var(--colors-primary);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+    outline: none;
+}
+
+.form-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--colors-primary);
+    margin-bottom: 8px;
+}
+
+/* 7. Minimalist Accessible Tables */
+.table-premium {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: var(--colors-ink);
+    vertical-align: top;
+    border-collapse: collapse;
+}
+
+.table-premium th {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--colors-shade-50);
+    padding: 14px 16px;
+    border-bottom: 2px solid var(--colors-primary);
+    text-align: left;
+}
+
+.table-premium td {
+    padding: 16px;
+    border-bottom: 1px solid var(--colors-shade-30);
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+.table-premium tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.table-premium tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.015);
+}
+
+/* 8. Admin Sidebar Styles */
+.sidebar-panel {
+    background-color: #0f172a !important; /* Deep Slate */
+    color: #94a3b8;
+    min-height: 100vh;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebar-panel .logo-section {
+    padding: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+}
+
+.sidebar-panel .logo-section h4 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.03em;
+}
+
+.sidebar-panel .nav-section {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #475569;
+    padding: 20px 24px 8px;
+    letter-spacing: 0.08em;
+}
+
+.sidebar-panel a.nav-link-premium {
+    color: #94a3b8;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    margin: 2px 14px;
+    border-radius: 9999px; /* Pill */
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-panel a.nav-link-premium i {
+    font-size: 1.1rem;
+}
+
+.sidebar-panel a.nav-link-premium:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.sidebar-panel a.nav-link-premium.active {
+    background-color: var(--colors-primary);
+    color: var(--colors-on-primary);
+    font-weight: 600;
+}
+
+.sidebar-user-card {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px;
+}
