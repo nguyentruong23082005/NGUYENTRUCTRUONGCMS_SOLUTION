@@ -39,6 +39,7 @@ namespace CMS.Backend.Controllers
         }
 
         // GET: Post/Details/5
+        [AllowAnonymous]
         public IActionResult Details(int id)
         {
             var post = _context.Posts.Include(p => p.Category).FirstOrDefault(p => p.Id == id);
