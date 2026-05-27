@@ -1,9 +1,11 @@
 using CMS.Data;
 using CMS.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CMS.Backend.Controllers
 {
+    [Authorize] // Bắt buộc đăng nhập mới được vào (Buổi 5)
     public class CategoryController : Controller
     {
         // Khai báo biến để gọi Database

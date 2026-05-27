@@ -1,5 +1,6 @@
 using CMS.Data;
 using CMS.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using System.Linq;
 
 namespace CMS.Backend.Controllers
 {
+    [Authorize]
     public class OrderDetailController : Controller
     {
         private readonly ApplicationDbContext _context;
