@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 :root {
     /* Shopifi-Inspired Cream-Mint Canvas Tokens (Transactional Track) */
     --colors-primary: #000000;
-    --colors-ink: #111111;
+    --colors-ink: #000000;
     --colors-on-primary: #ffffff;
     --colors-canvas-cream: #fbfbf5;
     --colors-canvas-light: #ffffff;
@@ -13,7 +13,7 @@
     /* Muted link colors and borders */
     --colors-shade-30: #e4e4e7;
     --colors-shade-50: #71717a;
-    --colors-shade-70: #27272a;
+    --colors-shade-70: #3f3f46;
     --colors-hairline: rgba(0, 0, 0, 0.08);
 
     /* Elevation Shadows (Level 3 Stacked Soft Shadow Stack) */
@@ -34,10 +34,17 @@ html, body {
     color: var(--colors-ink);
 }
 
-h1, h2, h3, h4, h5, h6, .display-font {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-weight: 500;
+h1, .display-font-lg {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 300; /* Signature thin display weight (substitute for Neue Haas Grotesk 330) */
     letter-spacing: -0.02em;
+    color: var(--colors-primary);
+}
+
+h2, h3, h4, h5, h6, .display-font {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
     color: var(--colors-primary);
 }
 
@@ -57,7 +64,7 @@ textarea:focus-visible {
     background-color: var(--colors-primary);
     color: var(--colors-on-primary);
     border-radius: 9999px;
-    padding: 10px 24px;
+    padding: 12px 24px;
     font-weight: 500;
     font-size: 0.95rem;
     border: 1px solid var(--colors-primary);
@@ -71,11 +78,15 @@ textarea:focus-visible {
     transform: translateY(-1px);
 }
 
+.btn-premium-primary:active {
+    background-color: var(--colors-shade-70) !important;
+}
+
 .btn-premium-outline {
     background-color: var(--colors-canvas-light);
     color: var(--colors-primary);
     border-radius: 9999px;
-    padding: 10px 24px;
+    padding: 12px 24px;
     font-weight: 500;
     font-size: 0.95rem;
     border: 1px solid var(--colors-primary);
@@ -91,7 +102,7 @@ textarea:focus-visible {
     background-color: var(--colors-aloe-10);
     color: var(--colors-primary);
     border-radius: 9999px;
-    padding: 10px 24px;
+    padding: 12px 24px;
     font-weight: 550;
     font-size: 0.95rem;
     border: 1px solid transparent;
