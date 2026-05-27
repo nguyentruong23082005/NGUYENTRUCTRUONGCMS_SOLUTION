@@ -1,0 +1,119 @@
+# NGUYÊN TRÚC TRƯỜNG - ĐỒ ÁN CMS FULL-STACK BÁN HÀNG TÍCH HỢP TIN TỨC
+
+Dự án này là hệ thống Quản trị nội dung (CMS) và Bán hàng hoàn chỉnh tích hợp tin tức, được thiết kế và xây dựng theo kiến trúc phân lớp chuyên nghiệp sử dụng .NET 8.0, ASP.NET Core MVC, WebAPI, Entity Framework Core và ReactJS.
+
+---
+
+## 🛠 Công nghệ sử dụng
+*   **Database**: Microsoft SQL Server
+*   **Data Access**: Entity Framework Core (Code First Migration)
+*   **Backend API/MVC**: ASP.NET Core (.NET 8.0)
+*   **Security**: Cookie-based Authentication & Phân quyền hệ thống (Admin / Editor)
+*   **Frontend**: ReactJS (Vite, TailwindCSS)
+
+---
+
+## 🏗 Kiến trúc dự án (3 lớp)
+Giải pháp được tổ chức thành 3 Project độc lập:
+1.  **CMS.Data (Class Library)**: Lớp truy cập dữ liệu, định nghĩa thực thể (Entities), cấu hình Fluent API, Global Query Filter (Soft Delete), và quản lý Migration.
+2.  **CMS.Backend (ASP.NET Core MVC & WebAPI)**: Lớp ứng dụng quản trị (Admin Panel MVC) và cung cấp các RESTful WebAPI cho Frontend.
+3.  **CMS.Frontend (ReactJS SPA)**: Ứng dụng client-side viết bằng ReactJS kết nối qua WebAPI để phục vụ người xem tin tức và mua hàng.
+
+---
+
+## 📁 Chi tiết nội dung các buổi học (Syllabus)
+
+### Buổi 1: Khởi tạo cấu trúc đồ án & Thiết kế Thực thể (Entities)
+*   **Mục tiêu**: Thiết lập cấu trúc Solution 3 lớp và định nghĩa các thực thể dữ liệu ban đầu.
+*   **Nội dung thực hiện**:
+    *   Tạo Blank Solution chứa 3 dự án độc lập: `CMS.Data`, `CMS.Backend`, và `CMS.Frontend` (ReactJS).
+    *   Tham chiếu liên kết: `CMS.Backend` tham chiếu đến `CMS.Data`.
+    *   Thiết kế 8 Class thực thể cốt lõi trong thư mục `Entities`:
+        1.  `Category`: Danh mục tin tức (Id, Name, Description, Posts).
+        2.  `Post`: Bài viết tin tức (Id, Title, Content, ImageUrl, CreatedDate, CategoryId).
+        3.  `User`: Người dùng quản trị (Id, Username, PasswordHash, FullName, Role).
+        4.  `CategoryProduct`: Danh mục sản phẩm (Id, Name, Description, Products).
+        5.  `Product`: Thông tin sản phẩm (Id, Name, Description, Price, StockQuantity, ImageUrl, CategoryProductId).
+        6.  `Customer`: Khách hàng mua hàng (Id, FullName, Email, Phone, Address, Password, Orders).
+        7.  `Order`: Đơn hàng (Id, OrderDate, CustomerId, Status, Notes, OrderDetails).
+        8.  `OrderDetail`: Chi tiết đơn hàng (Id, OrderId, ProductId, Quantity, UnitPrice).
+
+### Buổi 2: Kết nối Cơ sở dữ liệu với Entity Framework Core
+*   **Mục tiêu**: Cài đặt EF Core, thiết lập DbContext và thực hiện Code First Migration sinh cơ sở dữ liệu.
+*   **Nội dung thực hiện**:
+    *   Cài đặt các gói thư viện NuGet cần thiết:
+        *   `Microsoft.EntityFrameworkCore.SqlServer`
+        *   `Microsoft.EntityFrameworkCore.Tools`
+    *   Xây dựng lớp `ApplicationDbContext` kế thừa từ `DbContext` để đăng ký các `DbSet` thực thể.
+    *   Cấu hình chuỗi kết nối (Connection String) SQL Server trong file `appsettings.json`.
+    *   Thực hiện chạy các lệnh Package Manager Console để sinh CSDL tự động:
+        *   `Add-Migration InitialCreate`
+        *   `Update-Database`
+
+### Buổi 3: Truy vấn LINQ & Thao tác dữ liệu chuyên sâu (CRUD)
+*   **Mục tiêu**: Thành thạo các hàm xử lý dữ liệu và viết logic nghiệp vụ.
+*   **Nội dung thực hiện**:
+    *   Viết truy vấn LINQ sử dụng các hàm lọc dữ liệu (`Where`), sắp xếp (`OrderBy`/`OrderByDescending`), và tìm kiếm (`FirstOrDefault`).
+    *   Áp dụng kỹ thuật **Eager Loading** sử dụng phương thức `.Include()` để JOIN dữ liệu bảng (ví dụ: Load thông tin Category đi kèm trong Post).
+    *   Xây dựng hoàn chỉnh luồng xử lý Thêm - Xóa - Sửa cho Danh mục (`Category`) và Bài viết (`Post`).
+    *   Phân biệt luồng xử lý phương thức `GET` (hiển thị trang nhập liệu) và `POST` (nhận dữ liệu từ form và ghi xuống database thông qua `SaveChanges`).
+
+### Buổi 4: Xây dựng giao diện quản trị (Admin Panel MVC)
+*   **Mục tiêu**: Tạo trang giao diện Razor View và Sidebar điều hướng phân chia Layout quản trị.
+*   **Nội dung thực hiện**:
+    *   Thiết lập file Layout chung chuyên biệt dành riêng cho quản trị viên: `_LayoutAdmin.cshtml`.
+    *   Sử dụng Bootstrap chia khung giao diện:
+        *   Cột trái (`col-md-3`): Sidebar điều hướng nhanh các trang quản lý.
+        *   Cột phải (`col-md-9`): Phần hiển thị nội dung động qua `@RenderBody()`.
+    *   Thiết kế Dashboard trang chủ quản trị: hiển thị thống kê tổng quan số lượng bài viết, thành viên, và sản phẩm.
+    *   Hoàn thiện các trang danh sách và form biểu mẫu CRUD cho `Category`, `Post`, và `User`.
+
+### Buổi 5: Bảo mật & Phân quyền hệ thống (Security & Identity)
+*   **Mục tiêu**: Triển khai cơ chế xác thực người dùng và phân chia vai trò quản trị.
+*   **Nội dung thực hiện**:
+    *   Cấu hình dịch vụ xác thực Cookie (`CookieAuthentication`) trong file `Program.cs`.
+    *   Thiết lập ràng buộc kiểm tra đăng nhập trên các Controller quản trị bằng thẻ bảo mật `[Authorize]`.
+    *   Triển khai phân quyền truy cập theo vai trò (Role-based Authorization) giữa `Admin` và `Editor`.
+    *   Xây dựng Controller và giao diện trang đăng nhập/đăng xuất cho quản trị viên.
+    *   Thực hiện băm mật khẩu bảo mật (Password Hashing) thay vì lưu mật khẩu thô để đảm bảo an toàn thông tin.
+
+---
+
+## 🚀 Hướng dẫn khởi chạy dự án
+
+### 1. Cài đặt môi trường phát triển
+Yêu cầu hệ thống cần cài đặt:
+1.  **Visual Studio 2022** (Có tích chọn workload *ASP.NET and web development* và *.NET desktop development*).
+2.  **Microsoft SQL Server** (Bản Express hoặc LocalDB).
+3.  **SQL Server Management Studio (SSMS)** để quản lý CSDL trực quan.
+4.  **Node.js (LTS)** để chạy ứng dụng ReactJS Frontend.
+
+### 2. Cấu hình Chuỗi kết nối CSDL (Connection String)
+Mở file `appsettings.json` trong dự án `CMS.Backend` và điều chỉnh cấu hình kết nối SQL Server của bạn:
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=YOUR_SERVER_NAME;Database=NGUYENTRUCTRUONG_DB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+}
+```
+
+### 3. Đồng bộ hóa Database
+Chạy lệnh sau tại thư mục gốc của giải pháp bằng Command Prompt hoặc PowerShell để khởi tạo CSDL:
+```powershell
+dotnet ef database update --project CMS.Data --startup-project CMS.Backend
+```
+
+### 4. Khởi chạy Backend (Admin Panel MVC)
+```powershell
+dotnet run --project CMS.Backend
+```
+*   Ứng dụng Backend chạy mặc định tại cổng: `http://localhost:5000` (hoặc cổng được cấu hình).
+*   Trang quản trị admin: truy cập trực tiếp bằng đường dẫn `/Category`, `/Post` hoặc `/User` để đăng nhập.
+
+### 5. Khởi chạy Frontend (ReactJS)
+Mở Terminal tại thư mục `CMS.Frontend`:
+```powershell
+cd CMS.Frontend
+npm install
+npm run dev
+```
+*   Trang chủ ReactJS sẽ chạy tại: `http://localhost:5173` (hoặc cổng mặc định của Vite).
