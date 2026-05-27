@@ -1,19 +1,21 @@
 @model IEnumerable<CMS.Data.Entities.Product>
 
 @{
-    
-    Layout = "_LayoutAdmin";ViewData["Title"] = "Sản phẩm";
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Sản phẩm";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="mb-0">🛒 Danh Sách Sản Phẩm</h2>
-        <a asp-action="Create" class="btn btn-success">+ Thêm sản phẩm</a>
+<div class="card-premium">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 fw-bold"><i class="bi bi-box-seam text-muted"></i> Danh sách Sản phẩm</h1>
+        <a asp-action="Create" class="btn-premium-primary text-decoration-none">
+            <i class="bi bi-plus-lg"></i> Thêm sản phẩm
+        </a>
     </div>
 
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 mb-4" role="alert" style="background-color: #f0fdf4; color: #166534;">
             @TempData["SuccessMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -21,69 +23,77 @@
 
     @if (TempData["ErrorMessage"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 mb-4" role="alert" style="background-color: #fef2f2; color: #991b1b;">
             @TempData["ErrorMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
-    <table class="table table-bordered table-striped shadow-sm align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Ảnh</th>
-                <th>Tên sản phẩm</th>
-                <th>Danh mục</th>
-                <th>Giá</th>
-                <th>Tồn kho</th>
-                <th>Thao tác</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+    <div class="table-responsive">
+        <table class="table-premium">
+            <thead>
                 <tr>
-                    <td>@item.Id</td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(item.ImageUrl))
-                        {
-                            <img src="@item.ImageUrl" alt="@item.Name" style="width:60px;height:60px;object-fit:cover;" />
-                        }
-                        else
-                        {
-                            <span class="text-muted">Không có ảnh</span>
-                        }
-                    </td>
-                    <td><strong>@item.Name</strong></td>
-                    <td>
-                        <span class="badge bg-secondary">@(item.CategoryProduct?.Name ?? "Chưa phân loại")</span>
-                    </td>
-                    <td class="text-danger fw-bold">@item.Price.ToString("N0") đ</td>
-                    <td>
-                        @if (item.StockQuantity <= 0)
-                        {
-                            <span class="badge bg-danger">Hết hàng</span>
-                        }
-                        else if (item.StockQuantity < 10)
-                        {
-                            <span class="badge bg-warning text-dark">Sắp hết (@item.StockQuantity)</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-success">Còn hàng (@item.StockQuantity)</span>
-                        }
-                    </td>
-                    <td>
-                        <div class="d-flex gap-2">
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Sửa</a>
-                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
-                            </form>
-                        </div>
-                    </td>
+                    <th scope="col">ID</th>
+                    <th scope="col">Ảnh</th>
+                    <th scope="col">Tên sản phẩm</th>
+                    <th scope="col">Danh mục</th>
+                    <th scope="col">Giá</th>
+                    <th scope="col">Tồn kho</th>
+                    <th scope="col" width="160">Thao tác</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" alt="@item.Name" style="width:50px;height:50px;object-fit:cover;border-radius:6px;border:1px solid var(--colors-shade-30);" />
+                            }
+                            else
+                            {
+                                <div class="bg-light text-muted d-flex align-items-center justify-content-center" style="width:50px;height:50px;border-radius:6px;border:1px solid var(--colors-shade-30);">
+                                    <i class="bi bi-image" style="font-size:1.2rem;opacity:0.3;"></i>
+                                </div>
+                            }
+                        </td>
+                        <td class="fw-semibold text-black">@item.Name</td>
+                        <td>
+                            <span class="badge bg-light text-dark rounded-pill px-2.5 py-1">@(item.CategoryProduct?.Name ?? "Chưa phân loại")</span>
+                        </td>
+                        <td class="text-danger fw-bold">@item.Price.ToString("N0") đ</td>
+                        <td>
+                            @if (item.StockQuantity <= 0)
+                            {
+                                <span class="badge bg-danger rounded-pill px-2.5 py-1">Hết hàng</span>
+                            }
+                            else if (item.StockQuantity < 10)
+                            {
+                                <span class="badge bg-warning text-dark rounded-pill px-2.5 py-1">Sắp hết (@item.StockQuantity)</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success rounded-pill px-2.5 py-1">Còn hàng (@item.StockQuantity)</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a asp-action="Edit" asp-route-id="@item.Id" 
+                                   class="btn btn-sm btn-warning" 
+                                   aria-label="Sửa thông tin sản phẩm @item.Name">Sửa</a>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" 
+                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger" 
+                                            aria-label="Xóa sản phẩm @item.Name">Xóa</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
