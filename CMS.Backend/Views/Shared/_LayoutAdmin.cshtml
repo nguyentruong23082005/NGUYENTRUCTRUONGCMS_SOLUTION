@@ -59,6 +59,26 @@
                         <i class="bi bi-people"></i> Quản lý Thành viên
                     </a>
                 </div>
+
+                @* Thông tin người dùng + nút Đăng xuất (Buổi 5) *@
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <div class="p-3 border-top border-secondary mt-2">
+                        <div class="text-muted small mb-1">
+                            <i class="bi bi-person-circle"></i>
+                            <strong class="text-white">@User.FindFirst("FullName")?.Value</strong>
+                        </div>
+                        <div class="text-muted" style="font-size:0.75rem;">
+                            Quyền: <span class="badge bg-warning text-dark">
+                                @User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value
+                            </span>
+                        </div>
+                        <a asp-controller="Account" asp-action="Logout"
+                           class="btn btn-outline-danger btn-sm mt-2 w-100">
+                            <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                        </a>
+                    </div>
+                }
             </nav>
 
             <main class="col-md-9 col-lg-10 ms-sm-auto p-4">
