@@ -6,61 +6,57 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Đăng nhập hệ thống - ThaiCMS Admin</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-        }
-    </style>
+    <title>Đăng nhập hệ thống - CMS Admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/css/admin-theme.css" asp-append-version="true" />
 </head>
-<body>
+<body class="login-bg">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-4">
-                <div class="card shadow-lg border-0 rounded-3">
-                    <div class="card-header bg-primary text-white text-center py-4">
-                        <h4 class="mb-1">🛡️ ThaiCMS Admin</h4>
-                        <small class="opacity-75">Hệ thống Quản trị Nội dung</small>
+            <div class="col-md-5 col-lg-4">
+                <div class="card login-card-glass border-0">
+                    <div class="text-center pt-5 pb-4 px-4">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-black text-white rounded-circle mb-3" style="width: 56px; height: 56px;">
+                            <i class="bi bi-shield-lock fs-4"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">CMS Admin</h3>
+                        <p class="text-muted small mb-0">Hệ thống Quản trị Nội dung cao cấp</p>
                     </div>
-                    <div class="card-body p-4">
+                    <div class="card-body p-4 pt-2">
                         <form asp-action="Login" method="post">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Tên đăng nhập</label>
-                                <input type="text" name="username" class="form-control"
-                                       placeholder="Nhập tên đăng nhập..." required autofocus />
+                            <div class="mb-4">
+                                <label for="username" class="form-label">Tên đăng nhập</label>
+                                <input type="text" id="username" name="username" class="form-control"
+                                       placeholder="Tên đăng nhập hoặc Email" required autofocus />
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Mật khẩu</label>
-                                <input type="password" name="password" class="form-control"
-                                       placeholder="Nhập mật khẩu..." required />
+                            <div class="mb-4">
+                                <label for="password" class="form-label">Mật khẩu</label>
+                                <input type="password" id="password" name="password" class="form-control"
+                                       placeholder="Mật khẩu" required />
                             </div>
 
                             @if (ViewBag.Error != null)
                             {
-                                <div class="alert alert-danger py-2 small">
+                                <div class="alert alert-danger py-2 px-3 small border-0 rounded-3 mb-4 d-flex align-items-center gap-2" style="background-color: #fef2f2; color: #991b1b;">
                                     <i class="bi bi-exclamation-triangle-fill"></i>
-                                    @ViewBag.Error
+                                    <span>@ViewBag.Error</span>
                                 </div>
                             }
 
                             <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    ĐĂNG NHẬP
+                                <button type="submit" class="btn-premium-primary border-0 py-2">
+                                    Đăng Nhập
                                 </button>
                             </div>
                         </form>
                     </div>
-                    <div class="card-footer text-center text-muted small py-3">
-                        © 2026 ThaiCMS — ASP.NET Core 8
+                    <div class="card-footer text-center text-muted small py-3 border-0 bg-transparent">
+                        © 2026 CMS — Shopifi Inspired
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </body>
 </html>
