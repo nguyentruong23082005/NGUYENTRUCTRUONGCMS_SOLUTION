@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,8 +22,7 @@ namespace CMS.Data.Entities
         public string? Phone { get; set; }
         public string? Address { get; set; }
 
-        [Required]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         public virtual ICollection<Order>? Orders { get; set; }
     }

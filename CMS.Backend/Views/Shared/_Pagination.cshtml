@@ -1,0 +1,56 @@
+@model dynamic
+@{
+    var currentQuery = new Dictionary<string, string?>();
+    foreach (var queryItem in Context.Request.Query)
+    {
+        if (!string.Equals(queryItem.Key, "page", StringComparison.OrdinalIgnoreCase))
+        {
+            currentQuery[queryItem.Key] = queryItem.Value.ToString();
+        }
+    }
+
+    var totalPages = (int)Model.TotalPages;
+    var pageIndex = (int)Model.PageIndex;
+    var totalItems = (int)Model.TotalItems;
+    var pageSize = (int)Model.PageSize;
+    var startItem = totalItems == 0 ? 0 : ((pageIndex - 1) * pageSize) + 1;
+    var endItem = Math.Min(pageIndex * pageSize, totalItems);
+}
+
+@if (totalPages > 1)
+{
+    <nav class="admin-pagination" aria-label="Phân trang">
+        <div class="admin-pagination-summary">
+            Hiển thị @startItem-@endItem / @totalItems mục
+        </div>
+        <ul class="pagination mb-0">
+            @{
+                currentQuery["page"] = (pageIndex - 1).ToString();
+            }
+            <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                <a class="page-link" asp-all-route-data="currentQuery" aria-label="Trang trước">‹</a>
+            </li>
+
+            @for (var i = 1; i <= totalPages; i++)
+            {
+                currentQuery["page"] = i.ToString();
+                <li class="page-item @(i == pageIndex ? "active" : "")">
+                    <a class="page-link" asp-all-route-data="currentQuery" aria-label="Trang @i">@i</a>
+                </li>
+            }
+
+            @{
+                currentQuery["page"] = (pageIndex + 1).ToString();
+            }
+            <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                <a class="page-link" asp-all-route-data="currentQuery" aria-label="Trang sau">›</a>
+            </li>
+        </ul>
+    </nav>
+}
+else if (totalItems > 0)
+{
+    <div class="admin-pagination admin-pagination-single">
+        <div class="admin-pagination-summary">Hiển thị @totalItems mục</div>
+    </div>
+}

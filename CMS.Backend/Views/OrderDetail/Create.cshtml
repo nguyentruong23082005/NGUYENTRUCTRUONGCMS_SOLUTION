@@ -1,47 +1,55 @@
 @model CMS.Data.Entities.OrderDetail
 
 @{
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "Thêm chi tiết đơn hàng";
 }
 
-<div class="container mt-4" style="max-width: 600px;">
-    <h2 class="text-success mb-4">✨ Thêm Chi Tiết Đơn Hàng</h2>
+<div class="card-premium">
+    <div class="mb-4">
+        <h1 class="h3 mb-1 fw-bold"><i class="bi bi-list-plus text-muted"></i> Thêm Chi tiết Đơn hàng</h1>
+        <p class="text-muted small">Liên kết sản phẩm và số lượng bán vào đơn hàng đã tạo.</p>
+    </div>
 
-    <form asp-action="Create" method="post">
-        <div class="mb-3">
-            <label asp-for="OrderId" class="form-label fw-bold">Mã đơn hàng</label>
-            <select asp-for="OrderId" class="form-select" asp-items="ViewBag.OrderId" required>
-                <option value="">-- Chọn đơn hàng --</option>
-            </select>
-            <span asp-validation-for="OrderId" class="text-danger"></span>
-        </div>
+    <div class="row">
+        <div class="col-md-8 col-lg-6">
+            <form asp-action="Create" method="post">
+                <div class="mb-4">
+                    <label asp-for="OrderId" class="form-label">Mã đơn hàng</label>
+                    <select asp-for="OrderId" class="form-select" asp-items="ViewBag.OrderId" required>
+                        <option value="">Chọn đơn hàng</option>
+                    </select>
+                    <span asp-validation-for="OrderId" class="text-danger small"></span>
+                </div>
 
-        <div class="mb-3">
-            <label asp-for="ProductId" class="form-label fw-bold">Sản phẩm</label>
-            <select asp-for="ProductId" class="form-select" asp-items="ViewBag.ProductId" required>
-                <option value="">-- Chọn sản phẩm --</option>
-            </select>
-            <span asp-validation-for="ProductId" class="text-danger"></span>
-        </div>
+                <div class="mb-4">
+                    <label asp-for="ProductId" class="form-label">Sản phẩm</label>
+                    <select asp-for="ProductId" class="form-select" asp-items="ViewBag.ProductId" required>
+                        <option value="">Chọn sản phẩm</option>
+                    </select>
+                    <span asp-validation-for="ProductId" class="text-danger small"></span>
+                </div>
 
-        <div class="mb-3">
-            <label asp-for="Quantity" class="form-label fw-bold">Số lượng</label>
-            <input asp-for="Quantity" type="number" class="form-control" min="1" required />
-            <span asp-validation-for="Quantity" class="text-danger"></span>
-        </div>
+                <div class="mb-4">
+                    <label asp-for="Quantity" class="form-label">Số lượng</label>
+                    <input asp-for="Quantity" type="number" class="form-control" min="1" placeholder="Ví dụ: 1" required />
+                    <span asp-validation-for="Quantity" class="text-danger small"></span>
+                </div>
 
-        <div class="mb-3">
-            <label asp-for="UnitPrice" class="form-label fw-bold">Đơn giá</label>
-            <input asp-for="UnitPrice" type="number" step="0.01" class="form-control" required />
-            <span asp-validation-for="UnitPrice" class="text-danger"></span>
-            <small class="text-muted">Nhập giá bán tại thời điểm hiện tại.</small>
-        </div>
+                <div class="mb-4">
+                    <label asp-for="UnitPrice" class="form-label">Đơn giá (VNĐ)</label>
+                    <input asp-for="UnitPrice" type="number" step="1" class="form-control" placeholder="Đơn giá sản phẩm" required />
+                    <span asp-validation-for="UnitPrice" class="text-danger small"></span>
+                    <small class="text-muted d-block mt-1">Nhập giá bán thực tế của sản phẩm tại thời điểm giao dịch.</small>
+                </div>
 
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-success">Lưu vào hệ thống</button>
-            <a asp-action="Index" class="btn btn-secondary">Hủy bỏ</a>
+                <div class="mt-4 pt-2">
+                    <button type="submit" class="btn btn-premium-primary border-0 me-2">Lưu chi tiết</button>
+                    <a asp-action="Index" class="btn btn-premium-outline text-decoration-none">Hủy bỏ</a>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {

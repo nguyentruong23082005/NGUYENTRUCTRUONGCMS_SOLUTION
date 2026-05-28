@@ -1,5 +1,7 @@
+using CMS.Backend.Models;
 using CMS.Data;
 using CMS.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +9,7 @@ using System.Linq;
 
 namespace CMS.Backend.Controllers
 {
+    [Authorize]
     public class OrderDetailController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -17,13 +20,17 @@ namespace CMS.Backend.Controllers
         }
 
         // GET: /OrderDetail
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var orderDetails = _context.OrderDetails
-                .Include(od => od.Order)
-                .Include(od => od.Product)
-                .OrderByDescending(od => od.OrderId)
-                .ToList();
+            const int pageSize = 10;
+            var orderDetails = await PaginatedList<OrderDetail>.CreateAsync(
+                _context.OrderDetails
+                    .Include(od => od.Order)
+                    .Include(od => od.Product)
+                    .AsNoTracking()
+                    .OrderByDescending(od => od.OrderId),
+                page,
+                pageSize);
 
             return View(orderDetails);
         }

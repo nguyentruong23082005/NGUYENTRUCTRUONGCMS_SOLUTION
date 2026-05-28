@@ -22,11 +22,23 @@ namespace CMS.Backend.Controllers
             // Lấy 3 bài viết mới nhất kèm tên danh mục
             var latestPosts = _context.Posts
                 .Include(p => p.Category)
+                .AsNoTracking()
                 .OrderByDescending(p => p.CreatedDate)
                 .Take(3)
                 .ToList();
 
             return View(latestPosts);
+        }
+
+        public IActionResult Dashboard()
+        {
+            ViewBag.PostCount = _context.Posts.Count();
+            ViewBag.CategoryCount = _context.Categories.Count();
+            ViewBag.UserCount = _context.Users.Count();
+            ViewBag.ProductCount = _context.Products.Count();
+            ViewBag.CustomerCount = _context.Customers.Count();
+            ViewBag.OrderCount = _context.Orders.Count();
+            return View();
         }
 
         public IActionResult Privacy()

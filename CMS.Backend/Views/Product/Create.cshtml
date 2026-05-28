@@ -1,54 +1,60 @@
 @model CMS.Data.Entities.Product
 
 @{
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "Thêm sản phẩm";
 }
 
-<div class="container mt-4" style="max-width: 600px;">
-    <h2 class="text-success mb-4">✨ Thêm Sản Phẩm Mới</h2>
+<div class="card-premium">
+    <div class="mb-4">
+        <h1 class="h3 mb-1 fw-bold"><i class="bi bi-plus-circle text-muted"></i> Thêm sản phẩm mới</h1>
+        <p class="text-muted small">Cung cấp các thông tin chi tiết dưới đây để thêm sản phẩm mới vào danh mục bán hàng.</p>
+    </div>
 
     <form asp-action="Create" method="post">
-        <div class="mb-3">
-            <label asp-for="Name" class="form-label fw-bold">Tên sản phẩm</label>
-            <input asp-for="Name" class="form-control" required />
-            <span asp-validation-for="Name" class="text-danger"></span>
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <label asp-for="Name" class="form-label">Tên sản phẩm</label>
+                <input asp-for="Name" class="form-control" placeholder="Ví dụ: Áo thun Polo" required />
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="CategoryProductId" class="form-label">Danh mục</label>
+                <select asp-for="CategoryProductId" class="form-select" asp-items="ViewBag.CategoryProductId" required>
+                    <option value="">Chọn danh mục</option>
+                </select>
+                <span asp-validation-for="CategoryProductId" class="text-danger small"></span>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="CategoryProductId" class="form-label fw-bold">Danh mục</label>
-            <select asp-for="CategoryProductId" class="form-select" asp-items="ViewBag.CategoryProductId">
-                <option value="">-- Chọn danh mục --</option>
-            </select>
-            <span asp-validation-for="CategoryProductId" class="text-danger"></span>
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <label asp-for="Price" class="form-label">Giá bán (VNĐ)</label>
+                <input asp-for="Price" type="number" step="0.01" class="form-control" placeholder="Giá bán sản phẩm" required />
+                <span asp-validation-for="Price" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="StockQuantity" class="form-label">Tồn kho ban đầu</label>
+                <input asp-for="StockQuantity" type="number" class="form-control" placeholder="Số lượng trong kho" required />
+                <span asp-validation-for="StockQuantity" class="text-danger small"></span>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="Price" class="form-label fw-bold">Giá</label>
-            <input asp-for="Price" type="number" step="0.01" class="form-control" required />
-            <span asp-validation-for="Price" class="text-danger"></span>
+        <div class="mb-4">
+            <label asp-for="ImageUrl" class="form-label">Đường dẫn ảnh sản phẩm (URL)</label>
+            <input asp-for="ImageUrl" class="form-control" placeholder="http://example.com/image.jpg" />
+            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="StockQuantity" class="form-label fw-bold">Tồn kho</label>
-            <input asp-for="StockQuantity" type="number" class="form-control" required />
-            <span asp-validation-for="StockQuantity" class="text-danger"></span>
+        <div class="mb-4">
+            <label asp-for="Description" class="form-label">Mô tả sản phẩm</label>
+            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả sản phẩm..."></textarea>
+            <span asp-validation-for="Description" class="text-danger small"></span>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="ImageUrl" class="form-label fw-bold">Đường dẫn ảnh (URL)</label>
-            <input asp-for="ImageUrl" class="form-control" />
-            <span asp-validation-for="ImageUrl" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Description" class="form-label fw-bold">Mô tả</label>
-            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
-
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-success">Lưu vào hệ thống</button>
-            <a asp-action="Index" class="btn btn-secondary">Hủy bỏ</a>
+        <div class="mt-4 pt-2">
+            <button type="submit" class="btn btn-premium-primary border-0 me-2">Lưu vào hệ thống</button>
+            <a asp-action="Index" class="btn btn-premium-outline text-decoration-none">Hủy bỏ</a>
         </div>
     </form>
 </div>

@@ -1,0 +1,126 @@
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Bảng điều khiển";
+}
+
+<div class="mb-4">
+    <p class="text-muted small fw-semibold mb-1">Tổng quan</p>
+    <h1 class="h3 fw-bold mb-1">Bảng điều khiển</h1>
+    <p class="text-muted small mb-0">Theo dõi nhanh nội dung, sản phẩm, khách hàng và đơn hàng trong hệ thống.</p>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card-premium h-100 d-flex flex-column justify-content-between">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                    <p class="text-muted small fw-semibold mb-2">Bài viết</p>
+                    <div class="fs-2 fw-bold text-black">@ViewBag.PostCount</div>
+                </div>
+                <div class="d-inline-flex p-2 bg-success rounded-3">
+                    <i class="bi bi-file-earmark-post fs-5"></i>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-top">
+                <a asp-controller="Post" asp-action="Index" class="text-decoration-none text-black fw-semibold small">
+                    Xem chi tiết <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-premium h-100 d-flex flex-column justify-content-between">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                    <p class="text-muted small fw-semibold mb-2">Danh mục</p>
+                    <div class="fs-2 fw-bold text-black">@ViewBag.CategoryCount</div>
+                </div>
+                <div class="d-inline-flex p-2 bg-success rounded-3">
+                    <i class="bi bi-folder fs-5"></i>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-top">
+                <a asp-controller="Category" asp-action="Index" class="text-decoration-none text-black fw-semibold small">
+                    Xem chi tiết <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-premium h-100 d-flex flex-column justify-content-between">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                    <p class="text-muted small fw-semibold mb-2">Thành viên</p>
+                    <div class="fs-2 fw-bold text-black">@ViewBag.UserCount</div>
+                </div>
+                <div class="d-inline-flex p-2 bg-success rounded-3">
+                    <i class="bi bi-people fs-5"></i>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-top">
+                <a asp-controller="User" asp-action="Index" class="text-decoration-none text-black fw-semibold small">
+                    Xem chi tiết <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-premium h-100 d-flex flex-column justify-content-between">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                    <p class="text-muted small fw-semibold mb-2">Sản phẩm</p>
+                    <div class="fs-2 fw-bold text-black">@ViewBag.ProductCount</div>
+                </div>
+                <div class="d-inline-flex p-2 bg-success rounded-3">
+                    <i class="bi bi-box-seam fs-5"></i>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-top">
+                <a asp-controller="Product" asp-action="Index" class="text-decoration-none text-black fw-semibold small">
+                    Xem chi tiết <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-premium h-100 d-flex flex-column justify-content-between">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                    <p class="text-muted small fw-semibold mb-2">Khách hàng</p>
+                    <div class="fs-2 fw-bold text-black">@ViewBag.CustomerCount</div>
+                </div>
+                <div class="d-inline-flex p-2 bg-success rounded-3">
+                    <i class="bi bi-person-lines-fill fs-5"></i>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-top">
+                <a asp-controller="Customer" asp-action="Index" class="text-decoration-none text-black fw-semibold small">
+                    Xem chi tiết <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-premium h-100 d-flex flex-column justify-content-between">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                    <p class="text-muted small fw-semibold mb-2">Đơn hàng</p>
+                    <div class="fs-2 fw-bold text-black">@ViewBag.OrderCount</div>
+                </div>
+                <div class="d-inline-flex p-2 bg-success rounded-3">
+                    <i class="bi bi-cart3 fs-5"></i>
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-top">
+                <a asp-controller="Order" asp-action="Index" class="text-decoration-none text-black fw-semibold small">
+                    Xem chi tiết <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

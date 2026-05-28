@@ -1,18 +1,21 @@
-@model IEnumerable<CMS.Data.Entities.OrderDetail>
+@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.OrderDetail>
 
 @{
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "Chi tiết đơn hàng";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="mb-0">🧾 Chi Tiết Đơn Hàng</h2>
-        <a asp-action="Create" class="btn btn-success">+ Thêm chi tiết đơn hàng</a>
+<div class="card-premium">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 fw-bold"><i class="bi bi-list-check text-muted"></i> Chi tiết Đơn hàng</h1>
+        <a asp-action="Create" class="btn-premium-primary text-decoration-none">
+            <i class="bi bi-plus-lg"></i> Thêm chi tiết đơn hàng
+        </a>
     </div>
 
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 mb-4" role="alert" style="background-color: #f0fdf4; color: #166534;">
             @TempData["SuccessMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -20,46 +23,54 @@
 
     @if (TempData["ErrorMessage"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 mb-4" role="alert" style="background-color: #fef2f2; color: #991b1b;">
             @TempData["ErrorMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
-    <table class="table table-bordered table-striped shadow-sm align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Mã đơn</th>
-                <th>Sản phẩm</th>
-                <th>Số lượng</th>
-                <th>Đơn giá</th>
-                <th>Thành tiền</th>
-                <th>Thao tác</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                var total = item.Quantity * item.UnitPrice;
+    <div class="table-responsive">
+        <table class="table-premium">
+            <thead>
                 <tr>
-                    <td>@item.Id</td>
-                    <td>#@item.OrderId</td>
-                    <td>@(item.Product?.Name ?? "Không rõ")</td>
-                    <td>@item.Quantity</td>
-                    <td>@item.UnitPrice.ToString("N0") đ</td>
-                    <td><strong>@total.ToString("N0") đ</strong></td>
-                    <td>
-                        <div class="d-flex gap-2">
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Sửa</a>
-                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa chi tiết này?');">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
-                            </form>
-                        </div>
-                    </td>
+                    <th scope="col">ID</th>
+                    <th scope="col">Mã đơn</th>
+                    <th scope="col">Sản phẩm</th>
+                    <th scope="col">Số lượng</th>
+                    <th scope="col">Đơn giá</th>
+                    <th scope="col">Thành tiền</th>
+                    <th scope="col" width="160">Thao tác</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    var total = item.Quantity * item.UnitPrice;
+                    <tr>
+                        <td>@item.Id</td>
+                        <td class="fw-semibold text-black">#@item.OrderId</td>
+                        <td>@(item.Product?.Name ?? "Không rõ")</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.UnitPrice.ToString("N0") đ</td>
+                        <td class="text-danger fw-bold">@total.ToString("N0") đ</td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a asp-action="Edit" asp-route-id="@item.Id" 
+                                   class="btn btn-sm btn-warning" 
+                                   aria-label="Sửa chi tiết đơn hàng @item.Id">Sửa</a>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" 
+                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa chi tiết này?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger" 
+                                            aria-label="Xóa chi tiết đơn hàng @item.Id">Xóa</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <partial name="_Pagination" model="Model" />
 </div>

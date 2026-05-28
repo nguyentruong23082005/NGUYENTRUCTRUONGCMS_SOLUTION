@@ -1,46 +1,77 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CMS.Backend</title>
+    <meta name="description" content="CMS News là trang tin tức công khai hiển thị các bài viết mới nhất và lối vào khu vực quản trị CMS." />
+    <title>@ViewData["Title"] - CMS News</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/public-theme.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CMS.Backend.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body class="public-shell">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CMS.Backend</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg public-navbar">
+            <div class="container-fluid px-3 px-lg-4 py-2 gap-3">
+                <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="public-brand-mark" aria-hidden="true"><i class="bi bi-newspaper"></i></span>
+                    <span>CMS News</span>
+                </a>
+                <div class="public-search-shell d-none d-md-flex align-items-center justify-content-between mx-auto">
+                    <span><i class="bi bi-search me-2"></i>Tìm kiếm bài viết</span>
+                    <kbd>CTRL K</kbd>
+                </div>
+                <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#publicNavbar" aria-controls="publicNavbar"
+                        aria-expanded="false" aria-label="Mở menu điều hướng">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse flex-grow-0" id="publicNavbar">
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Post" asp-action="Index">Bài viết</a>
                         </li>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Dashboard">Dashboard</a>
+                            </li>
+                            <li class="nav-item ms-lg-2">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                                    <button type="submit" class="btn btn-public-outline btn-sm">Đăng xuất</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item ms-lg-2">
+                                <a class="btn btn-public-primary btn-sm" asp-area="" asp-controller="Account" asp-action="Login">Đăng nhập quản trị</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - CMS.Backend - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <main role="main" class="public-main py-4 py-lg-5">
+        @RenderBody()
+    </main>
+
+    <footer class="public-footer text-muted py-4">
+        <div class="container d-flex flex-column flex-md-row justify-content-between gap-2 small">
+            <span>&copy; 2026 - CMS News</span>
+            <span>Trang tin tức công khai của hệ thống CMS Backend.</span>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
