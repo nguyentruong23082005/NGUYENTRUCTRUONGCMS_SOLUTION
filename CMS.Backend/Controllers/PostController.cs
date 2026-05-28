@@ -1,3 +1,4 @@
+using CMS.Backend.Models;
 using CMS.Data;
 using CMS.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -18,10 +19,12 @@ namespace CMS.Backend.Controllers
         }
 
         // GET: Post/Index
-        public IActionResult Index(int? categoryId)
+        public async Task<IActionResult> Index(int? categoryId, int page = 1)
         {
+            const int pageSize = 9;
             var query = _context.Posts
                 .Include(p => p.Category)
+                .AsNoTracking()
                 .AsQueryable();
 
             if (categoryId.HasValue)
@@ -30,11 +33,12 @@ namespace CMS.Backend.Controllers
                 ViewBag.FilterCategoryId = categoryId.Value;
             }
 
-            var posts = query
-                .OrderByDescending(p => p.CreatedDate)
-                .ToList();
+            var posts = await PaginatedList<Post>.CreateAsync(
+                query.OrderByDescending(p => p.CreatedDate),
+                page,
+                pageSize);
 
-            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Categories = await _context.Categories.AsNoTracking().ToListAsync();
             return View(posts);
         }
 
@@ -60,6 +64,12 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Post model, IFormFile? uploadImage)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.CategoryList = new SelectList(_context.Categories.ToList(), "Id", "Name", model.CategoryId);
+                return View(model);
+            }
+
             if (uploadImage != null && uploadImage.Length > 0)
             {
                 string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
@@ -97,6 +107,12 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Post model, IFormFile? uploadImage)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.CategoryList = new SelectList(_context.Categories.ToList(), "Id", "Name", model.CategoryId);
+                return View(model);
+            }
+
             if (uploadImage != null && uploadImage.Length > 0)
             {
                 string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");

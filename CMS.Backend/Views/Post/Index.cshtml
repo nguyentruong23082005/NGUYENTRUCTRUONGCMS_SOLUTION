@@ -1,4 +1,4 @@
-@model List<CMS.Data.Entities.Post>
+@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.Post>
 
 @{
     Layout = "_LayoutAdmin";
@@ -20,7 +20,7 @@
         <div class="col-md-4">
             <label for="categoryId" class="form-label">Lọc theo danh mục</label>
             <select id="categoryId" name="categoryId" class="form-select">
-                <option value="">-- Tất cả danh mục --</option>
+                <option value=""> Tất cả danh mục </option>
                 @if (categories != null)
                 {
                     foreach (var category in categories)
@@ -44,7 +44,7 @@
     </form>
 
     <div class="row">
-        @if (!Model.Any())
+        @if (!Model.Items.Any())
         {
             <div class="col-12">
                 <div class="alert alert-info text-center py-4">Không có bài viết nào.</div>
@@ -52,7 +52,7 @@
         }
         else
         {
-            foreach (var item in Model)
+            foreach (var item in Model.Items)
             {
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 border border-light shadow-sm" style="border-radius: 12px; overflow: hidden;">
@@ -99,4 +99,6 @@
             }
         }
     </div>
+
+    <partial name="_Pagination" model="Model" />
 </div>

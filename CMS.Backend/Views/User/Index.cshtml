@@ -1,4 +1,4 @@
-@model List<CMS.Data.Entities.User>
+@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.User>
 
 @{
     Layout = "_LayoutAdmin";
@@ -25,7 +25,7 @@
                 </tr>
             </thead>
             <tbody>
-                @if (!Model.Any())
+                @if (!Model.Items.Any())
                 {
                     <tr>
                         <td colspan="5" class="text-center text-muted py-4">Chưa có thành viên nào.</td>
@@ -33,7 +33,7 @@
                 }
                 else
                 {
-                    foreach (var user in Model)
+                    foreach (var user in Model.Items)
                     {
                         <tr>
                             <td>@user.Id</td>
@@ -68,4 +68,6 @@
             </tbody>
         </table>
     </div>
+
+    <partial name="_Pagination" model="Model" />
 </div>

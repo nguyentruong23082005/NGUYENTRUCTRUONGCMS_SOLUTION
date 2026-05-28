@@ -1,3 +1,4 @@
+using CMS.Backend.Models;
 using CMS.Data;
 using CMS.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -20,12 +21,16 @@ namespace CMS.Backend.Controllers
         }
 
         // GET: /Order
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var orders = _context.Orders
-                .Include(o => o.Customer)
-                .OrderByDescending(o => o.OrderDate)
-                .ToList();
+            const int pageSize = 10;
+            var orders = await PaginatedList<Order>.CreateAsync(
+                _context.Orders
+                    .Include(o => o.Customer)
+                    .AsNoTracking()
+                    .OrderByDescending(o => o.OrderDate),
+                page,
+                pageSize);
 
             return View(orders);
         }

@@ -22,6 +22,7 @@ namespace CMS.Backend.Controllers
             // Lấy 3 bài viết mới nhất kèm tên danh mục
             var latestPosts = _context.Posts
                 .Include(p => p.Category)
+                .AsNoTracking()
                 .OrderByDescending(p => p.CreatedDate)
                 .Take(3)
                 .ToList();

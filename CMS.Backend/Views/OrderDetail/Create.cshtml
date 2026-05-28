@@ -17,7 +17,7 @@
                 <div class="mb-4">
                     <label asp-for="OrderId" class="form-label">Mã đơn hàng</label>
                     <select asp-for="OrderId" class="form-select" asp-items="ViewBag.OrderId" required>
-                        <option value="">-- Chọn đơn hàng --</option>
+                        <option value="">Chọn đơn hàng</option>
                     </select>
                     <span asp-validation-for="OrderId" class="text-danger small"></span>
                 </div>
@@ -25,7 +25,7 @@
                 <div class="mb-4">
                     <label asp-for="ProductId" class="form-label">Sản phẩm</label>
                     <select asp-for="ProductId" class="form-select" asp-items="ViewBag.ProductId" required>
-                        <option value="">-- Chọn sản phẩm --</option>
+                        <option value="">Chọn sản phẩm</option>
                     </select>
                     <span asp-validation-for="ProductId" class="text-danger small"></span>
                 </div>

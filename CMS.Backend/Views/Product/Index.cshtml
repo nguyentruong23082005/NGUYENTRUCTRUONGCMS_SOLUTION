@@ -1,4 +1,4 @@
-@model IEnumerable<CMS.Data.Entities.Product>
+@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.Product>
 
 @{
     Layout = "_LayoutAdmin";
@@ -43,7 +43,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var item in Model.Items)
                 {
                     <tr>
                         <td>@item.Id</td>
@@ -96,4 +96,6 @@
             </tbody>
         </table>
     </div>
+
+    <partial name="_Pagination" model="Model" />
 </div>

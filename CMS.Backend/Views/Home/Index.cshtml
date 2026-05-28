@@ -1,57 +1,102 @@
 @model List<CMS.Data.Entities.Post>
 
 @{
-    ViewData["Title"] = "Trang chủ";
+    ViewData["Title"] = "Trang chủ tin tức";
+    bool isSignedIn = User.Identity?.IsAuthenticated == true;
 }
 
-<div class="container mt-5">
-    <h2 class="mb-4 text-danger fw-bold text-center">📰 TIN TỨC MỚI NHẤT</h2>
-
-    @if (Model == null || !Model.Any())
-    {
-        <div class="alert alert-info text-center">Chưa có bài viết nào. Hãy thêm bài viết mới!</div>
-    }
-    else
-    {
-        <div class="row">
-            @foreach (var item in Model)
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        @if (!string.IsNullOrEmpty(item.ImageUrl))
-                        {
-                            <img src="@item.ImageUrl" class="card-img-top" alt="@item.Title"
-                                 style="height: 200px; object-fit: cover;" />
-                        }
-                        else
-                        {
-                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center"
-                                 style="height: 200px;">
-                                <span>Không có ảnh</span>
-                            </div>
-                        }
-                        <div class="card-body d-flex flex-column">
-                            <span class="badge bg-primary mb-2" style="width: fit-content;">
-                                @(item.Category?.Name ?? "Chưa phân loại")
-                            </span>
-                            <h5 class="card-title">@item.Title</h5>
-                            <p class="card-text text-muted small">
-                                @item.CreatedDate.ToString("dd/MM/yyyy")
-                            </p>
-                            <a asp-controller="Post" asp-action="Details" asp-route-id="@item.Id"
-                               class="btn btn-outline-danger btn-sm mt-auto">
-                                Đọc tiếp →
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            }
+<div class="container">
+    <section class="public-hero mb-5" aria-labelledby="home-title">
+        <div class="public-hero-content">
+            <span class="public-eyebrow mb-3">
+                <i class="bi bi-stars" aria-hidden="true"></i>
+                CMS News workspace
+            </span>
+            <h1 id="home-title" class="public-title mb-3">Chào mừng đến CMS News</h1>
+            <p class="public-lede mb-4">
+                Xem nhanh các bài viết mới nhất và chuyển vào khu vực quản trị trong một giao diện gọn, xám-trắng theo cảm hứng Shopify Admin.
+            </p>
+            <div class="d-flex flex-column flex-sm-row gap-3">
+                @if (isSignedIn)
+                {
+                    <a asp-controller="Home" asp-action="Dashboard" class="btn btn-public-primary">
+                        <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>Vào Dashboard
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-public-primary">
+                        <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>Đăng nhập quản trị
+                    </a>
+                }
+                <a href="#latest-posts" class="btn btn-public-outline">
+                    <i class="bi bi-arrow-down-circle me-2" aria-hidden="true"></i>Xem bài viết mới
+                </a>
+            </div>
         </div>
+    </section>
 
-        <div class="text-center mt-2">
-            <a asp-controller="Post" asp-action="Index" class="btn btn-outline-secondary">
-                Xem tất cả bài viết
+    <section id="latest-posts" aria-labelledby="latest-posts-title">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+            <div>
+                <span class="public-eyebrow mb-3">
+                    <i class="bi bi-newspaper" aria-hidden="true"></i>
+                    Latest Stories
+                </span>
+                <h2 id="latest-posts-title" class="public-section-heading h1 mb-0">Bài viết mới nhất</h2>
+            </div>
+            <a asp-controller="Post" asp-action="Index" class="btn btn-public-outline align-self-start align-self-lg-end">
+                Xem tất cả bài viết <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
             </a>
         </div>
-    }
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="public-empty-state text-center">
+                <div class="public-brand-mark mx-auto mb-3" aria-hidden="true"><i class="bi bi-journal-plus"></i></div>
+                <h3 class="h4 fw-bold mb-2">Chưa có bài viết nào</h3>
+                <p class="text-muted mb-4">Hãy đăng nhập khu vực quản trị để tạo bài viết đầu tiên cho trang chủ.</p>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-public-primary">Tạo nội dung mới</a>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+                @foreach (var item in Model)
+                {
+                    <div class="col-md-6 col-xl-4">
+                        <article class="public-news-card d-flex flex-column">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" class="public-news-image" alt="Ảnh minh họa cho bài viết @item.Title" />
+                            }
+                            else
+                            {
+                                <div class="public-news-placeholder d-flex align-items-center justify-content-center">
+                                    <div class="text-center">
+                                        <i class="bi bi-image fs-1 d-block mb-2" aria-hidden="true"></i>
+                                        <span>Chưa có ảnh</span>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="p-4 d-flex flex-column flex-grow-1">
+                                <span class="public-badge mb-3">@(item.Category?.Name ?? "Chưa phân loại")</span>
+                                <h3 class="public-news-title h4 mb-3">@item.Title</h3>
+                                <p class="text-muted small mb-4">
+                                    <i class="bi bi-calendar3 me-1" aria-hidden="true"></i>
+                                    Đăng ngày @item.CreatedDate.ToString("dd/MM/yyyy")
+                                </p>
+                                <a asp-controller="Post" asp-action="Details" asp-route-id="@item.Id"
+                                   class="btn btn-public-outline mt-auto align-self-start"
+                                   aria-label="Đọc tiếp bài viết @item.Title">
+                                    Đọc tiếp <i class="bi bi-arrow-up-right ms-2" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+                }
+            </div>
+        }
+    </section>
 </div>

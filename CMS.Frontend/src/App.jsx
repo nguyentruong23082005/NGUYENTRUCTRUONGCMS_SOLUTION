@@ -1,122 +1,179 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState, useCallback } from 'react';
+import '@shopify/polaris/build/esm/styles.css';
+import {
+  AppProvider,
+  Frame,
+  Navigation,
+  TopBar,
+  Page,
+  Layout,
+  Card,
+  IndexTable,
+  Badge,
+  Text,
+  useIndexResourceState,
+  Filters,
+} from '@shopify/polaris';
+import {
+  HomeIcon,
+  OrderIcon,
+  ProductIcon,
+  PersonIcon,
+  SearchIcon,
+} from '@shopify/polaris-icons';
+import enTranslations from '@shopify/polaris/locales/en.json';
 
 function App() {
-  const [count, setCount] = useState(0)
+  // 1. Dữ liệu sản phẩm Phúc Long
+  const products = [
+    {
+      id: '101',
+      product: 'Trà Đào Cam Sả',
+      status: <Badge tone="success">Đang bán</Badge>,
+      inventory: 'Sẵn sàng',
+      type: 'Trà trái cây',
+      vendor: 'Phúc Long',
+    },
+    {
+      id: '102',
+      product: 'Cà Phê Sữa Đá',
+      status: <Badge tone="info">Chờ duyệt</Badge>,
+      inventory: 'Sẵn sàng',
+      type: 'Cà phê',
+      vendor: 'Phúc Long',
+    },
+    {
+      id: '103',
+      product: 'Trà Vải Lài',
+      status: <Badge tone="success">Đang bán</Badge>,
+      inventory: 'Hết nguyên liệu',
+      type: 'Trà trái cây',
+      vendor: 'Phúc Long',
+    },
+    {
+      id: '104',
+      product: 'Oolong Dâu Cà Phê',
+      status: <Badge>Ngừng bán</Badge>,
+      inventory: '0',
+      type: 'Thức uống sáng tạo',
+      vendor: 'Phúc Long',
+    },
+  ];
+
+  const resourceName = {
+    singular: 'thức uống',
+    plural: 'thức uống',
+  };
+
+  const { selectedResources, allResourcesSelected, handleSelectionChange } =
+    useIndexResourceState(products);
+
+  const [searchValue, setSearchValue] = useState('');
+  const handleSearchChange = useCallback((value) => setSearchValue(value), []);
+
+  const searchFieldMarkup = (
+    <TopBar.SearchField
+      onChange={handleSearchChange}
+      value={searchValue}
+      placeholder="Tìm kiếm sản phẩm..."
+      focused={false}
+    />
+  );
+
+  const userMenuMarkup = (
+    <TopBar.UserMenu
+      name="Phúc Long Admin"
+      detail="Quản lý cửa hàng"
+      initials="PL"
+    />
+  );
+
+  const topBarMarkup = (
+    <TopBar
+      showNavigationToggle
+      userMenu={userMenuMarkup}
+      searchField={searchFieldMarkup}
+    />
+  );
+
+  const navigationMarkup = (
+    <Navigation location="/">
+      <Navigation.Section
+        items={[
+          { label: 'Trang chủ', icon: HomeIcon },
+          { label: 'Đơn hàng', icon: OrderIcon, badge: '24' },
+          { label: 'Thức uống', icon: ProductIcon, selected: true },
+          { label: 'Khách hàng', icon: PersonIcon },
+        ]}
+      />
+    </Navigation>
+  );
+
+  const rowMarkup = products.map(
+    ({ id, product, status, inventory, type, vendor }, index) => (
+      <IndexTable.Row
+        id={id}
+        key={id}
+        selected={selectedResources.includes(id)}
+        position={index}
+      >
+        <IndexTable.Cell>
+          <Text variant="bodyMd" fontWeight="bold" as="span">
+            {product}
+          </Text>
+        </IndexTable.Cell>
+        <IndexTable.Cell>{status}</IndexTable.Cell>
+        <IndexTable.Cell>{inventory}</IndexTable.Cell>
+        <IndexTable.Cell>{type}</IndexTable.Cell>
+        <IndexTable.Cell>{vendor}</IndexTable.Cell>
+      </IndexTable.Row>
+    ),
+  );
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+    <AppProvider i18n={enTranslations}>
+      <Frame topBar={topBarMarkup} navigation={navigationMarkup}>
+        <Page
+          title="Danh sách Thức uống"
+          primaryAction={{ content: 'Thêm món mới', variant: 'primary' }}
+          secondaryActions={[{ content: 'Cập nhật giá' }]}
         >
-          Count is {count}
-        </button>
-      </section>
+          <Layout>
+            <Layout.Section>
+              <Card padding="0">
+                <div style={{ padding: '16px' }}>
+                  <Filters
+                    queryValue={searchValue}
+                    filters={[]}
+                    onQueryChange={handleSearchChange}
+                    onQueryClear={() => setSearchValue('')}
+                  />
+                </div>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
+                <IndexTable
+                  resourceName={resourceName}
+                  itemCount={products.length}
+                  selectedItemsCount={
+                    allResourcesSelected ? 'All' : selectedResources.length
+                  }
+                  onSelectionChange={handleSelectionChange}
+                  headings={[
+                    { title: 'Sản phẩm' },
+                    { title: 'Trạng thái' },
+                    { title: 'Tồn kho' },
+                    { title: 'Loại' },
+                    { title: 'Thương hiệu' },
+                  ]}
                 >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+                  {rowMarkup}
+                </IndexTable>
+              </Card>
+            </Layout.Section>
+          </Layout>
+        </Page>
+      </Frame>
+    </AppProvider>
+  );
 }
 
-export default App
+export default App;

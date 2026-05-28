@@ -1,7 +1,9 @@
+using CMS.Backend.Models;
 using CMS.Data;
 using CMS.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CMS.Backend.Controllers
 {
@@ -17,10 +19,13 @@ namespace CMS.Backend.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            // Lấy TẤT CẢ dữ liệu thật từ bảng Categories trong SQL Server
-            var categories = _context.Categories.ToList();
+            const int pageSize = 10;
+            var categories = await PaginatedList<Category>.CreateAsync(
+                _context.Categories.AsNoTracking().OrderBy(c => c.Id),
+                page,
+                pageSize);
 
             // Đẩy sang View
             return View(categories);
