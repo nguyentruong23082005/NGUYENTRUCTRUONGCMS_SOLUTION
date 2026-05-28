@@ -1,4 +1,4 @@
-@model IEnumerable<CMS.Data.Entities.OrderDetail>
+@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.OrderDetail>
 
 @{
     Layout = "_LayoutAdmin";
@@ -43,7 +43,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var item in Model.Items)
                 {
                     var total = item.Quantity * item.UnitPrice;
                     <tr>
@@ -71,4 +71,6 @@
             </tbody>
         </table>
     </div>
+
+    <partial name="_Pagination" model="Model" />
 </div>

@@ -1,3 +1,4 @@
+using CMS.Backend.Models;
 using CMS.Data;
 using CMS.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -17,11 +18,15 @@ namespace CMS.Backend.Controllers
         }
 
         // GET: /Customer
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var customers = _context.Customers
-                .OrderBy(c => c.FullName)
-                .ToList();
+            const int pageSize = 10;
+            var customers = await PaginatedList<Customer>.CreateAsync(
+                _context.Customers
+                    .AsNoTracking()
+                    .OrderBy(c => c.FullName),
+                page,
+                pageSize);
 
             return View(customers);
         }
@@ -37,6 +42,11 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Customer model)
         {
+            if (string.IsNullOrWhiteSpace(model.Password))
+            {
+                ModelState.AddModelError("Password", "Vui lòng nhập mật khẩu.");
+            }
+
             if (ModelState.IsValid)
             {
                 // Kiểm tra email trùng
@@ -45,6 +55,10 @@ namespace CMS.Backend.Controllers
                     ModelState.AddModelError("Email", "Email này đã được sử dụng.");
                     return View(model);
                 }
+
+                var passwordHasher = new Microsoft.AspNetCore.Identity.PasswordHasher<Customer>();
+                var password = model.Password!;
+                model.Password = passwordHasher.HashPassword(model, password);
 
                 _context.Customers.Add(model);
                 _context.SaveChanges();
@@ -75,6 +89,19 @@ namespace CMS.Backend.Controllers
                 {
                     ModelState.AddModelError("Email", "Email này đã được sử dụng bởi khách hàng khác.");
                     return View(model);
+                }
+
+                var existingCustomer = _context.Customers.AsNoTracking().FirstOrDefault(c => c.Id == id);
+                if (existingCustomer == null) return NotFound();
+
+                if (string.IsNullOrWhiteSpace(model.Password))
+                {
+                    model.Password = existingCustomer.Password;
+                }
+                else
+                {
+                    var passwordHasher = new Microsoft.AspNetCore.Identity.PasswordHasher<Customer>();
+                    model.Password = passwordHasher.HashPassword(model, model.Password);
                 }
 
                 _context.Customers.Update(model);

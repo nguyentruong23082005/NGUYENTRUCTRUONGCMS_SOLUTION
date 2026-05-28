@@ -1,7 +1,10 @@
+using CMS.Backend.Models;
 using CMS.Data;
 using CMS.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace CMS.Backend.Controllers
 {
@@ -16,9 +19,15 @@ namespace CMS.Backend.Controllers
         }
 
         // GET: /User
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var users = _context.Users.ToList();
+            const int pageSize = 10;
+            var users = await PaginatedList<User>.CreateAsync(
+                _context.Users
+                    .AsNoTracking()
+                    .OrderBy(u => u.Id),
+                page,
+                pageSize);
             return View(users);
         }
 
@@ -42,6 +51,9 @@ namespace CMS.Backend.Controllers
 
             if (ModelState.IsValid)
             {
+                var passwordHasher = new PasswordHasher<User>();
+                model.PasswordHash = passwordHasher.HashPassword(model, model.PasswordHash ?? "");
+
                 _context.Users.Add(model);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
@@ -76,7 +88,8 @@ namespace CMS.Backend.Controllers
                 // Nếu nhập mật khẩu mới thì đổi, nếu để trống thì giữ mật khẩu cũ
                 if (!string.IsNullOrWhiteSpace(newPassword))
                 {
-                    user.PasswordHash = newPassword;
+                    var passwordHasher = new PasswordHasher<User>();
+                    user.PasswordHash = passwordHasher.HashPassword(user, newPassword);
                 }
 
                 _context.SaveChanges();

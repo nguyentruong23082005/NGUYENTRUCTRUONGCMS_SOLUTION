@@ -7,6 +7,11 @@
 **Depends on:** None
 **Requirements:** REQ-SEC-01, REQ-SEC-02, REQ-SEC-03
 
+## Phase 5.1: Premium UI Layout & Accessibility (Shopify Inspired) (INSERTED)
+**Goal:** Nâng cấp toàn bộ giao diện quản trị Admin Panel theo ngôn ngữ thiết kế Shopifi-Inspired (transactional track) và sửa các lỗi khả năng tiếp cận WCAG 2.1 AA.
+**Depends on:** Phase 5
+**Requirements:** REQ-UI-01, REQ-UI-02
+
 ## Phase 6: WebAPI RESTful
 **Goal:** Xây dựng các API trả về JSON phục vụ cho ReactJS frontend.
 **Depends on:** Phase 5

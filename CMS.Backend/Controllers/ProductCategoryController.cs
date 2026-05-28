@@ -1,3 +1,4 @@
+using CMS.Backend.Models;
 using CMS.Data;
 using CMS.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -17,11 +18,15 @@ namespace CMS.Backend.Controllers
         }
 
         // GET: /ProductCategory
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var categories = _context.CategoriesProducts
-                .OrderBy(c => c.Name)
-                .ToList();
+            const int pageSize = 10;
+            var categories = await PaginatedList<CategoryProduct>.CreateAsync(
+                _context.CategoriesProducts
+                    .AsNoTracking()
+                    .OrderBy(c => c.Name),
+                page,
+                pageSize);
             return View(categories);
         }
 
