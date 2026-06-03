@@ -32,6 +32,9 @@ builder.Services.AddScoped<IBannerApiService, BannerApiService>();
 builder.Services.AddScoped<IStoreApiService, StoreApiService>();
 builder.Services.AddScoped<ICustomerApiService, CustomerApiService>();
 builder.Services.AddScoped<ICustomerAddressApiService, CustomerAddressApiService>();
+builder.Services.AddScoped<IVoucherApiService, VoucherApiService>();
+builder.Services.AddScoped<IReviewApiService, ReviewApiService>();
+builder.Services.AddScoped<IOrderApiService, OrderApiService>();
 builder.Services.AddScoped<IStockLockStrategy>(sp =>
 {
     var db = sp.GetRequiredService<ApplicationDbContext>();
