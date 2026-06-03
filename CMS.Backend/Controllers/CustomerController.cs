@@ -4,6 +4,7 @@ using CMS.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using CMS.Backend.Services.Api;
 
 namespace CMS.Backend.Controllers
 {
@@ -11,10 +12,12 @@ namespace CMS.Backend.Controllers
     public class CustomerController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ICustomerApiService _customerService;
 
-        public CustomerController(ApplicationDbContext context)
+        public CustomerController(ApplicationDbContext context, ICustomerApiService customerService)
         {
             _context = context;
+            _customerService = customerService;
         }
 
         // GET: /Customer
@@ -125,6 +128,7 @@ namespace CMS.Backend.Controllers
 
                 _context.Customers.Update(model);
                 _context.SaveChanges();
+                _customerService.InvalidateTokenCache(id);
                 return RedirectToAction(nameof(Index));
             }
             return View(model);
@@ -141,6 +145,7 @@ namespace CMS.Backend.Controllers
             // Xóa mềm khách hàng để ẩn khỏi danh sách thường nhưng vẫn giữ lịch sử đơn hàng.
             _context.Customers.Remove(customer);
             _context.SaveChanges();
+            _customerService.InvalidateTokenCache(id);
             TempData["SuccessMessage"] = $"Đã chuyển khách hàng '{customer.FullName}' vào thùng rác.";
             return RedirectToAction(nameof(Index));
         }
