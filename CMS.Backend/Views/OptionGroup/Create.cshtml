@@ -1,0 +1,14 @@
+@model CMS.Data.Entities.OptionGroup
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Thêm nhóm tùy chọn"; }
+<div class="card-premium">
+    <h1 class="h3 mb-4 fw-bold"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">add_circle</span> Thêm nhóm tùy chọn</h1>
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="row g-3">
+            <div class="col-md-6"><label asp-for="Name" class="form-label fw-semibold">Tên nhóm</label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
+            <div class="col-md-6"><label asp-for="MaxSelectable" class="form-label fw-semibold">Số lựa chọn tối đa</label><input asp-for="MaxSelectable" class="form-control" /><span asp-validation-for="MaxSelectable" class="text-danger"></span></div>
+            <div class="col-12 form-check ms-2"><input asp-for="IsRequired" class="form-check-input" /><label asp-for="IsRequired" class="form-check-label">Bắt buộc chọn</label></div>
+        </div>
+        <div class="d-flex gap-2 mt-4"><button type="submit" class="btn btn-premium-primary border-0 me-2"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">save</span> Lưu</button><a asp-action="Index" class="btn btn-premium-outline text-decoration-none"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">arrow_back</span> Quay lại</a></div>
+    </form>
+</div>

@@ -1,4 +1,6 @@
-@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.Order>
+@using CMS.Backend.Helpers
+@using CMS.Data.Entities
+@model CMS.Backend.Models.OrderIndexViewModel
 
 @{
     Layout = "_LayoutAdmin";
@@ -7,11 +9,61 @@
 
 <div class="card-premium">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 fw-bold"><i class="bi bi-cart3 text-muted"></i> Danh sách Đơn hàng</h1>
-        <a asp-action="Create" class="btn-premium-primary text-decoration-none">
-            <i class="bi bi-plus-lg"></i> Thêm đơn hàng
-        </a>
+        <h1 class="h3 mb-0 fw-bold"><span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">shopping_cart</span> Danh sách Đơn hàng</h1>
+        <div class="d-flex gap-2 flex-wrap">
+            <a asp-action="Trash" class="btn btn-premium-outline text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">delete</span>
+                Thùng rác
+            </a>
+            <a asp-action="Create" class="btn-premium-primary text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">add</span> Thêm đơn hàng
+            </a>
+        </div>
     </div>
+
+    <!-- Bộ lọc & Tìm kiếm -->
+    <form method="get" asp-action="Index" class="filter-section mb-4">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label fw-semibold text-muted small">Tìm kiếm</label>
+                <input type="text" name="Search" value="@Model.Filter.Search" class="form-control" placeholder="ID, tên khách, SĐT..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold text-muted small">Trạng thái</label>
+                <select name="Status" class="form-select">
+                    <option value="">Tất cả trạng thái</option>
+                    @foreach (OrderStatus status in Enum.GetValues(typeof(OrderStatus)))
+                    {
+                        var isSelected = Model.Filter.Status == status ? "selected" : null;
+                        if (isSelected != null)
+                        {
+                            <option value="@status" selected="selected">@OrderStatusHelper.GetDisplayName(status)</option>
+                        }
+                        else
+                        {
+                            <option value="@status">@OrderStatusHelper.GetDisplayName(status)</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-semibold text-muted small">Từ ngày</label>
+                <input type="date" name="StartDate" value="@Model.Filter.StartDate?.ToString("yyyy-MM-dd")" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-semibold text-muted small">Đến ngày</label>
+                <input type="date" name="EndDate" value="@Model.Filter.EndDate?.ToString("yyyy-MM-dd")" class="form-control" />
+            </div>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button type="submit" class="btn-search-premium flex-grow-1">
+                    <span class="material-symbols-rounded align-middle">search</span> Tìm kiếm
+                </button>
+                <a asp-action="Index" class="btn-reset-premium" title="Xóa bộ lọc">
+                    <span class="material-symbols-rounded align-middle">restart_alt</span>
+                </a>
+            </div>
+        </div>
+    </form>
 
     @if (TempData["SuccessMessage"] != null)
     {
@@ -38,52 +90,87 @@
                     <th scope="col">Khách hàng</th>
                     <th scope="col">Trạng thái</th>
                     <th scope="col">Ghi chú</th>
-                    <th scope="col" width="160">Thao tác</th>
+                    <th scope="col" width="130">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Items)
+                @if (Model.Orders.Items.Any())
+                {
+                    @foreach (var item in Model.Orders.Items)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td class="text-muted">@item.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="fw-semibold text-black">@(item.Customer?.FullName ?? "Không rõ")</td>
+                            <td>
+                                <span class="badge @OrderStatusHelper.GetBadgeClass(item.Status) rounded-pill px-2.5 py-1">
+                                    <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">@OrderStatusHelper.GetMaterialIcon(item.Status)</span>
+                                    @OrderStatusHelper.GetDisplayName(item.Status)
+                                </span>
+                            </td>
+                            <td class="text-muted">@(item.Notes ?? "Không có")</td>
+                            <td>
+                                <div class="d-flex gap-2 flex-nowrap">
+                                    <a asp-action="Details" asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-info text-white d-inline-flex align-items-center justify-content-center"
+                                       title="Xem chi tiết"
+                                       aria-label="Xem chi tiết đơn hàng mã số @item.Id">
+                                        <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">visibility</span>
+                                    </a>
+                                    @{
+                                        var nextStatuses = OrderStatusHelper.GetNextStatuses(item.Status)
+                                            .Where(s => s != OrderStatus.Cancelled).ToList();
+                                    }
+                                    @if (nextStatuses.Any())
+                                    {
+                                        var nextLabel = OrderStatusHelper.GetNextActionLabel(item.Status);
+                                        var nextIcon = OrderStatusHelper.GetNextActionIcon(item.Status);
+                                        <form asp-action="AdvanceStatus" asp-route-id="@item.Id" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-warning d-inline-flex align-items-center justify-content-center"
+                                                    title="@nextLabel"
+                                                    aria-label="@nextLabel">
+                                                <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">@nextIcon</span>
+                                            </button>
+                                        </form>
+                                    }
+                                    @if (OrderStatusHelper.CanCancel(item.Status))
+                                    {
+                                        <a asp-action="UpdateStatus" asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center"
+                                           title="Hủy đơn hàng"
+                                           aria-label="Hủy đơn hàng mã số @item.Id">
+                                            <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">cancel</span>
+                                        </a>
+                                    }
+                                    @if (OrderStatusHelper.CanDelete(item.Status))
+                                    {
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post"
+                                              onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này? Chỉ nên xóa đơn tạo nhầm khi chưa xử lý.');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger d-inline-flex align-items-center justify-content-center"
+                                                    title="Xóa đơn tạo nhầm"
+                                                    aria-label="Xóa đơn hàng mã số @item.Id">
+                                                <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">delete</span>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
                 {
                     <tr>
-                        <td>@item.Id</td>
-                        <td class="text-muted">@item.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td class="fw-semibold text-black">@(item.Customer?.FullName ?? "Không rõ")</td>
-                        <td>
-                            @switch (item.Status)
-                            {
-                                case 0:
-                                    <span class="badge bg-warning text-dark rounded-pill px-2.5 py-1">Chờ duyệt</span>
-                                    break;
-                                case 1:
-                                    <span class="badge bg-info text-dark rounded-pill px-2.5 py-1">Đang giao</span>
-                                    break;
-                                case 2:
-                                    <span class="badge bg-success rounded-pill px-2.5 py-1">Đã xong</span>
-                                    break;
-                                default:
-                                    <span class="badge bg-secondary rounded-pill px-2.5 py-1">Không rõ</span>
-                                    break;
-                            }
-                        </td>
-                        <td class="text-muted">@(item.Notes ?? "Không có")</td>
-                        <td>
-                            <div class="d-flex gap-2">
-                                <a asp-action="Edit" asp-route-id="@item.Id" 
-                                   class="btn btn-sm btn-warning" 
-                                   aria-label="Sửa đơn hàng mã số @item.Id">Sửa</a>
-                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" 
-                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này?');">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-sm btn-danger" 
-                                            aria-label="Xóa đơn hàng mã số @item.Id">Xóa</button>
-                                </form>
-                            </div>
-                        </td>
+                        <td colspan="6" class="text-center text-muted py-4">Không tìm thấy đơn hàng nào khớp với bộ lọc.</td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 
-    <partial name="_Pagination" model="Model" />
+    <partial name="_Pagination" model="Model.Orders" />
 </div>

@@ -1,0 +1,1274 @@
+[
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?activeCall=true&orderByDesc=true&pageNumber=1&pageSize=100",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 82482,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/collection?pageNumber=1&pageSize=5&slug=tra-sua-noi-bat",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"\",\"description\":\"\",\"seoName\":\"tra-sua-noi-bat\",\"items\":[{\"_id\":\"6a1a1060d57c85c281c43e7c\",\"itemNo\":\"65000102\",\"__v\":0,\"basicItemNo\":\"65000102\",\"basicMatl\":\"65000102\",\"id\":\"ce37bda5-c8da-4e4b-a40b-3d7fd86225c1\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440302\",\"mch5\":\"144030201\",\"mch6\":\"144030201\",\"mediaItems\":[{\"id\":\"dab2267f-d4b6-4f00-8575-452c6216ce42\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/03/ts-ph",
+    "body_length": 8676,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/tin-tuc-khuyen-mai?languageCode=vi&pageNumber=1&pageSize=8",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công!\",\"data\":[{\"id\":\"69b14fc52a735cc16c94d731\",\"title\":\"Thể Lệ Chương Trình Xé Ly Rinh Quà - Phúc Long 58 năm\",\"sapo\":\"\",\"seoName\":\"Phuc-Long-58-nam-20260311111933\",\"imageAvatar\":\"https://s3-hcmc02.higiocloud.vn/phuclong/2026/05/lto2-resize-20260508021954.jpg\",\"categoryId\":23,\"isShowMenuLeft\":false,\"viewerNo\":52730,\"publishedDate\":\"2026-05-05T09:28:45.807Z\"},{\"id\":\"69ea044ff938114abd60d8e5\",\"title\":\"BỘ BA “MỸ NHÂN” ĐÃ SẴN SÀNG – HỘI MƠ ĐÀO RỘN RÀNG ĐÓN TÂM GIAO\",",
+    "body_length": 9275,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?activeCall=true&orderByDesc=true&pageNumber=1&pageSize=100",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 82482,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/collection?pageNumber=1&pageSize=5&slug=tra-sua-noi-bat",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"\",\"description\":\"\",\"seoName\":\"tra-sua-noi-bat\",\"items\":[{\"_id\":\"6a1a1060d57c85c281c43e7c\",\"itemNo\":\"65000102\",\"__v\":0,\"basicItemNo\":\"65000102\",\"basicMatl\":\"65000102\",\"id\":\"ce37bda5-c8da-4e4b-a40b-3d7fd86225c1\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440302\",\"mch5\":\"144030201\",\"mch6\":\"144030201\",\"mediaItems\":[{\"id\":\"dab2267f-d4b6-4f00-8575-452c6216ce42\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/03/ts-ph",
+    "body_length": 8676,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/tin-tuc-khuyen-mai?languageCode=vi&pageNumber=1&pageSize=8",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công!\",\"data\":[{\"id\":\"69b14fc52a735cc16c94d731\",\"title\":\"Thể Lệ Chương Trình Xé Ly Rinh Quà - Phúc Long 58 năm\",\"sapo\":\"\",\"seoName\":\"Phuc-Long-58-nam-20260311111933\",\"imageAvatar\":\"https://s3-hcmc02.higiocloud.vn/phuclong/2026/05/lto2-resize-20260508021954.jpg\",\"categoryId\":23,\"isShowMenuLeft\":false,\"viewerNo\":52739,\"publishedDate\":\"2026-05-05T09:28:45.807Z\"},{\"id\":\"69ea044ff938114abd60d8e5\",\"title\":\"BỘ BA “MỸ NHÂN” ĐÃ SẴN SÀNG – HỘI MƠ ĐÀO RỘN RÀNG ĐÓN TÂM GIAO\",",
+    "body_length": 9275,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?activeCall=true&orderByDesc=true&pageNumber=1&pageSize=100",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 82482,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/collection?pageNumber=1&pageSize=5&slug=tra-sua-noi-bat",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"\",\"description\":\"\",\"seoName\":\"tra-sua-noi-bat\",\"items\":[{\"_id\":\"6a1a1060d57c85c281c43e7c\",\"itemNo\":\"65000102\",\"__v\":0,\"basicItemNo\":\"65000102\",\"basicMatl\":\"65000102\",\"id\":\"ce37bda5-c8da-4e4b-a40b-3d7fd86225c1\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440302\",\"mch5\":\"144030201\",\"mch6\":\"144030201\",\"mediaItems\":[{\"id\":\"dab2267f-d4b6-4f00-8575-452c6216ce42\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/03/ts-ph",
+    "body_length": 8676,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/tin-tuc-khuyen-mai?languageCode=vi&pageNumber=1&pageSize=8",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công!\",\"data\":[{\"id\":\"69b14fc52a735cc16c94d731\",\"title\":\"Thể Lệ Chương Trình Xé Ly Rinh Quà - Phúc Long 58 năm\",\"sapo\":\"\",\"seoName\":\"Phuc-Long-58-nam-20260311111933\",\"imageAvatar\":\"https://s3-hcmc02.higiocloud.vn/phuclong/2026/05/lto2-resize-20260508021954.jpg\",\"categoryId\":23,\"isShowMenuLeft\":false,\"viewerNo\":52739,\"publishedDate\":\"2026-05-05T09:28:45.807Z\"},{\"id\":\"69ea044ff938114abd60d8e5\",\"title\":\"BỘ BA “MỸ NHÂN” ĐÃ SẴN SÀNG – HỘI MƠ ĐÀO RỘN RÀNG ĐÓN TÂM GIAO\",",
+    "body_length": 9275,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-sua--c01187",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà sữa\",\"description\":\"<p>Trà sữa</p>\",\"bannerUrl\":\"\",\"seoName\":\"tra-sua--c01187\",\"items\":[{\"_id\":\"6a1a1060d57c85c281c43e7c\",\"itemNo\":\"65000102\",\"__v\":0,\"basicItemNo\":\"65000102\",\"basicMatl\":\"65000102\",\"id\":\"ce37bda5-c8da-4e4b-a40b-3d7fd86225c1\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440302\",\"mch5\":\"144030201\",\"mch6\":\"144030201\",\"mediaItems\":[{\"id\":\"dab2267f-d4b6-4f00-8575-452c6216ce42\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc0",
+    "body_length": 13403,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=ca-phe--c01189",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Cà phê\",\"description\":\"<p>Cà phê</p>\",\"bannerUrl\":\"\",\"seoName\":\"ca-phe--c01189\",\"items\":[{\"_id\":\"6a1a110bd57c85c281c47b9f\",\"itemNo\":\"65000176\",\"__v\":0,\"basicItemNo\":\"65000176\",\"basicMatl\":\"65000176\",\"id\":\"8d9ac120-d4c8-4e57-8c19-4afe24d6d180\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"111\",\"mch3\":\"11101\",\"mch4\":\"1110102\",\"mch5\":\"111010201\",\"mch6\":\"111010201\",\"mediaItems\":[{\"id\":\"aec74df6-2d87-47d7-99c9-f9feee38e9e0\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc02.h",
+    "body_length": 5493,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=banh-mi--c01196",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Bánh mì\",\"description\":\"<p>Bánh mì</p>\",\"bannerUrl\":\"\",\"seoName\":\"banh-mi--c01196\",\"items\":[]},\"paging\":{\"totalCount\":0,\"pageSize\":40,\"totalPages\":1,\"pageNumber\":1,\"pagingCounter\":1,\"hasPrevPage\":false,\"hasNextPage\":false,\"prev\":null,\"next\":null}}",
+    "body_length": 264,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=da-xay--c01193",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Đá xay\",\"description\":\"<p>Đá xay</p>\",\"bannerUrl\":\"\",\"seoName\":\"da-xay--c01193\",\"items\":[{\"_id\":\"6a1a105fd57c85c281c43dfd\",\"itemNo\":\"65000047\",\"__v\":0,\"basicItemNo\":\"65000047\",\"basicMatl\":\"65000047\",\"id\":\"5daca753-b124-4995-88ae-24f08cd00f9a\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"143\",\"mch3\":\"14301\",\"mch4\":\"1430101\",\"mch5\":\"143010101\",\"mch6\":\"143010101\",\"mediaItems\":[{\"id\":\"e27b15a7-06e6-47c3-903f-d2fe92abccf0\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc02.h",
+    "body_length": 8860,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-trai-cay--c01190",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà trái cây\",\"description\":\"Trà trái cây\",\"bannerUrl\":\"\",\"seoName\":\"tra-trai-cay--c01190\",\"items\":[{\"_id\":\"6a1a105fd57c85c281c43e15\",\"itemNo\":\"65000105\",\"__v\":0,\"basicItemNo\":\"65000105\",\"basicMatl\":\"65000105\",\"id\":\"8f99270b-d5f2-4a33-a1e3-083a13f0ff45\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440302\",\"mch5\":\"144030201\",\"mch6\":\"144030201\",\"mediaItems\":[{\"id\":\"b288da75-70bb-4e66-9a9b-c47df8beeba4\",\"type\":\"image\",\"mediaUrl\":\"https://",
+    "body_length": 17543,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=best-seller--c01188",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Best Seller\",\"description\":\"<p>Best Seller</p>\",\"bannerUrl\":\"\",\"seoName\":\"best-seller--c01188\",\"items\":[{\"_id\":\"6a1a1060d57c85c281c43e7c\",\"itemNo\":\"65000102\",\"__v\":0,\"basicItemNo\":\"65000102\",\"basicMatl\":\"65000102\",\"id\":\"ce37bda5-c8da-4e4b-a40b-3d7fd86225c1\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440302\",\"mch5\":\"144030201\",\"mch6\":\"144030201\",\"mediaItems\":[{\"id\":\"dab2267f-d4b6-4f00-8575-452c6216ce42\",\"type\":\"image\",\"mediaUrl\":\"http",
+    "body_length": 8308,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=banh-lanh--c01194",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Bánh lạnh\",\"description\":\"<p>Bánh lạnh</p>\",\"bannerUrl\":\"\",\"seoName\":\"banh-lanh--c01194\",\"items\":[{\"_id\":\"6a1a105fd57c85c281c43e04\",\"itemNo\":\"60000641\",\"__v\":0,\"basicItemNo\":\"60000641\",\"basicMatl\":null,\"id\":\"88fec114-2a38-4bd0-9b3d-8670c8945167\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"211\",\"mch3\":\"21101\",\"mch4\":\"2110101\",\"mch5\":\"211010101\",\"mch6\":\"211010101\",\"mediaItems\":[{\"id\":\"17d5f711-b125-4f4d-88e2-c4585733d915\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc0",
+    "body_length": 4417,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=bst-dong-phuong-my-nhan--c011101",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"BST ĐÔNG PHƯƠNG MỸ NHÂN\",\"description\":\"<p>BST ĐÔNG PHƯƠNG MỸ NHÂN</p>\",\"bannerUrl\":\"\",\"seoName\":\"bst-dong-phuong-my-nhan--c011101\",\"items\":[{\"_id\":\"6a1a110cd57c85c281c47bf1\",\"itemNo\":\"65000499\",\"__v\":0,\"basicItemNo\":\"65000499\",\"basicMatl\":null,\"id\":\"f88f027c-57ef-4d67-a732-d78011a6b46e\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440301\",\"mch5\":\"144030101\",\"mch6\":\"\",\"mediaItems\":[{\"id\":\"3e3bea5d-729c-4c72-a4ec-89bcee4c63c3\",\"type\":\"i",
+    "body_length": 5342,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-tui-loc--c0183",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Túi Lọc\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Túi Lọc</strong></p><p>Trà túi lọc tiện dụng được sản xuất theo công thức độc đáo, đảm bảo tận dụng hết tính năng của trà; cả về hương lẫn vị.</p><p>Không phải tốn nhiều thời gian pha chế, chỉ sau vài phút là có ngay tách trà nóng thơm ngon với nhiều mùi hương đa dạng. Trà túi lọc mở ra phong cách thưởng thức trà hiện đại trong cuộc sống không ngừng phát triển và vươn cao.</p>\",\"bannerUrl\":\"https://ss-hn",
+    "body_length": 7891,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-den--c0188",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Đen\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Đen</strong></p><p>Trà đen là trà xanh khi thu hoạch và được ủ lên men sau khi phơi khô. Phản ứng lên men giúp trà đen có mùi thơm đặc biệt và lá trà có màu sậm, từ đỏ hung đến đen tuyền. Trà đen với hậu vị chát đậm, khi uống chất trà thấm vào cơ thể nhẹ nhàng đánh thức các giác quan, tạo tâm trạng sảng khoái.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_den_a3a825cb-1f5c-444c-ac60-21a2c1002ea6.",
+    "body_length": 3325,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-sen--c0187",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Sen\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Sen</strong></p><p>Trà Sen là sự kết hợp tinh tế giữa trà xanh và hoa sen với quy trình ướp công phu và công nghệ sản xuất hiện đại tạo ra một sản phẩm mang hương vị và nét riêng cho trà Việt. Khi pha trà có mùi thoảng nhẹ hương sen, màu xanh vàng, vị đắng nhẹ của trà cùng vị ngọt dịu thanh mát.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_sen_e2db913d-5fe2-485f-9922-a00265a3d490.png\",\"seoName\":",
+    "body_length": 1864,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-hop-giay--c0181",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Hộp Giấy\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Hộp Giấy</strong></p><p>Trà hộp giấy có bao bì hiện đại, gọn nhẹ và thuận tiện khi sử dụng. Trong mỗi hộp trà lưu giữ trọn vẹn hương vị đặc trưng của từng loại trà để từ đó pha chế nên những ly trà thơm ngon và đem lại nhiều lợi ích cho sức khỏe.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_hop_giay_46f17d39-89a5-4d20-9f70-7359fa0ccca6.png\",\"seoName\":\"tra-hop-giay--c0181\",\"items\":[{\"_id\":\"6",
+    "body_length": 1751,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=banh-cookies-croissant--c01195",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Bánh cookies - croissant\",\"description\":\"Bánh cookies - croissant\",\"bannerUrl\":null,\"seoName\":\"banh-cookies-croissant--c01195\",\"items\":[{\"_id\":\"6a1a1060d57c85c281c43e7e\",\"itemNo\":\"60000639\",\"__v\":0,\"basicItemNo\":\"60000639\",\"basicMatl\":null,\"id\":\"7e5d19a4-cd2e-499e-8656-d6af3866c7a1\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"211\",\"mch3\":\"21101\",\"mch4\":\"2110101\",\"mch5\":\"211010101\",\"mch6\":\"211010101\",\"mediaItems\":[{\"id\":\"faa91dd2-77b4-43dd-bc1c-ae3c466c084b\",\"type",
+    "body_length": 2557,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=bst-moi--c011105",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"BST MỚI\",\"description\":\"<p>BST MỚI</p>\",\"bannerUrl\":\"\",\"seoName\":\"bst-moi--c011105\",\"items\":[{\"_id\":\"6a1a110cd57c85c281c47bf1\",\"itemNo\":\"65000499\",\"__v\":0,\"basicItemNo\":\"65000499\",\"basicMatl\":null,\"id\":\"f88f027c-57ef-4d67-a732-d78011a6b46e\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440301\",\"mch5\":\"144030101\",\"mch6\":\"\",\"mediaItems\":[{\"id\":\"3e3bea5d-729c-4c72-a4ec-89bcee4c63c3\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc02.higiocloud.v",
+    "body_length": 5294,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-tui-tam-giac--c0184",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Túi Tam Giác\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Túi Tam Giác</strong></p><p>Trà túi lọc tam giác (hay còn gọi là Trà túi lọc kim tự tháp) được xem là một bước tiến mới của dòng trà túi lọc khi được sản xuất và đóng gói theo công nghệ tiên tiến bậc nhất, tăng sự thẩm thấu của trà ra bên ngoài và gia tăng hương vị đậm đà, mang lại trải nghiệm trọn vẹn khi thưởng thức</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_tui_tam_giac_4ead0574-49",
+    "body_length": 8419,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-lai--c0185",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Lài\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Lài</strong></p><p>Trà lài là sự kết hợp hoàn hảo giữa lá trà xanh chất lượng cao và hoa lài. Trà có mùi thơm tự nhiên của hoa lài, màu vàng đẹp, vị ngọt của hoa lài và vị đắng nhẹ của trà tạo nên cảm giác khoan khoái và thư giãn cho người dùng.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_lai_6225fdd1-1549-4040-a518-f83bf86f0abb.png\",\"seoName\":\"tra-lai--c0185\",\"items\":[{\"_id\":\"6a1a105fd57c85c28",
+    "body_length": 3958,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-xanh--c0186",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Xanh\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Xanh</strong></p><p>Trà xanh được trồng tại nơi có khí hậu và thổ nhưỡng thích hợp để có được những cây trà phẩm chất tốt nhất, thông qua sàng lọc và lựa chọn ra những đọt trà non tươi ngon nhất để chế biến thành sản phẩm chính vì vậy nên chất lượng của trà luôn được đảm bảo tốt nhất. Trà được phơi khô không qua công đoạn lên men nhằm mang lại hương vị thiên nhiên khi dùng, trà có màu xanh vàng và vị đắng c",
+    "body_length": 1917,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-goi-cao-cap--c0182",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Gói Cao Cấp\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Gói Cao Cấp</strong></p><p>Trà gói lưu giữ hương vị tươi nguyên nhất của những lá trà hảo hạng, thích hợp để pha chế những ly trà đậm vị, thơm ngon và đem lại nhiều lợi ích cho sức khỏe khi cùng thưởng thức bên gia đình và người thân.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_goi_cao_cap_b03fc050-6ec3-453f-a494-2f4a2733ef5e.png\",\"seoName\":\"tra-goi-cao-cap--c0182\",\"items\":[{\"_id\":\"6a1a",
+    "body_length": 2852,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?DeliveryType=Delivery&activeCall=true&orderByDesc=true&pageNumber=1&pageSize=100",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 82482,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?DeliveryType=TakeAway&activeCall=true&orderByDesc=true&pageNumber=1&pageSize=1000",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 122779,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?DeliveryType=Delivery&activeCall=true&orderByDesc=true&pageNumber=1&pageSize=100",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 82482,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?DeliveryType=TakeAway&activeCall=true&orderByDesc=true&pageNumber=1&pageSize=1000",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 122779,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-trai-cay--c01190",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà trái cây\",\"description\":\"Trà trái cây\",\"bannerUrl\":\"\",\"seoName\":\"tra-trai-cay--c01190\",\"items\":[{\"_id\":\"6a1a105fd57c85c281c43e15\",\"itemNo\":\"65000105\",\"__v\":0,\"basicItemNo\":\"65000105\",\"basicMatl\":\"65000105\",\"id\":\"8f99270b-d5f2-4a33-a1e3-083a13f0ff45\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440302\",\"mch5\":\"144030201\",\"mch6\":\"144030201\",\"mediaItems\":[{\"id\":\"b288da75-70bb-4e66-9a9b-c47df8beeba4\",\"type\":\"image\",\"mediaUrl\":\"https://",
+    "body_length": 17543,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=ca-phe--c01189",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Cà phê\",\"description\":\"<p>Cà phê</p>\",\"bannerUrl\":\"\",\"seoName\":\"ca-phe--c01189\",\"items\":[{\"_id\":\"6a1a110bd57c85c281c47b9f\",\"itemNo\":\"65000176\",\"__v\":0,\"basicItemNo\":\"65000176\",\"basicMatl\":\"65000176\",\"id\":\"8d9ac120-d4c8-4e57-8c19-4afe24d6d180\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"111\",\"mch3\":\"11101\",\"mch4\":\"1110102\",\"mch5\":\"111010201\",\"mch6\":\"111010201\",\"mediaItems\":[{\"id\":\"aec74df6-2d87-47d7-99c9-f9feee38e9e0\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc02.h",
+    "body_length": 5493,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=banh-cookies-croissant--c01195",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Bánh cookies - croissant\",\"description\":\"Bánh cookies - croissant\",\"bannerUrl\":null,\"seoName\":\"banh-cookies-croissant--c01195\",\"items\":[{\"_id\":\"6a1a1060d57c85c281c43e7e\",\"itemNo\":\"60000639\",\"__v\":0,\"basicItemNo\":\"60000639\",\"basicMatl\":null,\"id\":\"7e5d19a4-cd2e-499e-8656-d6af3866c7a1\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"211\",\"mch3\":\"21101\",\"mch4\":\"2110101\",\"mch5\":\"211010101\",\"mch6\":\"211010101\",\"mediaItems\":[{\"id\":\"faa91dd2-77b4-43dd-bc1c-ae3c466c084b\",\"type",
+    "body_length": 2557,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-sua--c01187",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà sữa\",\"description\":\"<p>Trà sữa</p>\",\"bannerUrl\":\"\",\"seoName\":\"tra-sua--c01187\",\"items\":[{\"_id\":\"6a1a1060d57c85c281c43e7c\",\"itemNo\":\"65000102\",\"__v\":0,\"basicItemNo\":\"65000102\",\"basicMatl\":\"65000102\",\"id\":\"ce37bda5-c8da-4e4b-a40b-3d7fd86225c1\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440302\",\"mch5\":\"144030201\",\"mch6\":\"144030201\",\"mediaItems\":[{\"id\":\"dab2267f-d4b6-4f00-8575-452c6216ce42\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc0",
+    "body_length": 13403,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=best-seller--c01188",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Best Seller\",\"description\":\"<p>Best Seller</p>\",\"bannerUrl\":\"\",\"seoName\":\"best-seller--c01188\",\"items\":[{\"_id\":\"6a1a1060d57c85c281c43e7c\",\"itemNo\":\"65000102\",\"__v\":0,\"basicItemNo\":\"65000102\",\"basicMatl\":\"65000102\",\"id\":\"ce37bda5-c8da-4e4b-a40b-3d7fd86225c1\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440302\",\"mch5\":\"144030201\",\"mch6\":\"144030201\",\"mediaItems\":[{\"id\":\"dab2267f-d4b6-4f00-8575-452c6216ce42\",\"type\":\"image\",\"mediaUrl\":\"http",
+    "body_length": 8308,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=bst-dong-phuong-my-nhan--c011101",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"BST ĐÔNG PHƯƠNG MỸ NHÂN\",\"description\":\"<p>BST ĐÔNG PHƯƠNG MỸ NHÂN</p>\",\"bannerUrl\":\"\",\"seoName\":\"bst-dong-phuong-my-nhan--c011101\",\"items\":[{\"_id\":\"6a1a110cd57c85c281c47bf1\",\"itemNo\":\"65000499\",\"__v\":0,\"basicItemNo\":\"65000499\",\"basicMatl\":null,\"id\":\"f88f027c-57ef-4d67-a732-d78011a6b46e\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440301\",\"mch5\":\"144030101\",\"mch6\":\"\",\"mediaItems\":[{\"id\":\"3e3bea5d-729c-4c72-a4ec-89bcee4c63c3\",\"type\":\"i",
+    "body_length": 5342,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=da-xay--c01193",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Đá xay\",\"description\":\"<p>Đá xay</p>\",\"bannerUrl\":\"\",\"seoName\":\"da-xay--c01193\",\"items\":[{\"_id\":\"6a1a105fd57c85c281c43dfd\",\"itemNo\":\"65000047\",\"__v\":0,\"basicItemNo\":\"65000047\",\"basicMatl\":\"65000047\",\"id\":\"5daca753-b124-4995-88ae-24f08cd00f9a\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"143\",\"mch3\":\"14301\",\"mch4\":\"1430101\",\"mch5\":\"143010101\",\"mch6\":\"143010101\",\"mediaItems\":[{\"id\":\"e27b15a7-06e6-47c3-903f-d2fe92abccf0\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc02.h",
+    "body_length": 8860,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=banh-lanh--c01194",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Bánh lạnh\",\"description\":\"<p>Bánh lạnh</p>\",\"bannerUrl\":\"\",\"seoName\":\"banh-lanh--c01194\",\"items\":[{\"_id\":\"6a1a105fd57c85c281c43e04\",\"itemNo\":\"60000641\",\"__v\":0,\"basicItemNo\":\"60000641\",\"basicMatl\":null,\"id\":\"88fec114-2a38-4bd0-9b3d-8670c8945167\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"211\",\"mch3\":\"21101\",\"mch4\":\"2110101\",\"mch5\":\"211010101\",\"mch6\":\"211010101\",\"mediaItems\":[{\"id\":\"17d5f711-b125-4f4d-88e2-c4585733d915\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc0",
+    "body_length": 4417,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=banh-mi--c01196",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Bánh mì\",\"description\":\"<p>Bánh mì</p>\",\"bannerUrl\":\"\",\"seoName\":\"banh-mi--c01196\",\"items\":[]},\"paging\":{\"totalCount\":0,\"pageSize\":40,\"totalPages\":1,\"pageNumber\":1,\"pagingCounter\":1,\"hasPrevPage\":false,\"hasNextPage\":false,\"prev\":null,\"next\":null}}",
+    "body_length": 264,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=bst-moi--c011105",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"BST MỚI\",\"description\":\"<p>BST MỚI</p>\",\"bannerUrl\":\"\",\"seoName\":\"bst-moi--c011105\",\"items\":[{\"_id\":\"6a1a110cd57c85c281c47bf1\",\"itemNo\":\"65000499\",\"__v\":0,\"basicItemNo\":\"65000499\",\"basicMatl\":null,\"id\":\"f88f027c-57ef-4d67-a732-d78011a6b46e\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440301\",\"mch5\":\"144030101\",\"mch6\":\"\",\"mediaItems\":[{\"id\":\"3e3bea5d-729c-4c72-a4ec-89bcee4c63c3\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc02.higiocloud.v",
+    "body_length": 5294,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-hop-giay--c0181",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Hộp Giấy\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Hộp Giấy</strong></p><p>Trà hộp giấy có bao bì hiện đại, gọn nhẹ và thuận tiện khi sử dụng. Trong mỗi hộp trà lưu giữ trọn vẹn hương vị đặc trưng của từng loại trà để từ đó pha chế nên những ly trà thơm ngon và đem lại nhiều lợi ích cho sức khỏe.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_hop_giay_46f17d39-89a5-4d20-9f70-7359fa0ccca6.png\",\"seoName\":\"tra-hop-giay--c0181\",\"items\":[{\"_id\":\"6",
+    "body_length": 1751,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-tui-tam-giac--c0184",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Túi Tam Giác\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Túi Tam Giác</strong></p><p>Trà túi lọc tam giác (hay còn gọi là Trà túi lọc kim tự tháp) được xem là một bước tiến mới của dòng trà túi lọc khi được sản xuất và đóng gói theo công nghệ tiên tiến bậc nhất, tăng sự thẩm thấu của trà ra bên ngoài và gia tăng hương vị đậm đà, mang lại trải nghiệm trọn vẹn khi thưởng thức</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_tui_tam_giac_4ead0574-49",
+    "body_length": 8419,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-lai--c0185",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Lài\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Lài</strong></p><p>Trà lài là sự kết hợp hoàn hảo giữa lá trà xanh chất lượng cao và hoa lài. Trà có mùi thơm tự nhiên của hoa lài, màu vàng đẹp, vị ngọt của hoa lài và vị đắng nhẹ của trà tạo nên cảm giác khoan khoái và thư giãn cho người dùng.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_lai_6225fdd1-1549-4040-a518-f83bf86f0abb.png\",\"seoName\":\"tra-lai--c0185\",\"items\":[{\"_id\":\"6a1a105fd57c85c28",
+    "body_length": 3958,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-tui-loc--c0183",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Túi Lọc\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Túi Lọc</strong></p><p>Trà túi lọc tiện dụng được sản xuất theo công thức độc đáo, đảm bảo tận dụng hết tính năng của trà; cả về hương lẫn vị.</p><p>Không phải tốn nhiều thời gian pha chế, chỉ sau vài phút là có ngay tách trà nóng thơm ngon với nhiều mùi hương đa dạng. Trà túi lọc mở ra phong cách thưởng thức trà hiện đại trong cuộc sống không ngừng phát triển và vươn cao.</p>\",\"bannerUrl\":\"https://ss-hn",
+    "body_length": 7891,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-xanh--c0186",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Xanh\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Xanh</strong></p><p>Trà xanh được trồng tại nơi có khí hậu và thổ nhưỡng thích hợp để có được những cây trà phẩm chất tốt nhất, thông qua sàng lọc và lựa chọn ra những đọt trà non tươi ngon nhất để chế biến thành sản phẩm chính vì vậy nên chất lượng của trà luôn được đảm bảo tốt nhất. Trà được phơi khô không qua công đoạn lên men nhằm mang lại hương vị thiên nhiên khi dùng, trà có màu xanh vàng và vị đắng c",
+    "body_length": 1917,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-sen--c0187",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Sen\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Sen</strong></p><p>Trà Sen là sự kết hợp tinh tế giữa trà xanh và hoa sen với quy trình ướp công phu và công nghệ sản xuất hiện đại tạo ra một sản phẩm mang hương vị và nét riêng cho trà Việt. Khi pha trà có mùi thoảng nhẹ hương sen, màu xanh vàng, vị đắng nhẹ của trà cùng vị ngọt dịu thanh mát.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_sen_e2db913d-5fe2-485f-9922-a00265a3d490.png\",\"seoName\":",
+    "body_length": 1864,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-den--c0188",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Đen\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Đen</strong></p><p>Trà đen là trà xanh khi thu hoạch và được ủ lên men sau khi phơi khô. Phản ứng lên men giúp trà đen có mùi thơm đặc biệt và lá trà có màu sậm, từ đỏ hung đến đen tuyền. Trà đen với hậu vị chát đậm, khi uống chất trà thấm vào cơ thể nhẹ nhàng đánh thức các giác quan, tạo tâm trạng sảng khoái.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_den_a3a825cb-1f5c-444c-ac60-21a2c1002ea6.",
+    "body_length": 3325,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-goi-cao-cap--c0182",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Gói Cao Cấp\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Gói Cao Cấp</strong></p><p>Trà gói lưu giữ hương vị tươi nguyên nhất của những lá trà hảo hạng, thích hợp để pha chế những ly trà đậm vị, thơm ngon và đem lại nhiều lợi ích cho sức khỏe khi cùng thưởng thức bên gia đình và người thân.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_goi_cao_cap_b03fc050-6ec3-453f-a494-2f4a2733ef5e.png\",\"seoName\":\"tra-goi-cao-cap--c0182\",\"items\":[{\"_id\":\"6a1a",
+    "body_length": 2852,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?DeliveryType=Delivery&activeCall=true&orderByDesc=true&pageNumber=1&pageSize=100",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 82482,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?DeliveryType=TakeAway&activeCall=true&orderByDesc=true&pageNumber=1&pageSize=1000",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 122779,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-trai-cay--c01190",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà trái cây\",\"description\":\"Trà trái cây\",\"bannerUrl\":\"\",\"seoName\":\"tra-trai-cay--c01190\",\"items\":[{\"_id\":\"6a1a105fd57c85c281c43e15\",\"itemNo\":\"65000105\",\"__v\":0,\"basicItemNo\":\"65000105\",\"basicMatl\":\"65000105\",\"id\":\"8f99270b-d5f2-4a33-a1e3-083a13f0ff45\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440302\",\"mch5\":\"144030201\",\"mch6\":\"144030201\",\"mediaItems\":[{\"id\":\"b288da75-70bb-4e66-9a9b-c47df8beeba4\",\"type\":\"image\",\"mediaUrl\":\"https://",
+    "body_length": 17543,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=banh-lanh--c01194",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Bánh lạnh\",\"description\":\"<p>Bánh lạnh</p>\",\"bannerUrl\":\"\",\"seoName\":\"banh-lanh--c01194\",\"items\":[{\"_id\":\"6a1a105fd57c85c281c43e04\",\"itemNo\":\"60000641\",\"__v\":0,\"basicItemNo\":\"60000641\",\"basicMatl\":null,\"id\":\"88fec114-2a38-4bd0-9b3d-8670c8945167\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"211\",\"mch3\":\"21101\",\"mch4\":\"2110101\",\"mch5\":\"211010101\",\"mch6\":\"211010101\",\"mediaItems\":[{\"id\":\"17d5f711-b125-4f4d-88e2-c4585733d915\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc0",
+    "body_length": 4417,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?DeliveryType=TakeAway&activeCall=true&orderByDesc=true&pageNumber=1&pageSize=1000",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 122779,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?DeliveryType=Delivery&activeCall=true&orderByDesc=true&pageNumber=1&pageSize=100",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 82482,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=best-seller--c01188",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Best Seller\",\"description\":\"<p>Best Seller</p>\",\"bannerUrl\":\"\",\"seoName\":\"best-seller--c01188\",\"items\":[{\"_id\":\"6a1a1060d57c85c281c43e7c\",\"itemNo\":\"65000102\",\"__v\":0,\"basicItemNo\":\"65000102\",\"basicMatl\":\"65000102\",\"id\":\"ce37bda5-c8da-4e4b-a40b-3d7fd86225c1\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440302\",\"mch5\":\"144030201\",\"mch6\":\"144030201\",\"mediaItems\":[{\"id\":\"dab2267f-d4b6-4f00-8575-452c6216ce42\",\"type\":\"image\",\"mediaUrl\":\"http",
+    "body_length": 8308,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-goi-cao-cap--c0182",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Gói Cao Cấp\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Gói Cao Cấp</strong></p><p>Trà gói lưu giữ hương vị tươi nguyên nhất của những lá trà hảo hạng, thích hợp để pha chế những ly trà đậm vị, thơm ngon và đem lại nhiều lợi ích cho sức khỏe khi cùng thưởng thức bên gia đình và người thân.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_goi_cao_cap_b03fc050-6ec3-453f-a494-2f4a2733ef5e.png\",\"seoName\":\"tra-goi-cao-cap--c0182\",\"items\":[{\"_id\":\"6a1a",
+    "body_length": 2852,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=banh-cookies-croissant--c01195",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Bánh cookies - croissant\",\"description\":\"Bánh cookies - croissant\",\"bannerUrl\":null,\"seoName\":\"banh-cookies-croissant--c01195\",\"items\":[{\"_id\":\"6a1a1060d57c85c281c43e7e\",\"itemNo\":\"60000639\",\"__v\":0,\"basicItemNo\":\"60000639\",\"basicMatl\":null,\"id\":\"7e5d19a4-cd2e-499e-8656-d6af3866c7a1\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"211\",\"mch3\":\"21101\",\"mch4\":\"2110101\",\"mch5\":\"211010101\",\"mch6\":\"211010101\",\"mediaItems\":[{\"id\":\"faa91dd2-77b4-43dd-bc1c-ae3c466c084b\",\"type",
+    "body_length": 2557,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-sua--c01187",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà sữa\",\"description\":\"<p>Trà sữa</p>\",\"bannerUrl\":\"\",\"seoName\":\"tra-sua--c01187\",\"items\":[{\"_id\":\"6a1a1060d57c85c281c43e7c\",\"itemNo\":\"65000102\",\"__v\":0,\"basicItemNo\":\"65000102\",\"basicMatl\":\"65000102\",\"id\":\"ce37bda5-c8da-4e4b-a40b-3d7fd86225c1\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440302\",\"mch5\":\"144030201\",\"mch6\":\"144030201\",\"mediaItems\":[{\"id\":\"dab2267f-d4b6-4f00-8575-452c6216ce42\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc0",
+    "body_length": 13403,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=da-xay--c01193",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Đá xay\",\"description\":\"<p>Đá xay</p>\",\"bannerUrl\":\"\",\"seoName\":\"da-xay--c01193\",\"items\":[{\"_id\":\"6a1a105fd57c85c281c43dfd\",\"itemNo\":\"65000047\",\"__v\":0,\"basicItemNo\":\"65000047\",\"basicMatl\":\"65000047\",\"id\":\"5daca753-b124-4995-88ae-24f08cd00f9a\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"143\",\"mch3\":\"14301\",\"mch4\":\"1430101\",\"mch5\":\"143010101\",\"mch6\":\"143010101\",\"mediaItems\":[{\"id\":\"e27b15a7-06e6-47c3-903f-d2fe92abccf0\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc02.h",
+    "body_length": 8860,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=bst-dong-phuong-my-nhan--c011101",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"BST ĐÔNG PHƯƠNG MỸ NHÂN\",\"description\":\"<p>BST ĐÔNG PHƯƠNG MỸ NHÂN</p>\",\"bannerUrl\":\"\",\"seoName\":\"bst-dong-phuong-my-nhan--c011101\",\"items\":[{\"_id\":\"6a1a110cd57c85c281c47bf1\",\"itemNo\":\"65000499\",\"__v\":0,\"basicItemNo\":\"65000499\",\"basicMatl\":null,\"id\":\"f88f027c-57ef-4d67-a732-d78011a6b46e\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440301\",\"mch5\":\"144030101\",\"mch6\":\"\",\"mediaItems\":[{\"id\":\"3e3bea5d-729c-4c72-a4ec-89bcee4c63c3\",\"type\":\"i",
+    "body_length": 5342,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=bst-moi--c011105",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"BST MỚI\",\"description\":\"<p>BST MỚI</p>\",\"bannerUrl\":\"\",\"seoName\":\"bst-moi--c011105\",\"items\":[{\"_id\":\"6a1a110cd57c85c281c47bf1\",\"itemNo\":\"65000499\",\"__v\":0,\"basicItemNo\":\"65000499\",\"basicMatl\":null,\"id\":\"f88f027c-57ef-4d67-a732-d78011a6b46e\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440301\",\"mch5\":\"144030101\",\"mch6\":\"\",\"mediaItems\":[{\"id\":\"3e3bea5d-729c-4c72-a4ec-89bcee4c63c3\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc02.higiocloud.v",
+    "body_length": 5294,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-lai--c0185",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Lài\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Lài</strong></p><p>Trà lài là sự kết hợp hoàn hảo giữa lá trà xanh chất lượng cao và hoa lài. Trà có mùi thơm tự nhiên của hoa lài, màu vàng đẹp, vị ngọt của hoa lài và vị đắng nhẹ của trà tạo nên cảm giác khoan khoái và thư giãn cho người dùng.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_lai_6225fdd1-1549-4040-a518-f83bf86f0abb.png\",\"seoName\":\"tra-lai--c0185\",\"items\":[{\"_id\":\"6a1a105fd57c85c28",
+    "body_length": 3958,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-hop-giay--c0181",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Hộp Giấy\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Hộp Giấy</strong></p><p>Trà hộp giấy có bao bì hiện đại, gọn nhẹ và thuận tiện khi sử dụng. Trong mỗi hộp trà lưu giữ trọn vẹn hương vị đặc trưng của từng loại trà để từ đó pha chế nên những ly trà thơm ngon và đem lại nhiều lợi ích cho sức khỏe.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_hop_giay_46f17d39-89a5-4d20-9f70-7359fa0ccca6.png\",\"seoName\":\"tra-hop-giay--c0181\",\"items\":[{\"_id\":\"6",
+    "body_length": 1751,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=banh-mi--c01196",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Bánh mì\",\"description\":\"<p>Bánh mì</p>\",\"bannerUrl\":\"\",\"seoName\":\"banh-mi--c01196\",\"items\":[]},\"paging\":{\"totalCount\":0,\"pageSize\":40,\"totalPages\":1,\"pageNumber\":1,\"pagingCounter\":1,\"hasPrevPage\":false,\"hasNextPage\":false,\"prev\":null,\"next\":null}}",
+    "body_length": 264,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=ca-phe--c01189",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Cà phê\",\"description\":\"<p>Cà phê</p>\",\"bannerUrl\":\"\",\"seoName\":\"ca-phe--c01189\",\"items\":[{\"_id\":\"6a1a110bd57c85c281c47b9f\",\"itemNo\":\"65000176\",\"__v\":0,\"basicItemNo\":\"65000176\",\"basicMatl\":\"65000176\",\"id\":\"8d9ac120-d4c8-4e57-8c19-4afe24d6d180\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"111\",\"mch3\":\"11101\",\"mch4\":\"1110102\",\"mch5\":\"111010201\",\"mch6\":\"111010201\",\"mediaItems\":[{\"id\":\"aec74df6-2d87-47d7-99c9-f9feee38e9e0\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc02.h",
+    "body_length": 5493,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-sen--c0187",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Sen\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Sen</strong></p><p>Trà Sen là sự kết hợp tinh tế giữa trà xanh và hoa sen với quy trình ướp công phu và công nghệ sản xuất hiện đại tạo ra một sản phẩm mang hương vị và nét riêng cho trà Việt. Khi pha trà có mùi thoảng nhẹ hương sen, màu xanh vàng, vị đắng nhẹ của trà cùng vị ngọt dịu thanh mát.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_sen_e2db913d-5fe2-485f-9922-a00265a3d490.png\",\"seoName\":",
+    "body_length": 1864,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-tui-tam-giac--c0184",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Túi Tam Giác\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Túi Tam Giác</strong></p><p>Trà túi lọc tam giác (hay còn gọi là Trà túi lọc kim tự tháp) được xem là một bước tiến mới của dòng trà túi lọc khi được sản xuất và đóng gói theo công nghệ tiên tiến bậc nhất, tăng sự thẩm thấu của trà ra bên ngoài và gia tăng hương vị đậm đà, mang lại trải nghiệm trọn vẹn khi thưởng thức</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_tui_tam_giac_4ead0574-49",
+    "body_length": 8419,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-xanh--c0186",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Xanh\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Xanh</strong></p><p>Trà xanh được trồng tại nơi có khí hậu và thổ nhưỡng thích hợp để có được những cây trà phẩm chất tốt nhất, thông qua sàng lọc và lựa chọn ra những đọt trà non tươi ngon nhất để chế biến thành sản phẩm chính vì vậy nên chất lượng của trà luôn được đảm bảo tốt nhất. Trà được phơi khô không qua công đoạn lên men nhằm mang lại hương vị thiên nhiên khi dùng, trà có màu xanh vàng và vị đắng c",
+    "body_length": 1917,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-den--c0188",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Đen\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Đen</strong></p><p>Trà đen là trà xanh khi thu hoạch và được ủ lên men sau khi phơi khô. Phản ứng lên men giúp trà đen có mùi thơm đặc biệt và lá trà có màu sậm, từ đỏ hung đến đen tuyền. Trà đen với hậu vị chát đậm, khi uống chất trà thấm vào cơ thể nhẹ nhàng đánh thức các giác quan, tạo tâm trạng sảng khoái.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_den_a3a825cb-1f5c-444c-ac60-21a2c1002ea6.",
+    "body_length": 3325,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-tui-loc--c0183",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Túi Lọc\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Túi Lọc</strong></p><p>Trà túi lọc tiện dụng được sản xuất theo công thức độc đáo, đảm bảo tận dụng hết tính năng của trà; cả về hương lẫn vị.</p><p>Không phải tốn nhiều thời gian pha chế, chỉ sau vài phút là có ngay tách trà nóng thơm ngon với nhiều mùi hương đa dạng. Trà túi lọc mở ra phong cách thưởng thức trà hiện đại trong cuộc sống không ngừng phát triển và vươn cao.</p>\",\"bannerUrl\":\"https://ss-hn",
+    "body_length": 7891,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?DeliveryType=Delivery&activeCall=true&orderByDesc=true&pageNumber=1&pageSize=100",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 82482,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?DeliveryType=TakeAway&activeCall=true&orderByDesc=true&pageNumber=1&pageSize=1000",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 122779,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/category",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"code\": \"MENU15\",\n      \"name\": \"THỨC UỐNG\",\n      \"seoName\": \"thuc-uong--c15\",\n      \"description\": \"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Danh mục sản phẩm đồ uống</strong></p><p><span style=\\\"color: rgb(23, 23, 23); background-color: rgb(255, 255, 255);\\\">Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. </span></p><p><spa",
+    "body_length": 13615,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg-art/api/v1/web/homepage/menu-content?languageCode=vi",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "[{\"code\":\"MENU01\",\"name\":\"CÀ PHÊ\",\"seoName\":\"ca-phe\",\"seoNameExtend\":\"ca-phe-c1\",\"description\":\"\",\"priority\":1,\"imageUrl\":\"\",\"bannerUrl\":\"https://hcm.fstorage.vn/phuclong/uat/2024/09/aa17dafb29b433-cphphclong3-20240930064652.jpg\",\"contentDisplayType\":\"None\",\"isShowHeader\":true,\"isShowFooter\":false,\"isShowMenuLeft\":true,\"childrens\":[{\"code\":\"MENU05\",\"name\":\"Hành trình tách cà phê\",\"seoName\":\"hanh-trinh-tach-ca-phe-dam-vi\",\"seoNameExtend\":\"hanh-trinh-tach-ca-phe-dam-vi-c5\",\"description\":\"\",\"priori",
+    "body_length": 12266,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/it/api/plg/v1/homepage",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"code\":\"S200\",\"message\":\"Thành công\",\"data\":{\"headerBanner\":[{\"name\":\"New MBS\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/web-20260423112126.jpg\",\"actionId\":\"00000000-0000-0000-0000-000000000000\",\"url\":\"khuyen-mai/ra-mat-phuc-long-rewards---tich-diem-doi-qua-ngay-20251105100638\",\"id\":\"f2ebc50f-befd-412b-843e-05ed58562acb\"},{\"name\":\"Banner_Phúc Long LTO3\",\"subTitle\":\"\",\"actionType\":\"\",\"imageUrl\":\"https://s3-hcmc02.higiocloud.vn/images/2026/04/website",
+    "body_length": 2803,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/populars",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    \"Trà sữa phúc long\",\n    \"Trà xanh thái nguyên\",\n    \"Sinh tố xoài\",\n    \"Cà phê culi\",\n    \"Caramel đá xay\",\n    \"Nước ép dâu\",\n    \"Bánh choco trà xanh\",\n    \"latte\",\n    \"Nho khô Úc\",\n    \"Cà phê set\"\n  ]\n}",
+    "body_length": 272,
+    "has_product_keywords": false
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?DeliveryType=TakeAway&activeCall=true&orderByDesc=true&pageNumber=1&pageSize=1000",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 122779,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?DeliveryType=Delivery&activeCall=true&orderByDesc=true&pageNumber=1&pageSize=100",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 82482,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=banh-cookies-croissant--c01195",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Bánh cookies - croissant\",\"description\":\"Bánh cookies - croissant\",\"bannerUrl\":null,\"seoName\":\"banh-cookies-croissant--c01195\",\"items\":[{\"_id\":\"6a1a1060d57c85c281c43e7e\",\"itemNo\":\"60000639\",\"__v\":0,\"basicItemNo\":\"60000639\",\"basicMatl\":null,\"id\":\"7e5d19a4-cd2e-499e-8656-d6af3866c7a1\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"211\",\"mch3\":\"21101\",\"mch4\":\"2110101\",\"mch5\":\"211010101\",\"mch6\":\"211010101\",\"mediaItems\":[{\"id\":\"faa91dd2-77b4-43dd-bc1c-ae3c466c084b\",\"type",
+    "body_length": 2557,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=best-seller--c01188",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Best Seller\",\"description\":\"<p>Best Seller</p>\",\"bannerUrl\":\"\",\"seoName\":\"best-seller--c01188\",\"items\":[{\"_id\":\"6a1a1060d57c85c281c43e7c\",\"itemNo\":\"65000102\",\"__v\":0,\"basicItemNo\":\"65000102\",\"basicMatl\":\"65000102\",\"id\":\"ce37bda5-c8da-4e4b-a40b-3d7fd86225c1\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440302\",\"mch5\":\"144030201\",\"mch6\":\"144030201\",\"mediaItems\":[{\"id\":\"dab2267f-d4b6-4f00-8575-452c6216ce42\",\"type\":\"image\",\"mediaUrl\":\"http",
+    "body_length": 8308,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-trai-cay--c01190",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà trái cây\",\"description\":\"Trà trái cây\",\"bannerUrl\":\"\",\"seoName\":\"tra-trai-cay--c01190\",\"items\":[{\"_id\":\"6a1a105fd57c85c281c43e15\",\"itemNo\":\"65000105\",\"__v\":0,\"basicItemNo\":\"65000105\",\"basicMatl\":\"65000105\",\"id\":\"8f99270b-d5f2-4a33-a1e3-083a13f0ff45\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440302\",\"mch5\":\"144030201\",\"mch6\":\"144030201\",\"mediaItems\":[{\"id\":\"b288da75-70bb-4e66-9a9b-c47df8beeba4\",\"type\":\"image\",\"mediaUrl\":\"https://",
+    "body_length": 17543,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=bst-dong-phuong-my-nhan--c011101",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"BST ĐÔNG PHƯƠNG MỸ NHÂN\",\"description\":\"<p>BST ĐÔNG PHƯƠNG MỸ NHÂN</p>\",\"bannerUrl\":\"\",\"seoName\":\"bst-dong-phuong-my-nhan--c011101\",\"items\":[{\"_id\":\"6a1a110cd57c85c281c47bf1\",\"itemNo\":\"65000499\",\"__v\":0,\"basicItemNo\":\"65000499\",\"basicMatl\":null,\"id\":\"f88f027c-57ef-4d67-a732-d78011a6b46e\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440301\",\"mch5\":\"144030101\",\"mch6\":\"\",\"mediaItems\":[{\"id\":\"3e3bea5d-729c-4c72-a4ec-89bcee4c63c3\",\"type\":\"i",
+    "body_length": 5342,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=da-xay--c01193",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Đá xay\",\"description\":\"<p>Đá xay</p>\",\"bannerUrl\":\"\",\"seoName\":\"da-xay--c01193\",\"items\":[{\"_id\":\"6a1a105fd57c85c281c43dfd\",\"itemNo\":\"65000047\",\"__v\":0,\"basicItemNo\":\"65000047\",\"basicMatl\":\"65000047\",\"id\":\"5daca753-b124-4995-88ae-24f08cd00f9a\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"143\",\"mch3\":\"14301\",\"mch4\":\"1430101\",\"mch5\":\"143010101\",\"mch6\":\"143010101\",\"mediaItems\":[{\"id\":\"e27b15a7-06e6-47c3-903f-d2fe92abccf0\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc02.h",
+    "body_length": 8860,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=ca-phe--c01189",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Cà phê\",\"description\":\"<p>Cà phê</p>\",\"bannerUrl\":\"\",\"seoName\":\"ca-phe--c01189\",\"items\":[{\"_id\":\"6a1a110bd57c85c281c47b9f\",\"itemNo\":\"65000176\",\"__v\":0,\"basicItemNo\":\"65000176\",\"basicMatl\":\"65000176\",\"id\":\"8d9ac120-d4c8-4e57-8c19-4afe24d6d180\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"111\",\"mch3\":\"11101\",\"mch4\":\"1110102\",\"mch5\":\"111010201\",\"mch6\":\"111010201\",\"mediaItems\":[{\"id\":\"aec74df6-2d87-47d7-99c9-f9feee38e9e0\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc02.h",
+    "body_length": 5493,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=banh-lanh--c01194",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Bánh lạnh\",\"description\":\"<p>Bánh lạnh</p>\",\"bannerUrl\":\"\",\"seoName\":\"banh-lanh--c01194\",\"items\":[{\"_id\":\"6a1a105fd57c85c281c43e04\",\"itemNo\":\"60000641\",\"__v\":0,\"basicItemNo\":\"60000641\",\"basicMatl\":null,\"id\":\"88fec114-2a38-4bd0-9b3d-8670c8945167\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"211\",\"mch3\":\"21101\",\"mch4\":\"2110101\",\"mch5\":\"211010101\",\"mch6\":\"211010101\",\"mediaItems\":[{\"id\":\"17d5f711-b125-4f4d-88e2-c4585733d915\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc0",
+    "body_length": 4417,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-hop-giay--c0181",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Hộp Giấy\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Hộp Giấy</strong></p><p>Trà hộp giấy có bao bì hiện đại, gọn nhẹ và thuận tiện khi sử dụng. Trong mỗi hộp trà lưu giữ trọn vẹn hương vị đặc trưng của từng loại trà để từ đó pha chế nên những ly trà thơm ngon và đem lại nhiều lợi ích cho sức khỏe.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_hop_giay_46f17d39-89a5-4d20-9f70-7359fa0ccca6.png\",\"seoName\":\"tra-hop-giay--c0181\",\"items\":[{\"_id\":\"6",
+    "body_length": 1751,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=banh-mi--c01196",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Bánh mì\",\"description\":\"<p>Bánh mì</p>\",\"bannerUrl\":\"\",\"seoName\":\"banh-mi--c01196\",\"items\":[]},\"paging\":{\"totalCount\":0,\"pageSize\":40,\"totalPages\":1,\"pageNumber\":1,\"pagingCounter\":1,\"hasPrevPage\":false,\"hasNextPage\":false,\"prev\":null,\"next\":null}}",
+    "body_length": 264,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-tui-tam-giac--c0184",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Túi Tam Giác\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Túi Tam Giác</strong></p><p>Trà túi lọc tam giác (hay còn gọi là Trà túi lọc kim tự tháp) được xem là một bước tiến mới của dòng trà túi lọc khi được sản xuất và đóng gói theo công nghệ tiên tiến bậc nhất, tăng sự thẩm thấu của trà ra bên ngoài và gia tăng hương vị đậm đà, mang lại trải nghiệm trọn vẹn khi thưởng thức</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_tui_tam_giac_4ead0574-49",
+    "body_length": 8419,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-lai--c0185",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Lài\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Lài</strong></p><p>Trà lài là sự kết hợp hoàn hảo giữa lá trà xanh chất lượng cao và hoa lài. Trà có mùi thơm tự nhiên của hoa lài, màu vàng đẹp, vị ngọt của hoa lài và vị đắng nhẹ của trà tạo nên cảm giác khoan khoái và thư giãn cho người dùng.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_lai_6225fdd1-1549-4040-a518-f83bf86f0abb.png\",\"seoName\":\"tra-lai--c0185\",\"items\":[{\"_id\":\"6a1a105fd57c85c28",
+    "body_length": 3958,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?DeliveryType=Delivery&activeCall=true&orderByDesc=true&pageNumber=1&pageSize=100",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 82482,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-goi-cao-cap--c0182",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Gói Cao Cấp\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Gói Cao Cấp</strong></p><p>Trà gói lưu giữ hương vị tươi nguyên nhất của những lá trà hảo hạng, thích hợp để pha chế những ly trà đậm vị, thơm ngon và đem lại nhiều lợi ích cho sức khỏe khi cùng thưởng thức bên gia đình và người thân.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_goi_cao_cap_b03fc050-6ec3-453f-a494-2f4a2733ef5e.png\",\"seoName\":\"tra-goi-cao-cap--c0182\",\"items\":[{\"_id\":\"6a1a",
+    "body_length": 2852,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-sua--c01187",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà sữa\",\"description\":\"<p>Trà sữa</p>\",\"bannerUrl\":\"\",\"seoName\":\"tra-sua--c01187\",\"items\":[{\"_id\":\"6a1a1060d57c85c281c43e7c\",\"itemNo\":\"65000102\",\"__v\":0,\"basicItemNo\":\"65000102\",\"basicMatl\":\"65000102\",\"id\":\"ce37bda5-c8da-4e4b-a40b-3d7fd86225c1\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440302\",\"mch5\":\"144030201\",\"mch6\":\"144030201\",\"mediaItems\":[{\"id\":\"dab2267f-d4b6-4f00-8575-452c6216ce42\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc0",
+    "body_length": 13403,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=bst-moi--c011105",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"BST MỚI\",\"description\":\"<p>BST MỚI</p>\",\"bannerUrl\":\"\",\"seoName\":\"bst-moi--c011105\",\"items\":[{\"_id\":\"6a1a110cd57c85c281c47bf1\",\"itemNo\":\"65000499\",\"__v\":0,\"basicItemNo\":\"65000499\",\"basicMatl\":null,\"id\":\"f88f027c-57ef-4d67-a732-d78011a6b46e\",\"itemGroup\":null,\"itemGroupNo\":null,\"itemType\":null,\"mch2\":\"144\",\"mch3\":\"14403\",\"mch4\":\"1440301\",\"mch5\":\"144030101\",\"mch6\":\"\",\"mediaItems\":[{\"id\":\"3e3bea5d-729c-4c72-a4ec-89bcee4c63c3\",\"type\":\"image\",\"mediaUrl\":\"https://s3-hcmc02.higiocloud.v",
+    "body_length": 5294,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-tui-loc--c0183",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Túi Lọc\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Túi Lọc</strong></p><p>Trà túi lọc tiện dụng được sản xuất theo công thức độc đáo, đảm bảo tận dụng hết tính năng của trà; cả về hương lẫn vị.</p><p>Không phải tốn nhiều thời gian pha chế, chỉ sau vài phút là có ngay tách trà nóng thơm ngon với nhiều mùi hương đa dạng. Trà túi lọc mở ra phong cách thưởng thức trà hiện đại trong cuộc sống không ngừng phát triển và vươn cao.</p>\",\"bannerUrl\":\"https://ss-hn",
+    "body_length": 7891,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-den--c0188",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Đen\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Đen</strong></p><p>Trà đen là trà xanh khi thu hoạch và được ủ lên men sau khi phơi khô. Phản ứng lên men giúp trà đen có mùi thơm đặc biệt và lá trà có màu sậm, từ đỏ hung đến đen tuyền. Trà đen với hậu vị chát đậm, khi uống chất trà thấm vào cơ thể nhẹ nhàng đánh thức các giác quan, tạo tâm trạng sảng khoái.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_den_a3a825cb-1f5c-444c-ac60-21a2c1002ea6.",
+    "body_length": 3325,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-xanh--c0186",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Xanh\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Xanh</strong></p><p>Trà xanh được trồng tại nơi có khí hậu và thổ nhưỡng thích hợp để có được những cây trà phẩm chất tốt nhất, thông qua sàng lọc và lựa chọn ra những đọt trà non tươi ngon nhất để chế biến thành sản phẩm chính vì vậy nên chất lượng của trà luôn được đảm bảo tốt nhất. Trà được phơi khô không qua công đoạn lên men nhằm mang lại hương vị thiên nhiên khi dùng, trà có màu xanh vàng và vị đắng c",
+    "body_length": 1917,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/plg/api/web/item/category?pageNumber=1&pageSize=40&slug=tra-sen--c0187",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\"data\":{\"name\":\"Trà Sen\",\"description\":\"<p><strong style=\\\"color: rgb(230, 0, 0);\\\">Trà Sen</strong></p><p>Trà Sen là sự kết hợp tinh tế giữa trà xanh và hoa sen với quy trình ướp công phu và công nghệ sản xuất hiện đại tạo ra một sản phẩm mang hương vị và nét riêng cho trà Việt. Khi pha trà có mùi thoảng nhẹ hương sen, màu xanh vàng, vị đắng nhẹ của trà cùng vị ngọt dịu thanh mát.</p>\",\"bannerUrl\":\"https://ss-hn.fptvds.vn/images/2022/tra_sen_e2db913d-5fe2-485f-9922-a00265a3d490.png\",\"seoName\":",
+    "body_length": 1864,
+    "has_product_keywords": true
+  },
+  {
+    "url": "https://api-crownx.winmart.vn/mt/api/plg/v1/store?DeliveryType=TakeAway&activeCall=true&orderByDesc=true&pageNumber=1&pageSize=1000",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "body_preview": "{\n  \"code\": \"S200\",\n  \"message\": \"Thành công\",\n  \"data\": [\n    {\n      \"storeCode\": \"2002\",\n      \"storeName\": \"BDG-CH 44 Nguyen Dinh Chieu P.PC\",\n      \"officeNumber\": \"(028) 7100 1968 (Ext.20028)\",\n      \"officeAddress\": \"44 Nguyễn Đình Chiểu, Khu phố 5   TP. Hồ Chí Minh\",\n      \"latitude\": 10.979926,\n      \"longitude\": 106.65268,\n      \"contactMobile\": \"02743635777\",\n      \"activeStatus\": \"Mở cửa\",\n      \"isOpen\": true,\n      \"deliveryStatus\": \"Tạm ngừng hỗ trợ giao hàng\",\n      \"supportDeliv",
+    "body_length": 122779,
+    "has_product_keywords": true
+  }
+]

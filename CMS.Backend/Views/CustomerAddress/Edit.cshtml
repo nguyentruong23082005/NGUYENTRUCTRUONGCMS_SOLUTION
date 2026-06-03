@@ -1,0 +1,10 @@
+@model CMS.Data.Entities.CustomerAddress
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Sửa địa chỉ"; }
+<div class="card-premium">
+    <h1 class="h3 mb-4 fw-bold"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">edit_location</span> Sửa địa chỉ khách hàng</h1>
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()<input type="hidden" asp-for="Id" /><div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <partial name="_Form" model="Model" />
+        <div class="d-flex gap-2 mt-4"><button type="submit" class="btn btn-premium-primary border-0 me-2"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">save</span> Cập nhật</button><a asp-action="Index" class="btn btn-premium-outline text-decoration-none"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">arrow_back</span> Quay lại</a></div>
+    </form>
+</div>

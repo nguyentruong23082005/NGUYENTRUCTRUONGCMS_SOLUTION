@@ -19,34 +19,58 @@ namespace CMS.Backend.Controllers
         }
 
         // GET: Post/Index
-        public async Task<IActionResult> Index(int? categoryId, int page = 1)
+        public async Task<IActionResult> Index([FromQuery] PostFilterModel filter, int page = 1)
         {
             const int pageSize = 9;
-            var query = _context.Posts
-                .Include(p => p.Category)
-                .AsNoTracking()
-                .AsQueryable();
+            filter ??= new PostFilterModel();
 
-            if (categoryId.HasValue)
+            var query = _context.Posts
+                .Include(p => p.PostCategory)
+                .AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
             {
-                query = query.Where(p => p.CategoryId == categoryId.Value);
-                ViewBag.FilterCategoryId = categoryId.Value;
+                var term = filter.Search.Trim().ToLower();
+                query = query.Where(p => p.Title.ToLower().Contains(term));
+            }
+
+            if (filter.CategoryId.HasValue)
+            {
+                query = query.Where(p => p.PostCategoryId == filter.CategoryId.Value);
             }
 
             var posts = await PaginatedList<Post>.CreateAsync(
-                query.OrderByDescending(p => p.CreatedDate),
+                query.OrderByDescending(p => p.PublishedAt ?? p.CreatedAt),
                 page,
                 pageSize);
 
-            ViewBag.Categories = await _context.Categories.AsNoTracking().ToListAsync();
-            return View(posts);
+            var excerpts = new Dictionary<int, string>();
+            foreach (var item in posts.Items)
+            {
+                excerpts[item.Id] = Helpers.HtmlTextHelper.StripHtml(item.Content);
+            }
+            ViewBag.PostExcerpts = excerpts;
+
+            var categories = await _context.PostCategories
+                .AsNoTracking()
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+
+            var viewModel = new PostIndexViewModel
+            {
+                Posts = posts,
+                Filter = filter,
+                Categories = new SelectList(categories, "Id", "Name", filter.CategoryId)
+            };
+
+            return View(viewModel);
         }
 
         // GET: Post/Details/5
         [AllowAnonymous]
         public IActionResult Details(int id)
         {
-            var post = _context.Posts.Include(p => p.Category).FirstOrDefault(p => p.Id == id);
+            var post = _context.Posts.Include(p => p.PostCategory).FirstOrDefault(p => p.Id == id);
             if (post == null) return NotFound();
             return View(post);
         }
@@ -55,7 +79,7 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            ViewBag.CategoryList = new SelectList(_context.Categories.ToList(), "Id", "Name");
+            ViewBag.CategoryList = new SelectList(_context.PostCategories.ToList(), "Id", "Name");
             return View();
         }
 
@@ -66,7 +90,7 @@ namespace CMS.Backend.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.CategoryList = new SelectList(_context.Categories.ToList(), "Id", "Name", model.CategoryId);
+                ViewBag.CategoryList = new SelectList(_context.PostCategories.ToList(), "Id", "Name", model.PostCategoryId);
                 return View(model);
             }
 
@@ -78,6 +102,7 @@ namespace CMS.Backend.Controllers
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadImage.FileName);
                 string filePath = Path.Combine(folder, fileName);
 
+                // Lưu file ảnh vào wwwroot/uploads, DB chỉ lưu đường dẫn để hiển thị lại.
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     uploadImage.CopyTo(stream);
@@ -98,7 +123,7 @@ namespace CMS.Backend.Controllers
             var post = _context.Posts.Find(id);
             if (post == null) return NotFound();
 
-            ViewBag.CategoryList = new SelectList(_context.Categories.ToList(), "Id", "Name", post.CategoryId);
+            ViewBag.CategoryList = new SelectList(_context.PostCategories.ToList(), "Id", "Name", post.PostCategoryId);
             return View(post);
         }
 
@@ -109,7 +134,7 @@ namespace CMS.Backend.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.CategoryList = new SelectList(_context.Categories.ToList(), "Id", "Name", model.CategoryId);
+                ViewBag.CategoryList = new SelectList(_context.PostCategories.ToList(), "Id", "Name", model.PostCategoryId);
                 return View(model);
             }
 
@@ -151,10 +176,48 @@ namespace CMS.Backend.Controllers
             var post = _context.Posts.Find(id);
             if (post != null)
             {
+                // Remove sẽ được ApplicationDbContext chuyển thành xóa mềm nếu Post kế thừa BaseEntity.
                 _context.Posts.Remove(post);
                 _context.SaveChanges();
             }
             return RedirectToAction("Index");
+        }
+
+        // GET: Post/Trash
+        public async Task<IActionResult> Trash(int page = 1)
+        {
+            const int pageSize = 9;
+            var posts = await PaginatedList<Post>.CreateAsync(
+                _context.Posts
+                    .IgnoreQueryFilters()
+                    .Include(p => p.PostCategory)
+                    .Where(p => p.IsDeleted)
+                    .AsNoTracking()
+                    .OrderByDescending(p => p.DeletedAt),
+                page,
+                pageSize);
+
+            return View(posts);
+        }
+
+        // POST: Post/Restore/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Restore(int id)
+        {
+            var post = _context.Posts
+                .IgnoreQueryFilters()
+                .FirstOrDefault(p => p.Id == id && p.IsDeleted);
+
+            if (post == null) return NotFound();
+
+            post.IsDeleted = false;
+            post.DeletedAt = null;
+            post.UpdatedAt = DateTime.UtcNow;
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = $"Đã khôi phục bài viết '{post.Title}'.";
+            return RedirectToAction(nameof(Trash));
         }
     }
 }

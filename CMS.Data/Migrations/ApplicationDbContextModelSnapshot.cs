@@ -22,7 +22,7 @@ namespace CMS.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CMS.Data.Entities.CMS.Data.Entities.CategoryProduct", b =>
+            modelBuilder.Entity("CMS.Data.Entities.Banner", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,38 +30,51 @@ namespace CMS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("EndsAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LinkUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Position")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("CategoriesProducts");
-                });
-
-            modelBuilder.Entity("CMS.Data.Entities.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime?>("StartsAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.HasIndex("ImageUrl", "Position")
+                        .IsUnique();
+
+                    b.ToTable("Banners");
                 });
 
             modelBuilder.Entity("CMS.Data.Entities.Customer", b =>
@@ -72,8 +85,11 @@ namespace CMS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -83,16 +99,187 @@ namespace CMS.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TokenVersion")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.CustomerAddress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AddressLine")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AddressType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("District")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReceiverName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReceiverPhone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Ward")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("CustomerAddresses");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.CustomerVoucher", b =>
+                {
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VoucherId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ClaimedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UsedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("CustomerId", "VoucherId");
+
+                    b.HasIndex("VoucherId");
+
+                    b.ToTable("CustomerVouchers");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.OptionGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRequired")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxSelectable")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OptionGroups");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.OptionValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OptionGroupId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PriceSurcharge")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("StockQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OptionGroupId");
+
+                    b.ToTable("OptionValues");
                 });
 
             modelBuilder.Entity("CMS.Data.Entities.Order", b =>
@@ -103,8 +290,20 @@ namespace CMS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
@@ -112,12 +311,32 @@ namespace CMS.Data.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("ReceiverName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReceiverPhone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShippingAddress")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("VoucherId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("VoucherId");
 
                     b.ToTable("Orders");
                 });
@@ -129,6 +348,15 @@ namespace CMS.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -142,6 +370,9 @@ namespace CMS.Data.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
@@ -149,6 +380,24 @@ namespace CMS.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.OrderDetailOption", b =>
+                {
+                    b.Property<int>("OrderDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OptionValueId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("OrderDetailId", "OptionValueId");
+
+                    b.HasIndex("OptionValueId");
+
+                    b.ToTable("OrderDetailOptions");
                 });
 
             modelBuilder.Entity("CMS.Data.Entities.Post", b =>
@@ -159,29 +408,98 @@ namespace CMS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ExternalId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PostCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("PublishedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Slug")
                         .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("SourceUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("ExternalId")
+                        .IsUnique()
+                        .HasFilter("[ExternalId] IS NOT NULL");
+
+                    b.HasIndex("PostCategoryId");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
                     b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.PostCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.ToTable("PostCategories");
                 });
 
             modelBuilder.Entity("CMS.Data.Entities.Product", b =>
@@ -192,14 +510,20 @@ namespace CMS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryProductId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -208,14 +532,230 @@ namespace CMS.Data.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("ProductCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryProductId");
+                    b.HasIndex("ProductCategoryId");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.ProductCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.ToTable("ProductCategories");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.ProductImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductImages");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.ProductOptionGroup", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OptionGroupId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "OptionGroupId");
+
+                    b.HasIndex("OptionGroupId");
+
+                    b.ToTable("ProductOptionGroups");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("CustomerId", "ProductId")
+                        .IsUnique();
+
+                    b.ToTable("Reviews");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.Store", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("ClosingTime")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("District")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GoogleMapUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("OpeningTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Province")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StoreCode")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StoreCode")
+                        .IsUnique()
+                        .HasFilter("[StoreCode] IS NOT NULL");
+
+                    b.ToTable("Stores");
                 });
 
             modelBuilder.Entity("CMS.Data.Entities.User", b =>
@@ -226,9 +766,18 @@ namespace CMS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -237,6 +786,9 @@ namespace CMS.Data.Migrations
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -247,6 +799,91 @@ namespace CMS.Data.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("CMS.Data.Entities.Voucher", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("DiscountValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPercent")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("MinimumOrderAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("Vouchers");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.CustomerAddress", b =>
+                {
+                    b.HasOne("CMS.Data.Entities.Customer", "Customer")
+                        .WithMany("CustomerAddresses")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.CustomerVoucher", b =>
+                {
+                    b.HasOne("CMS.Data.Entities.Customer", "Customer")
+                        .WithMany("CustomerVouchers")
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("CMS.Data.Entities.Voucher", "Voucher")
+                        .WithMany("CustomerVouchers")
+                        .HasForeignKey("VoucherId");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Voucher");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.OptionValue", b =>
+                {
+                    b.HasOne("CMS.Data.Entities.OptionGroup", "OptionGroup")
+                        .WithMany("OptionValues")
+                        .HasForeignKey("OptionGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OptionGroup");
+                });
+
             modelBuilder.Entity("CMS.Data.Entities.Order", b =>
                 {
                     b.HasOne("CMS.Data.Entities.Customer", "Customer")
@@ -255,7 +892,13 @@ namespace CMS.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CMS.Data.Entities.Voucher", "Voucher")
+                        .WithMany("Orders")
+                        .HasForeignKey("VoucherId");
+
                     b.Navigation("Customer");
+
+                    b.Navigation("Voucher");
                 });
 
             modelBuilder.Entity("CMS.Data.Entities.OrderDetail", b =>
@@ -277,46 +920,145 @@ namespace CMS.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("CMS.Data.Entities.OrderDetailOption", b =>
+                {
+                    b.HasOne("CMS.Data.Entities.OptionValue", "OptionValue")
+                        .WithMany("OrderDetailOptions")
+                        .HasForeignKey("OptionValueId");
+
+                    b.HasOne("CMS.Data.Entities.OrderDetail", "OrderDetail")
+                        .WithMany("OrderDetailOptions")
+                        .HasForeignKey("OrderDetailId");
+
+                    b.Navigation("OptionValue");
+
+                    b.Navigation("OrderDetail");
+                });
+
             modelBuilder.Entity("CMS.Data.Entities.Post", b =>
                 {
-                    b.HasOne("CMS.Data.Entities.Category", "Category")
+                    b.HasOne("CMS.Data.Entities.PostCategory", "PostCategory")
                         .WithMany("Posts")
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("PostCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
+                    b.Navigation("PostCategory");
                 });
 
             modelBuilder.Entity("CMS.Data.Entities.Product", b =>
                 {
-                    b.HasOne("CMS.Data.Entities.CMS.Data.Entities.CategoryProduct", "CategoryProduct")
+                    b.HasOne("CMS.Data.Entities.ProductCategory", "ProductCategory")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryProductId")
+                        .HasForeignKey("ProductCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CategoryProduct");
+                    b.Navigation("ProductCategory");
                 });
 
-            modelBuilder.Entity("CMS.Data.Entities.CMS.Data.Entities.CategoryProduct", b =>
+            modelBuilder.Entity("CMS.Data.Entities.ProductImage", b =>
                 {
-                    b.Navigation("Products");
+                    b.HasOne("CMS.Data.Entities.Product", "Product")
+                        .WithMany("ProductImages")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("CMS.Data.Entities.Category", b =>
+            modelBuilder.Entity("CMS.Data.Entities.ProductOptionGroup", b =>
                 {
-                    b.Navigation("Posts");
+                    b.HasOne("CMS.Data.Entities.OptionGroup", "OptionGroup")
+                        .WithMany("ProductOptionGroups")
+                        .HasForeignKey("OptionGroupId");
+
+                    b.HasOne("CMS.Data.Entities.Product", "Product")
+                        .WithMany("ProductOptionGroups")
+                        .HasForeignKey("ProductId");
+
+                    b.Navigation("OptionGroup");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.Review", b =>
+                {
+                    b.HasOne("CMS.Data.Entities.Customer", "Customer")
+                        .WithMany("Reviews")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CMS.Data.Entities.Product", "Product")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("CMS.Data.Entities.Customer", b =>
                 {
+                    b.Navigation("CustomerAddresses");
+
+                    b.Navigation("CustomerVouchers");
+
                     b.Navigation("Orders");
+
+                    b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.OptionGroup", b =>
+                {
+                    b.Navigation("OptionValues");
+
+                    b.Navigation("ProductOptionGroups");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.OptionValue", b =>
+                {
+                    b.Navigation("OrderDetailOptions");
                 });
 
             modelBuilder.Entity("CMS.Data.Entities.Order", b =>
                 {
                     b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.OrderDetail", b =>
+                {
+                    b.Navigation("OrderDetailOptions");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.PostCategory", b =>
+                {
+                    b.Navigation("Posts");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.Product", b =>
+                {
+                    b.Navigation("ProductImages");
+
+                    b.Navigation("ProductOptionGroups");
+
+                    b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.ProductCategory", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.Voucher", b =>
+                {
+                    b.Navigation("CustomerVouchers");
+
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

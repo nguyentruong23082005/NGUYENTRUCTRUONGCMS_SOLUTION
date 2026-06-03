@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMS.Backend.Controllers
 {
-    [Authorize(Roles = "Admin")] // Buổi 5: Chỉ Admin mới quản lý được thành viên
+    [Authorize(Roles = "Admin")] // Chỉ Admin mới quản lý được tài khoản nhân viên.
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,16 +19,33 @@ namespace CMS.Backend.Controllers
         }
 
         // GET: /User
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(UserFilterModel filter, int page = 1)
         {
             const int pageSize = 10;
-            var users = await PaginatedList<User>.CreateAsync(
-                _context.Users
-                    .AsNoTracking()
-                    .OrderBy(u => u.Id),
+            var query = _context.Users.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                var searchTerm = filter.Search.Trim().ToLower();
+                query = query.Where(u => 
+                    u.Username.ToLower().Contains(searchTerm) || 
+                    (u.FullName != null && u.FullName.ToLower().Contains(searchTerm)) ||
+                    (u.Role != null && u.Role.ToLower().Contains(searchTerm))
+                );
+            }
+
+            var paginatedUsers = await PaginatedList<User>.CreateAsync(
+                query.OrderBy(u => u.Id),
                 page,
                 pageSize);
-            return View(users);
+
+            var viewModel = new UserIndexViewModel
+            {
+                Users = paginatedUsers,
+                Filter = filter
+            };
+
+            return View(viewModel);
         }
 
         // GET: /User/Create
@@ -52,6 +69,7 @@ namespace CMS.Backend.Controllers
             if (ModelState.IsValid)
             {
                 var passwordHasher = new PasswordHasher<User>();
+                // Lưu mật khẩu dạng hash, không lưu mật khẩu gốc.
                 model.PasswordHash = passwordHasher.HashPassword(model, model.PasswordHash ?? "");
 
                 _context.Users.Add(model);
@@ -85,7 +103,7 @@ namespace CMS.Backend.Controllers
                 user.FullName = model.FullName;
                 user.Role = model.Role;
 
-                // Nếu nhập mật khẩu mới thì đổi, nếu để trống thì giữ mật khẩu cũ
+                // Chỉ đổi mật khẩu khi admin nhập mật khẩu mới; để trống thì giữ nguyên.
                 if (!string.IsNullOrWhiteSpace(newPassword))
                 {
                     var passwordHasher = new PasswordHasher<User>();
@@ -111,6 +129,42 @@ namespace CMS.Backend.Controllers
                 _context.SaveChanges();
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: /User/Trash
+        public async Task<IActionResult> Trash(int page = 1)
+        {
+            const int pageSize = 10;
+            var users = await PaginatedList<User>.CreateAsync(
+                _context.Users
+                    .IgnoreQueryFilters()
+                    .Where(u => u.IsDeleted)
+                    .AsNoTracking()
+                    .OrderByDescending(u => u.DeletedAt),
+                page,
+                pageSize);
+
+            return View(users);
+        }
+
+        // POST: /User/Restore/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Restore(int id)
+        {
+            var user = _context.Users
+                .IgnoreQueryFilters()
+                .FirstOrDefault(u => u.Id == id && u.IsDeleted);
+
+            if (user == null) return NotFound();
+
+            user.IsDeleted = false;
+            user.DeletedAt = null;
+            user.UpdatedAt = DateTime.UtcNow;
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = $"Đã khôi phục thành viên '{user.FullName}'.";
+            return RedirectToAction(nameof(Trash));
         }
     }
 }

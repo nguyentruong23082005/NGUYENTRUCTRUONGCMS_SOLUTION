@@ -7,7 +7,7 @@
 
 <div class="card-premium">
     <div class="mb-4">
-        <h1 class="h3 mb-1 fw-bold"><i class="bi bi-file-earmark-plus text-muted"></i> Thêm Bài viết mới</h1>
+        <h1 class="h3 mb-1 fw-bold"><span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">post_add</span> Thêm Bài viết mới</h1>
         <p class="text-muted small">Tạo và xuất bản bài viết mới lên trang chủ hệ thống.</p>
     </div>
 
@@ -16,47 +16,47 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="mb-4">
-                    <label asp-for="Title" class="form-label">Tiêu đề bài viết</label>
+                    <label asp-for="Title" class="form-label fw-semibold">Tiêu đề bài viết</label>
                     <input asp-for="Title" class="form-control" placeholder="Nhập tiêu đề bài viết..." required />
                     <span asp-validation-for="Title" class="text-danger small"></span>
                 </div>
                 <div class="mb-4">
-                    <label asp-for="Content" class="form-label">Nội dung chi tiết</label>
+                    <label asp-for="Content" class="form-label fw-semibold">Nội dung chi tiết</label>
                     <textarea asp-for="Content" class="form-control" rows="12" placeholder="Viết nội dung tại đây..."></textarea>
                     <span asp-validation-for="Content" class="text-danger small"></span>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="mb-4">
-                    <label asp-for="CategoryId" class="form-label">Chuyên mục</label>
-                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryList" required>
+                    <label asp-for="PostCategoryId" class="form-label fw-semibold">Chuyên mục</label>
+                    <select asp-for="PostCategoryId" class="form-select" asp-items="ViewBag.CategoryList" required>
                         <option value="">Chọn danh mục</option>
                     </select>
-                    <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                    <span asp-validation-for="PostCategoryId" class="text-danger small"></span>
                 </div>
                 <div class="mb-4">
-                    <label for="uploadImage" class="form-label">Tải ảnh đại diện lên</label>
+                    <label for="uploadImage" class="form-label fw-semibold">Tải ảnh đại diện lên</label>
                     <input type="file" id="uploadImage" name="uploadImage" class="form-control" accept="image/*" />
                 </div>
                 <div class="mb-4">
-                    <label asp-for="ImageUrl" class="form-label">Hoặc nhập liên kết ảnh (URL)</label>
+                    <label asp-for="ImageUrl" class="form-label fw-semibold">Hoặc nhập liên kết ảnh (URL)</label>
                     <input asp-for="ImageUrl" class="form-control" placeholder="https://example.com/image.jpg" />
                     <span asp-validation-for="ImageUrl" class="text-danger small"></span>
                 </div>
                 <div class="mb-4">
-                    <label asp-for="CreatedDate" class="form-label">Ngày xuất bản</label>
-                    <input asp-for="CreatedDate" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
-                    <span asp-validation-for="CreatedDate" class="text-danger small"></span>
+                    <label asp-for="CreatedAt" class="form-label fw-semibold">Ngày xuất bản</label>
+                    <input asp-for="CreatedAt" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                    <span asp-validation-for="CreatedAt" class="text-danger small"></span>
                 </div>
                 
                 <hr class="my-4" />
                 
                 <div class="mt-4 pt-2">
                     <button type="submit" class="btn btn-premium-primary border-0 w-100 mb-2 py-2">
-                        <i class="bi bi-cloud-arrow-up"></i> Lưu và Đăng bài
+                        <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">cloud_upload</span> Lưu và Đăng bài
                     </button>
                     <a asp-action="Index" class="btn btn-premium-outline text-decoration-none w-100 text-center py-2">
-                        <i class="bi bi-arrow-left"></i> Quay lại danh sách
+                        <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">arrow_back</span> Quay lại danh sách
                     </a>
                 </div>
             </div>

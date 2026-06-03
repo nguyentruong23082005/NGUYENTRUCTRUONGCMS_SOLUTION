@@ -1,4 +1,4 @@
-@model CMS.Data.Entities.CategoryProduct
+@model CMS.Data.Entities.ProductCategory
 
 @{
     Layout = "_LayoutAdmin";
@@ -7,7 +7,7 @@
 
 <div class="card-premium">
     <div class="mb-4">
-        <h1 class="h3 mb-1 fw-bold"><i class="bi bi-grid-plus text-muted"></i> Thêm mới Danh mục Sản phẩm</h1>
+        <h1 class="h3 mb-1 fw-bold"><span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">add_box</span> Thêm mới Danh mục Sản phẩm</h1>
         <p class="text-muted small">Tạo danh mục sản phẩm mới để phân loại các mặt hàng bán trong hệ thống.</p>
     </div>
 
@@ -15,20 +15,20 @@
         <div class="col-md-8 col-lg-6">
             <form asp-action="Create" method="post">
                 <div class="mb-4">
-                    <label asp-for="Name" class="form-label">Tên danh mục</label>
+                    <label asp-for="Name" class="form-label fw-semibold">Tên danh mục</label>
                     <input asp-for="Name" class="form-control" placeholder="Ví dụ: Đồ uống nóng" required />
                     <span asp-validation-for="Name" class="text-danger small"></span>
                 </div>
 
                 <div class="mb-4">
-                    <label asp-for="Description" class="form-label">Mô tả</label>
+                    <label asp-for="Description" class="form-label fw-semibold">Mô tả</label>
                     <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả danh mục..."></textarea>
                     <span asp-validation-for="Description" class="text-danger small"></span>
                 </div>
 
                 <div class="mt-4 pt-2">
-                    <button type="submit" class="btn btn-premium-primary border-0 me-2">Lưu danh mục</button>
-                    <a asp-action="Index" class="btn btn-premium-outline text-decoration-none">Hủy bỏ</a>
+                    <button type="submit" class="btn btn-premium-primary border-0 me-2"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">save</span> Lưu danh mục</button>
+                    <a asp-action="Index" class="btn btn-premium-outline text-decoration-none"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">arrow_back</span> Hủy bỏ</a>
                 </div>
             </form>
         </div>

@@ -1,0 +1,16 @@
+@model CMS.Data.Entities.OptionValue
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Sửa giá trị tùy chọn"; }
+<div class="card-premium">
+    <h1 class="h3 mb-4 fw-bold"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">edit_square</span> Sửa giá trị tùy chọn</h1>
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()<input type="hidden" asp-for="Id" /><div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="row g-3">
+            <div class="col-md-6"><label asp-for="OptionGroupId" class="form-label fw-semibold">Nhóm tùy chọn</label><select asp-for="OptionGroupId" class="form-select" asp-items="ViewBag.OptionGroups"><option value="">-- Chọn nhóm --</option></select><span asp-validation-for="OptionGroupId" class="text-danger"></span></div>
+            <div class="col-md-6"><label asp-for="Name" class="form-label fw-semibold">Tên giá trị</label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
+            <div class="col-md-6"><label asp-for="PriceSurcharge" class="form-label fw-semibold">Phụ thu</label><input asp-for="PriceSurcharge" class="form-control" /><span asp-validation-for="PriceSurcharge" class="text-danger"></span></div>
+            <div class="col-md-6"><label asp-for="StockQuantity" class="form-label fw-semibold">Tồn kho</label><input asp-for="StockQuantity" class="form-control" placeholder="Để trống nếu không giới hạn" /><span asp-validation-for="StockQuantity" class="text-danger"></span></div>
+            <div class="col-12 form-check ms-2"><input asp-for="IsActive" class="form-check-input" /><label asp-for="IsActive" class="form-check-label">Đang bật</label></div>
+        </div>
+        <div class="d-flex gap-2 mt-4"><button type="submit" class="btn btn-premium-primary border-0 me-2"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">save</span> Cập nhật</button><a asp-action="Index" class="btn btn-premium-outline text-decoration-none"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">arrow_back</span> Quay lại</a></div>
+    </form>
+</div>

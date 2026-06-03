@@ -365,3 +365,5 @@ FodyWeavers.xsd
 # VS Code and Agent configuration
 .vscode/
 .agent/
+.planning/
+.codegraph/

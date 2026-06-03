@@ -1,0 +1,45 @@
+@model CMS.Data.Entities.CustomerAddress
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chi tiết địa chỉ";
+}
+
+<div class="card-premium">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 fw-bold">
+            <span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">home_pin</span>
+            Địa chỉ #@Model.Id
+        </h1>
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-premium-primary border-0 text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">edit_square</span>
+                Sửa
+            </a>
+            <a asp-action="Index" class="btn btn-premium-outline text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">arrow_back</span>
+                Quay lại
+            </a>
+        </div>
+    </div>
+
+    <dl class="row mb-0">
+        <dt class="col-sm-3 text-muted">Khách hàng</dt>
+        <dd class="col-sm-9 fw-semibold">@(Model.Customer?.FullName ?? "—")</dd>
+
+        <dt class="col-sm-3 text-muted">Người nhận</dt>
+        <dd class="col-sm-9">@Model.ReceiverName</dd>
+
+        <dt class="col-sm-3 text-muted">Điện thoại</dt>
+        <dd class="col-sm-9">@Model.ReceiverPhone</dd>
+
+        <dt class="col-sm-3 text-muted">Địa chỉ</dt>
+        <dd class="col-sm-9">@Model.AddressLine, @Model.Ward, @Model.District, @Model.Province</dd>
+
+        <dt class="col-sm-3 text-muted">Loại</dt>
+        <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.AddressType) ? "—" : Model.AddressType)</dd>
+
+        <dt class="col-sm-3 text-muted">Mặc định</dt>
+        <dd class="col-sm-9">@(Model.IsDefault ? "Có" : "Không")</dd>
+    </dl>
+</div>

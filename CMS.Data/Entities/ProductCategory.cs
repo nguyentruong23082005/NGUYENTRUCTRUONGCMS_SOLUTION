@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CMS.Data.Entities
 {
-    public class CategoryProduct
+    public class ProductCategory : BaseEntity
     {
         [Key]
         public int Id { get; set; }
@@ -19,5 +19,7 @@ namespace CMS.Data.Entities
         public string? Description { get; set; }
 
         public virtual ICollection<Product>? Products { get; set; }
+
+        public string Slug { get; set; } = string.Empty;
     }
 }

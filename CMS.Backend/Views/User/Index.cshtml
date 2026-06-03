@@ -1,4 +1,4 @@
-@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.User>
+@model CMS.Backend.Models.UserIndexViewModel
 
 @{
     Layout = "_LayoutAdmin";
@@ -7,11 +7,35 @@
 
 <div class="card-premium">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 fw-bold"><i class="bi bi-people-fill text-muted"></i> Quản lý Thành viên</h1>
-        <a asp-action="Create" class="btn-premium-primary text-decoration-none">
-            <i class="bi bi-plus-lg"></i> Thêm thành viên mới
-        </a>
+        <h1 class="h3 mb-0 fw-bold"><span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">groups</span> Quản lý Thành viên</h1>
+        <div class="d-flex gap-2 flex-wrap">
+            <a asp-action="Trash" class="btn btn-premium-outline text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">delete</span>
+                Thùng rác
+            </a>
+            <a asp-action="Create" class="btn-premium-primary text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">add</span> Thêm thành viên mới
+            </a>
+        </div>
     </div>
+
+    <!-- Filter Form -->
+    <form asp-action="Index" method="get" class="filter-section mb-4">
+        <div class="row g-3">
+            <div class="col-md-9">
+                <label class="form-label fw-semibold text-muted small">Tìm kiếm thành viên</label>
+                <input type="text" name="Search" value="@Model.Filter.Search" class="form-control" placeholder="Nhập tên đăng nhập, họ tên, vai trò..." />
+            </div>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button type="submit" class="btn-search-premium flex-grow-1">
+                    <span class="material-symbols-rounded align-middle">search</span> Tìm kiếm
+                </button>
+                <a asp-action="Index" class="btn-reset-premium" title="Xóa bộ lọc">
+                    <span class="material-symbols-rounded align-middle">restart_alt</span>
+                </a>
+            </div>
+        </div>
+    </form>
 
     <div class="table-responsive">
         <table class="table-premium">
@@ -25,15 +49,15 @@
                 </tr>
             </thead>
             <tbody>
-                @if (!Model.Items.Any())
+                @if (!Model.Users.Items.Any())
                 {
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-4">Chưa có thành viên nào.</td>
+                        <td colspan="5" class="text-center text-muted py-4">Không tìm thấy thành viên nào khớp với bộ lọc.</td>
                     </tr>
                 }
                 else
                 {
-                    foreach (var user in Model.Items)
+                    foreach (var user in Model.Users.Items)
                     {
                         <tr>
                             <td>@user.Id</td>
@@ -52,13 +76,13 @@
                             <td>
                                 <div class="d-flex gap-2">
                                     <a asp-action="Edit" asp-route-id="@user.Id" 
-                                       class="btn btn-sm btn-warning" 
-                                       aria-label="Sửa thông tin của @user.FullName">Sửa</a>
+                                       class="btn btn-sm btn-warning d-inline-flex align-items-center justify-content-center" 
+                                       aria-label="Sửa thông tin của @user.FullName"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">edit_square</span></a>
                                     <form asp-action="Delete" asp-route-id="@user.Id" method="post" 
                                           onsubmit="return confirm('Bạn có chắc chắn muốn xóa thành viên @user.Username không?');">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-danger" 
-                                                aria-label="Xóa thành viên @user.FullName">Xóa</button>
+                                        <button type="submit" class="btn btn-sm btn-danger d-inline-flex align-items-center justify-content-center" 
+                                                aria-label="Xóa thành viên @user.FullName"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">delete</span></button>
                                     </form>
                                 </div>
                             </td>
@@ -69,5 +93,5 @@
         </table>
     </div>
 
-    <partial name="_Pagination" model="Model" />
+    <partial name="_Pagination" model="Model.Users" />
 </div>

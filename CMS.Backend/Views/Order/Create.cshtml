@@ -1,21 +1,34 @@
 @model CMS.Data.Entities.Order
-
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Thêm đơn hàng";
+    var products = ViewBag.Products as List<CMS.Data.Entities.Product> ?? new();
 }
 
 <div class="card-premium">
     <div class="mb-4">
-        <h1 class="h3 mb-1 fw-bold"><i class="bi bi-cart-plus text-muted"></i> Thêm Đơn hàng mới</h1>
+        <h1 class="h3 mb-1 fw-bold">
+            <span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">add_shopping_cart</span>
+            Thêm đơn hàng mới
+        </h1>
         <p class="text-muted small">Khởi tạo đơn hàng mới cho khách hàng trong hệ thống.</p>
     </div>
 
-    <div class="row">
-        <div class="col-md-8 col-lg-6">
-            <form asp-action="Create" method="post">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger border-0 rounded-3 mb-4" style="background-color:#fef2f2;color:#991b1b;">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div>@error.ErrorMessage</div>
+            }
+        </div>
+    }
+
+    <form asp-action="Create" method="post">
+        <div class="row">
+            <div class="col-md-6">
                 <div class="mb-4">
-                    <label asp-for="CustomerId" class="form-label">Khách hàng</label>
+                    <label asp-for="CustomerId" class="form-label fw-semibold">Khách hàng</label>
                     <select asp-for="CustomerId" class="form-select" asp-items="ViewBag.CustomerId" required>
                         <option value="">Chọn khách hàng</option>
                     </select>
@@ -23,37 +36,132 @@
                 </div>
 
                 <div class="mb-4">
-                    <label asp-for="OrderDate" class="form-label">Ngày đặt hàng</label>
+                    <label asp-for="OrderDate" class="form-label fw-semibold">Ngày đặt h—ng</label>
                     <input asp-for="OrderDate" type="datetime-local" class="form-control" />
-                    <span asp-validation-for="OrderDate" class="text-danger small"></span>
                     <small class="text-muted d-block mt-1">Để trống nếu muốn tự động lấy giờ hiện tại.</small>
                 </div>
 
                 <div class="mb-4">
-                    <label asp-for="Status" class="form-label">Trạng thái giao dịch</label>
-                    <select asp-for="Status" class="form-select">
-                        <option value="0">Chờ duyệt</option>
-                        <option value="1">Đang giao</option>
-                        <option value="2">Đã xong</option>
-                    </select>
-                    <span asp-validation-for="Status" class="text-danger small"></span>
+                    <label class="form-label fw-semibold">Trạng thái</label>
+                    <div class="form-control bg-light text-muted" style="pointer-events:none;">
+                        <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">schedule</span>
+                        Chờ xác nhận
+                    </div>
                 </div>
 
                 <div class="mb-4">
-                    <label asp-for="Notes" class="form-label">Ghi chú đơn hàng</label>
-                    <textarea asp-for="Notes" class="form-control" rows="4" placeholder="Nhập ghi chú hoặc yêu cầu giao hàng..."></textarea>
-                    <span asp-validation-for="Notes" class="text-danger small"></span>
+                    <label asp-for="Notes" class="form-label fw-semibold">Ghi chú</label>
+                    <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Nhập ghi chú hoặc yêu cầu giao hàng..."></textarea>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        <span class="material-symbols-rounded admin-icon-sm align-middle" style="font-size:20px;" aria-hidden="true">local_cafe</span>
+                        Sản phẩm trong don
+                    </label>
                 </div>
 
-                <div class="mt-4 pt-2">
-                    <button type="submit" class="btn btn-premium-primary border-0 me-2">Lưu đơn hàng</button>
-                    <a asp-action="Index" class="btn btn-premium-outline text-decoration-none">Hủy bỏ</a>
+                <!-- Bảng sản phẩm đã chọn -->
+                <div id="orderItems">
+                    <!-- JS sẽ render các dòng ở đây -->
                 </div>
-            </form>
+
+                <button type="button" id="btnAddItem" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 mb-3">
+                    <span class="material-symbols-rounded admin-icon-sm">add_circle</span>
+                    Thêm sản phẩm
+                </button>
+
+                <div class="p-3 rounded-3" style="background-color:#f0fdf4;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">Tổng tiền:</span>
+                        <span class="fw-bold fs-5 text-success" id="totalAmount">0 d</span>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+
+        <hr class="my-4">
+        <div>
+            <button type="submit" class="btn btn-premium-primary border-0 me-2">
+                <span class="material-symbols-rounded admin-icon-sm align-middle">save</span>
+                Lưu đơn hàng
+            </button>
+            <a asp-action="Index" class="btn btn-premium-outline text-decoration-none">Hủy bỏ</a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        // Dữ liệu sản phẩm từ server
+        const products = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(products.Select(p => new { p.Id, p.Name, p.Price })));
+
+        let itemIndex = 0;
+
+        function addItem() {
+            const container = document.getElementById('orderItems');
+            const row = document.createElement('div');
+            row.className = 'row g-2 mb-2 align-items-center item-row';
+            row.innerHTML = `
+                <div class="col-6">
+                    <select name="ProductIds" class="form-select form-select-sm product-select" required>
+                        <option value="0">-- Chọn sản phẩm --</option>
+                        ${products.map(p => `<option value="${p.Id}" data-price="${p.Price}">${p.Name} — ${formatMoney(p.Price)}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="col-2">
+                    <input type="number" name="Quantities" class="form-control form-control-sm quantity-input" value="1" min="1" required>
+                </div>
+                <div class="col-3">
+                    <span class="item-subtotal text-muted small">0 d</span>
+                </div>
+                <div class="col-1">
+                    <button type="button" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center" onclick="removeItem(this)">
+                        <span class="material-symbols-rounded" style="font-size:16px;">close</span>
+                    </button>
+                </div>
+            `;
+            container.appendChild(row);
+
+            // Event listeners
+            row.querySelector('.product-select').addEventListener('change', recalc);
+            row.querySelector('.quantity-input').addEventListener('input', recalc);
+            itemIndex++;
+        }
+
+        function removeItem(btn) {
+            btn.closest('.item-row').remove();
+            recalc();
+        }
+
+        function recalc() {
+            let total = 0;
+            document.querySelectorAll('.item-row').forEach(row => {
+                const select = row.querySelector('.product-select');
+                const qtyInput = row.querySelector('.quantity-input');
+                const subtotalEl = row.querySelector('.item-subtotal');
+
+                const option = select.options[select.selectedIndex];
+                const price = parseFloat(option?.dataset.price || 0);
+                const qty = parseInt(qtyInput.value) || 0;
+                const sub = price * qty;
+
+                subtotalEl.textContent = formatMoney(sub);
+                total += sub;
+            });
+            document.getElementById('totalAmount').textContent = formatMoney(total);
+        }
+
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        }
+
+        // Thêm 1 dòng mặc định khi load trang
+        document.getElementById('btnAddItem').addEventListener('click', addItem);
+        addItem();
+    </script>
 }

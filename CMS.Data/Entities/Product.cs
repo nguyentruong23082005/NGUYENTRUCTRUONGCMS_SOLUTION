@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CMS.Data.Entities
 {
-    public class Product
+    public class Product : BaseEntity
     {
         [Key]
         public int Id { get; set; }
@@ -27,10 +27,16 @@ namespace CMS.Data.Entities
 
         public string? ImageUrl { get; set; }
 
-        // Khóa ngoại nối tới CategoryProduct
-        public int CategoryProductId { get; set; }
+        // Khóa ngoại nối tới ProductCategory
+        public int ProductCategoryId { get; set; }
 
-        [ForeignKey("CategoryProductId")]
-        public virtual CategoryProduct? CategoryProduct { get; set; }
+        [ForeignKey("ProductCategoryId")]
+        public virtual ProductCategory? ProductCategory { get; set; }
+
+        public virtual ICollection<ProductOptionGroup>? ProductOptionGroups { get; set; }
+        public virtual ICollection<Review>? Reviews { get; set; }
+        public virtual ICollection<ProductImage>? ProductImages { get; set; }
+
+        public string Slug { get; set; } = string.Empty;
     }
 }

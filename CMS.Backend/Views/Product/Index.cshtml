@@ -1,4 +1,4 @@
-@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.Product>
+@model CMS.Backend.Models.ProductIndexViewModel
 
 @{
     Layout = "_LayoutAdmin";
@@ -7,11 +7,41 @@
 
 <div class="card-premium">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 fw-bold"><i class="bi bi-box-seam text-muted"></i> Danh sách Sản phẩm</h1>
-        <a asp-action="Create" class="btn-premium-primary text-decoration-none">
-            <i class="bi bi-plus-lg"></i> Thêm sản phẩm
-        </a>
+        <h1 class="h3 mb-0 fw-bold"><span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">inventory_2</span> Danh sách Sản phẩm</h1>
+        <div class="d-flex gap-2 flex-wrap">
+            <a asp-action="Trash" class="btn btn-premium-outline text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">delete</span>
+                Thùng rác
+            </a>
+            <a asp-action="Create" class="btn-premium-primary text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">add</span> Thêm sản phẩm
+            </a>
+        </div>
     </div>
+
+    <!-- Bộ lọc & Tìm kiếm -->
+    <form method="get" asp-action="Index" class="filter-section mb-4">
+        <div class="row g-3">
+            <div class="col-md-5">
+                <label class="form-label fw-semibold text-muted small">Tìm kiếm sản phẩm</label>
+                <input type="text" name="Search" value="@Model.Filter.Search" class="form-control" placeholder="Nhập tên sản phẩm cần tìm..." />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold text-muted small">Danh mục</label>
+                <select name="CategoryId" asp-items="Model.Categories" class="form-select">
+                    <option value="">Tất cả danh mục</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button type="submit" class="btn-search-premium flex-grow-1">
+                    <span class="material-symbols-rounded align-middle">search</span> Tìm kiếm
+                </button>
+                <a asp-action="Index" class="btn-reset-premium" title="Xóa bộ lọc">
+                    <span class="material-symbols-rounded align-middle">restart_alt</span>
+                </a>
+            </div>
+        </div>
+    </form>
 
     @if (TempData["SuccessMessage"] != null)
     {
@@ -43,59 +73,68 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Items)
+                @if (Model.Products.Items.Any())
+                {
+                    @foreach (var item in Model.Products.Items)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.Name" style="width:50px;height:50px;object-fit:cover;border-radius:6px;border:1px solid var(--colors-shade-30);" />
+                                }
+                                else
+                                {
+                                    <div class="bg-light text-muted d-flex align-items-center justify-content-center" style="width:50px;height:50px;border-radius:6px;border:1px solid var(--colors-shade-30);">
+                                        <span class="material-symbols-rounded" style="font-size:1.2rem;opacity:0.3;" aria-hidden="true">image</span>
+                                    </div>
+                                }
+                            </td>
+                            <td class="fw-semibold text-black">@item.Name</td>
+                            <td>
+                                <span class="badge bg-light text-dark rounded-pill px-2.5 py-1">@(item.ProductCategory?.Name ?? "Chưa phân loại")</span>
+                            </td>
+                            <td class="text-danger fw-bold">@item.Price.ToString("N0") đ</td>
+                            <td>
+                                @if (item.StockQuantity <= 0)
+                                {
+                                    <span class="badge bg-danger rounded-pill px-2.5 py-1">Hết hàng</span>
+                                }
+                                else if (item.StockQuantity < 10)
+                                {
+                                    <span class="badge bg-warning text-dark rounded-pill px-2.5 py-1">Sắp hết (@item.StockQuantity)</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success rounded-pill px-2.5 py-1">Còn hàng (@item.StockQuantity)</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" 
+                                       class="btn btn-sm btn-warning d-inline-flex align-items-center justify-content-center" 
+                                       aria-label="Sửa thông tin sản phẩm @item.Name"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">edit_square</span></a>
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" 
+                                          onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-danger d-inline-flex align-items-center justify-content-center" 
+                                                aria-label="Xóa sản phẩm @item.Name"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">delete</span></button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
                 {
                     <tr>
-                        <td>@item.Id</td>
-                        <td>
-                            @if (!string.IsNullOrEmpty(item.ImageUrl))
-                            {
-                                <img src="@item.ImageUrl" alt="@item.Name" style="width:50px;height:50px;object-fit:cover;border-radius:6px;border:1px solid var(--colors-shade-30);" />
-                            }
-                            else
-                            {
-                                <div class="bg-light text-muted d-flex align-items-center justify-content-center" style="width:50px;height:50px;border-radius:6px;border:1px solid var(--colors-shade-30);">
-                                    <i class="bi bi-image" style="font-size:1.2rem;opacity:0.3;"></i>
-                                </div>
-                            }
-                        </td>
-                        <td class="fw-semibold text-black">@item.Name</td>
-                        <td>
-                            <span class="badge bg-light text-dark rounded-pill px-2.5 py-1">@(item.CategoryProduct?.Name ?? "Chưa phân loại")</span>
-                        </td>
-                        <td class="text-danger fw-bold">@item.Price.ToString("N0") đ</td>
-                        <td>
-                            @if (item.StockQuantity <= 0)
-                            {
-                                <span class="badge bg-danger rounded-pill px-2.5 py-1">Hết hàng</span>
-                            }
-                            else if (item.StockQuantity < 10)
-                            {
-                                <span class="badge bg-warning text-dark rounded-pill px-2.5 py-1">Sắp hết (@item.StockQuantity)</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-success rounded-pill px-2.5 py-1">Còn hàng (@item.StockQuantity)</span>
-                            }
-                        </td>
-                        <td>
-                            <div class="d-flex gap-2">
-                                <a asp-action="Edit" asp-route-id="@item.Id" 
-                                   class="btn btn-sm btn-warning" 
-                                   aria-label="Sửa thông tin sản phẩm @item.Name">Sửa</a>
-                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" 
-                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-sm btn-danger" 
-                                            aria-label="Xóa sản phẩm @item.Name">Xóa</button>
-                                </form>
-                            </div>
-                        </td>
+                        <td colspan="7" class="text-center text-muted py-4">Không tìm thấy sản phẩm nào khớp với bộ lọc.</td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 
-    <partial name="_Pagination" model="Model" />
+    <partial name="_Pagination" model="Model.Products" />
 </div>

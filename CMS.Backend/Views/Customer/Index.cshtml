@@ -1,4 +1,4 @@
-@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.Customer>
+@model CMS.Backend.Models.CustomerIndexViewModel
 
 @{
     Layout = "_LayoutAdmin";
@@ -7,17 +7,41 @@
 
 <div class="card-premium">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 fw-bold"><i class="bi bi-person-badge-fill text-muted"></i> Danh sách Khách hàng</h1>
-        <a asp-action="Create" class="btn-premium-primary text-decoration-none">
-            <i class="bi bi-plus-lg"></i> Thêm khách hàng
-        </a>
+        <h1 class="h3 mb-0 fw-bold"><span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">badge</span> Danh sách Khách hàng</h1>
+        <div class="d-flex gap-2 flex-wrap">
+            <a asp-action="Trash" class="btn btn-premium-outline text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">delete</span>
+                Thùng rác
+            </a>
+            <a asp-action="Create" class="btn-premium-primary text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">add</span> Thêm khách hàng
+            </a>
+        </div>
     </div>
+
+    <!-- Filter Form -->
+    <form asp-action="Index" method="get" class="filter-section mb-4">
+        <div class="row g-3">
+            <div class="col-md-9">
+                <label class="form-label fw-semibold text-muted small">Tìm kiếm khách hàng</label>
+                <input type="text" name="Search" value="@Model.Filter.Search" class="form-control" placeholder="Nhập tên, số điện thoại hoặc email để tìm kiếm..." />
+            </div>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button type="submit" class="btn-search-premium flex-grow-1">
+                    <span class="material-symbols-rounded align-middle">search</span> Tìm kiếm
+                </button>
+                <a asp-action="Index" class="btn-reset-premium" title="Xóa bộ lọc">
+                    <span class="material-symbols-rounded align-middle">restart_alt</span>
+                </a>
+            </div>
+        </div>
+    </form>
 
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 mb-4" role="alert" style="background-color: #f0fdf4; color: #166534;">
             @TempData["SuccessMessage"]
-            <button type="button" class="btn-close" data-bs-alert="alert" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
@@ -25,7 +49,7 @@
     {
         <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 mb-4" role="alert" style="background-color: #fef2f2; color: #991b1b;">
             @TempData["ErrorMessage"]
-            <button type="button" class="btn-close" data-bs-alert="alert" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
@@ -42,32 +66,41 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Items)
+                @if (Model.Customers.Items.Any())
+                {
+                    @foreach (var item in Model.Customers.Items)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td class="fw-semibold text-black">@item.FullName</td>
+                            <td>@item.Email</td>
+                            <td class="text-muted">@(item.Phone ?? "Chưa có")</td>
+                            <td class="text-muted">@(item.CustomerAddresses?.FirstOrDefault()?.AddressLine ?? "Chưa có")</td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" 
+                                       class="btn btn-sm btn-warning d-inline-flex align-items-center justify-content-center" 
+                                       aria-label="Sửa thông tin khách hàng @item.FullName"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">edit_square</span></a>
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" 
+                                          onsubmit="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-danger d-inline-flex align-items-center justify-content-center" 
+                                                aria-label="Xóa khách hàng @item.FullName"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">delete</span></button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
                 {
                     <tr>
-                        <td>@item.Id</td>
-                        <td class="fw-semibold text-black">@item.FullName</td>
-                        <td>@item.Email</td>
-                        <td class="text-muted">@(item.Phone ?? "Chưa có")</td>
-                        <td class="text-muted">@(item.Address ?? "Chưa có")</td>
-                        <td>
-                            <div class="d-flex gap-2">
-                                <a asp-action="Edit" asp-route-id="@item.Id" 
-                                   class="btn btn-sm btn-warning" 
-                                   aria-label="Sửa thông tin khách hàng @item.FullName">Sửa</a>
-                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" 
-                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?');">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-sm btn-danger" 
-                                            aria-label="Xóa khách hàng @item.FullName">Xóa</button>
-                                </form>
-                            </div>
-                        </td>
+                        <td colspan="6" class="text-center text-muted py-4">Không tìm thấy khách hàng nào khớp với bộ lọc.</td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 
-    <partial name="_Pagination" model="Model" />
+    <partial name="_Pagination" model="Model.Customers" />
 </div>

@@ -1,4 +1,4 @@
-@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.CategoryProduct>
+@model CMS.Backend.Models.ProductCategoryIndexViewModel
 
 @{
     Layout = "_LayoutAdmin";
@@ -7,11 +7,35 @@
 
 <div class="card-premium">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 fw-bold"><i class="bi bi-grid-fill text-muted"></i> Danh mục Sản phẩm</h1>
-        <a asp-action="Create" class="btn-premium-primary text-decoration-none">
-            <i class="bi bi-plus-lg"></i> Thêm danh mục sản phẩm
-        </a>
+        <h1 class="h3 mb-0 fw-bold"><span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">category</span> Danh mục Sản phẩm</h1>
+        <div class="d-flex gap-2 flex-wrap">
+            <a asp-action="Trash" class="btn btn-premium-outline text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">delete</span>
+                Thùng rác
+            </a>
+            <a asp-action="Create" class="btn-premium-primary text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">add</span> Thêm danh mục sản phẩm
+            </a>
+        </div>
     </div>
+
+    <!-- Filter Form -->
+    <form asp-action="Index" method="get" class="filter-section mb-4">
+        <div class="row g-3">
+            <div class="col-md-9">
+                <label class="form-label fw-semibold text-muted small">Tìm kiếm danh mục sản phẩm</label>
+                <input type="text" name="Search" value="@Model.Filter.Search" class="form-control" placeholder="Nhập tên danh mục sản phẩm cần tìm..." />
+            </div>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button type="submit" class="btn-search-premium flex-grow-1">
+                    <span class="material-symbols-rounded align-middle">search</span> Tìm kiếm
+                </button>
+                <a asp-action="Index" class="btn-reset-premium" title="Xóa bộ lọc">
+                    <span class="material-symbols-rounded align-middle">restart_alt</span>
+                </a>
+            </div>
+        </div>
+    </form>
 
     @if (TempData["SuccessMessage"] != null)
     {
@@ -40,30 +64,39 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Items)
+                @if (Model.Categories.Items.Any())
+                {
+                    @foreach (var item in Model.Categories.Items)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td class="fw-semibold text-black">@item.Name</td>
+                            <td class="text-muted">@(item.Description ?? "Không có mô tả")</td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" 
+                                       class="btn btn-sm btn-warning d-inline-flex align-items-center justify-content-center" 
+                                       aria-label="Sửa danh mục sản phẩm @item.Name"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">edit_square</span></a>
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" 
+                                          onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-danger d-inline-flex align-items-center justify-content-center" 
+                                                aria-label="Xóa danh mục sản phẩm @item.Name"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">delete</span></button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
                 {
                     <tr>
-                        <td>@item.Id</td>
-                        <td class="fw-semibold text-black">@item.Name</td>
-                        <td class="text-muted">@(item.Description ?? "Không có mô tả")</td>
-                        <td>
-                            <div class="d-flex gap-2">
-                                <a asp-action="Edit" asp-route-id="@item.Id" 
-                                   class="btn btn-sm btn-warning" 
-                                   aria-label="Sửa danh mục sản phẩm @item.Name">Sửa</a>
-                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" 
-                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?');">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-sm btn-danger" 
-                                            aria-label="Xóa danh mục sản phẩm @item.Name">Xóa</button>
-                                </form>
-                            </div>
-                        </td>
+                        <td colspan="4" class="text-center text-muted py-4">Không tìm thấy danh mục sản phẩm nào khớp với bộ lọc.</td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 
-    <partial name="_Pagination" model="Model" />
+    <partial name="_Pagination" model="Model.Categories" />
 </div>

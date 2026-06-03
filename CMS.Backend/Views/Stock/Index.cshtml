@@ -1,0 +1,261 @@
+@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.Product>
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Quản lý tồn kho";
+    var categories = ViewBag.Categories as List<CMS.Data.Entities.ProductCategory>;
+    int? selectedCategoryId = ViewBag.FilterCategoryId as int?;
+    int lowStockThreshold = ViewBag.LowStockThreshold ?? 10;
+}
+
+<div class="card-premium">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 fw-bold">
+            <span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">warehouse</span> 
+            Quản lý Tồn kho
+        </h1>
+        <div>
+            <span class="badge bg-light text-dark rounded-pill px-3 py-1.5 border">
+                Ngưỡng tồn thấp: <strong>@lowStockThreshold</strong>
+            </span>
+        </div>
+    </div>
+
+    <!-- Filter/Search Form -->
+    <form asp-action="Index" method="get" class="filter-section mb-4">
+        <div class="row g-3">
+            <div class="col-md-5">
+                <label for="categoryId" class="form-label fw-semibold text-muted small">Lọc theo danh mục</label>
+                <select id="categoryId" name="categoryId" class="form-select">
+                    <option value="">Tất cả danh mục</option>
+                    @if (categories != null)
+                    {
+                        foreach (var category in categories)
+                        {
+                            if (selectedCategoryId == category.Id)
+                            {
+                                <option value="@category.Id" selected>@category.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="search" class="form-label fw-semibold text-muted small">Tìm kiếm sản phẩm</label>
+                <input type="text" id="search" name="search" class="form-control" value="@ViewBag.Search" placeholder="Nhập tên sản phẩm..." />
+            </div>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button type="submit" class="btn-search-premium flex-grow-1">
+                    <span class="material-symbols-rounded align-middle">search</span> Lọc & Tìm
+                </button>
+                <a asp-action="Index" class="btn-reset-premium" title="Bỏ lọc">
+                    <span class="material-symbols-rounded align-middle">restart_alt</span>
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-premium align-middle">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">Ảnh</th>
+                    <th>Sản phẩm</th>
+                    <th>Danh mục</th>
+                    <th style="width: 250px;">Số lượng tồn kho sản phẩm</th>
+                    <th>Các tùy chọn liên quan (Option Stock)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Items.Any())
+                {
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">Không tìm thấy sản phẩm nào.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model.Items)
+                    {
+                        var productStockClass = item.StockQuantity == 0 ? "border-danger text-danger fw-bold" :
+                                                item.StockQuantity <= lowStockThreshold ? "border-warning text-warning fw-bold" : 
+                                                "border-success text-success";
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.Name" class="rounded border" style="width: 50px; height: 50px; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <div class="bg-light text-muted d-flex align-items-center justify-content-center rounded border" style="width: 50px; height: 50px;">
+                                        <span class="material-symbols-rounded" aria-hidden="true">image</span>
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark">@item.Name</div>
+                                <small class="text-muted">Đơn giá: @item.Price.ToString("N0")đ</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark rounded-pill">@(item.ProductCategory?.Name ?? "N/A")</span>
+                            </td>
+                            <td>
+                                <div class="stock-input-group">
+                                    <input type="number" 
+                                           class="stock-field product-stock-input @productStockClass" 
+                                           data-id="@item.Id" 
+                                           value="@item.StockQuantity" 
+                                           min="0" />
+                                    <button class="stock-btn btn-update-product-stock" type="button" data-id="@item.Id">Lưu</button>
+                                </div>
+                                <span class="stock-message text-success small d-block mt-1" style="display:none;"></span>
+                            </td>
+                            <td>
+                                @if (item.ProductOptionGroups != null && item.ProductOptionGroups.Any())
+                                {
+                                    <div class="d-flex flex-column gap-2">
+                                        @foreach (var pog in item.ProductOptionGroups)
+                                        {
+                                            if (pog.OptionGroup?.OptionValues != null && pog.OptionGroup.OptionValues.Any())
+                                            {
+                                                <div class="border rounded p-2 bg-light">
+                                                    <div class="fw-bold text-muted small mb-1">Nhóm: @pog.OptionGroup.Name</div>
+                                                    <div class="d-flex flex-wrap gap-2">
+                                                        @foreach (var val in pog.OptionGroup.OptionValues)
+                                                        {
+                                                            var optStockClass = val.StockQuantity == 0 ? "border-danger text-danger fw-bold" :
+                                                                                (val.StockQuantity.HasValue && val.StockQuantity <= lowStockThreshold) ? "border-warning text-warning fw-bold" : 
+                                                                                "border-success text-success";
+                                                            <div class="option-stock-group">
+                                                                <span class="option-label">@val.Name</span>
+                                                                <input type="number" 
+                                                                       class="option-field option-stock-input @optStockClass" 
+                                                                       data-id="@val.Id" 
+                                                                       value="@val.StockQuantity" 
+                                                                       placeholder="Vô hạn" 
+                                                                       min="0" />
+                                                                <button class="option-btn btn-update-option-stock" type="button" data-id="@val.Id">✓</button>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Không cấu hình tùy chọn</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <partial name="_Pagination" model="Model" />
+</div>
+
+@Html.AntiForgeryToken()
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            var lowThreshold = @lowStockThreshold;
+
+            function updateInputStyle($input, value) {
+                $input.removeClass('border-danger text-danger border-warning text-warning border-success text-success fw-bold');
+                if (value === null || value === "") {
+                    $input.addClass('border-success text-success');
+                } else {
+                    var num = parseInt(value);
+                    if (num === 0) {
+                        $input.addClass('border-danger text-danger fw-bold');
+                    } else if (num <= lowThreshold) {
+                        $input.addClass('border-warning text-warning fw-bold');
+                    } else {
+                        $input.addClass('border-success text-success');
+                    }
+                }
+            }
+
+            // AJAX Update Product Stock
+            $('.btn-update-product-stock').click(function() {
+                var id = $(this).data('id');
+                var $input = $('.product-stock-input[data-id="' + id + '"]');
+                var stock = $input.val();
+                var $container = $(this).closest('td');
+                var $message = $container.find('.stock-message');
+
+                if (stock < 0) {
+                    alert('Số lượng tồn kho không được âm.');
+                    return;
+                }
+
+                $.ajax({
+                    url: '/Stock/UpdateProductStock',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        stock: stock,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(res) {
+                        if (res.success) {
+                            updateInputStyle($input, res.newStock);
+                            $message.text('Đã cập nhật: ' + res.newStock).fadeIn().delay(1500).fadeOut();
+                        } else {
+                            alert(res.message);
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra khi cập nhật tồn kho.');
+                    }
+                });
+            });
+
+            // AJAX Update Option Stock
+            $('.btn-update-option-stock').click(function() {
+                var id = $(this).data('id');
+                var $input = $('.option-stock-input[data-id="' + id + '"]');
+                var stock = $input.val();
+
+                if (stock !== "" && stock < 0) {
+                    alert('Số lượng không được âm.');
+                    return;
+                }
+
+                $.ajax({
+                    url: '/Stock/UpdateOptionStock',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        stock: stock === "" ? null : stock,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(res) {
+                        if (res.success) {
+                            updateInputStyle($input, res.newStock);
+                            $input.css('background-color', '#dfeedf');
+                            setTimeout(function() {
+                                $input.css('background-color', '');
+                            }, 800);
+                        } else {
+                            alert(res.message);
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra khi cập nhật tồn kho tùy chọn.');
+                    }
+                });
+            });
+        });
+    </script>
+}

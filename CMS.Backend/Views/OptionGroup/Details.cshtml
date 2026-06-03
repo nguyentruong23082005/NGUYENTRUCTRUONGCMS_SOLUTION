@@ -1,0 +1,66 @@
+@model CMS.Data.Entities.OptionGroup
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chi tiết nhóm tùy chọn";
+}
+
+<div class="card-premium">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 fw-bold">
+            <span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">tune</span>
+            @Model.Name
+        </h1>
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-premium-primary border-0 text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">edit_square</span>
+                Sửa
+            </a>
+            <a asp-action="Index" class="btn btn-premium-outline text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">arrow_back</span>
+                Quay lại
+            </a>
+        </div>
+    </div>
+
+    <dl class="row mb-4">
+        <dt class="col-sm-3 text-muted">Bắt buộc</dt>
+        <dd class="col-sm-9">@(Model.IsRequired ? "Có" : "Không")</dd>
+
+        <dt class="col-sm-3 text-muted">Số lựa chọn tối đa</dt>
+        <dd class="col-sm-9">@Model.MaxSelectable</dd>
+    </dl>
+
+    <h2 class="h5 fw-bold mt-4 mb-3">
+        <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">checklist</span>
+        Giá trị tùy chọn
+    </h2>
+    <div class="table-responsive">
+        <table class="table-premium">
+            <thead>
+                <tr>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Phụ thu</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Tồn kho</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OptionValues ?? Enumerable.Empty<CMS.Data.Entities.OptionValue>())
+                {
+                    <tr>
+                        <td class="fw-semibold text-black">@item.Name</td>
+                        <td class="text-muted">@item.PriceSurcharge.ToString("N0") d</td>
+                        <td>
+                            <span class="badge @(item.IsActive ? "bg-success" : "bg-secondary") rounded-pill px-2.5 py-1">
+                                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">@(item.IsActive ? "check_circle" : "remove_circle")</span>
+                                @(item.IsActive ? "Đang bật" : "Đã tắt")
+                            </span>
+                        </td>
+                        <td class="text-muted">@(item.StockQuantity?.ToString() ?? "Không giới hạn")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,10 @@
+namespace CMS.Backend.Models.Api
+{
+    public sealed class PostQuery : PaginationQuery
+    {
+        public int? CategoryId { get; init; }
+        public string? Keyword { get; init; }
+        public string SortBy { get; init; } = "CreatedAt";
+        public string SortOrder { get; init; } = "desc";
+    }
+}

@@ -7,7 +7,7 @@
 
 <div class="card-premium">
     <div class="mb-4">
-        <h1 class="h3 mb-1 fw-bold"><i class="bi bi-person-check text-muted"></i> Chỉnh sửa Khách hàng</h1>
+        <h1 class="h3 mb-1 fw-bold"><span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">how_to_reg</span> Chỉnh sửa Khách hàng</h1>
         <p class="text-muted small">Cập nhật các thông tin chi tiết và quyền lợi cho tài khoản khách hàng.</p>
     </div>
 
@@ -17,39 +17,34 @@
                 <input type="hidden" asp-for="Id" />
 
                 <div class="mb-4">
-                    <label asp-for="FullName" class="form-label">Họ và tên</label>
+                    <label asp-for="FullName" class="form-label fw-semibold">Họ và tên</label>
                     <input asp-for="FullName" class="form-control" placeholder="Họ và tên" required />
                     <span asp-validation-for="FullName" class="text-danger small"></span>
                 </div>
 
                 <div class="mb-4">
-                    <label asp-for="Email" class="form-label">Địa chỉ Email</label>
+                    <label asp-for="Email" class="form-label fw-semibold">Địa chỉ Email</label>
                     <input asp-for="Email" type="email" class="form-control" placeholder="Email của khách hàng" required />
                     <span asp-validation-for="Email" class="text-danger small"></span>
                 </div>
 
                 <div class="mb-4">
-                    <label asp-for="Phone" class="form-label">Số điện thoại</label>
+                    <label asp-for="Phone" class="form-label fw-semibold">Số điện thoại</label>
                     <input asp-for="Phone" class="form-control" placeholder="Số điện thoại" />
                     <span asp-validation-for="Phone" class="text-danger small"></span>
                 </div>
 
-                <div class="mb-4">
-                    <label asp-for="Address" class="form-label">Địa chỉ thường trú</label>
-                    <input asp-for="Address" class="form-control" placeholder="Địa chỉ của khách hàng" />
-                    <span asp-validation-for="Address" class="text-danger small"></span>
-                </div>
 
                 <div class="mb-4">
-                    <label asp-for="Password" class="form-label">Mật khẩu mới</label>
+                    <label asp-for="Password" class="form-label fw-semibold">Mật khẩu mới</label>
                     <input asp-for="Password" type="password" class="form-control" placeholder="Để trống nếu không muốn đổi mật khẩu" />
                     <span asp-validation-for="Password" class="text-danger small"></span>
                     <small class="text-muted d-block mt-1">Chỉ điền nếu khách hàng yêu cầu đặt lại mật khẩu mới.</small>
                 </div>
 
                 <div class="mt-4 pt-2">
-                    <button type="submit" class="btn btn-premium-primary border-0 me-2">Lưu thay đổi</button>
-                    <a asp-action="Index" class="btn btn-premium-outline text-decoration-none">Hủy bỏ</a>
+                    <button type="submit" class="btn btn-premium-primary border-0 me-2"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">save</span> Lưu thay đổi</button>
+                    <a asp-action="Index" class="btn btn-premium-outline text-decoration-none"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">arrow_back</span> Hủy bỏ</a>
                 </div>
             </form>
         </div>

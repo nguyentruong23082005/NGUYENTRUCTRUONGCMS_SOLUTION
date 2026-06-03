@@ -1,0 +1,107 @@
+@using CMS.Backend.Helpers
+@using CMS.Data.Entities
+@model CMS.Data.Entities.Order
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = $"Cập nhật trạng thái đơn hàng #{Model.Id}";
+    var nextStatuses = ViewBag.NextStatuses as IReadOnlyList<OrderStatus> ?? Array.Empty<OrderStatus>();
+    var canCancel = ViewBag.CanCancel as bool? ?? false;
+}
+
+<div class="card-premium">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1 fw-bold">
+                <span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">published_with_changes</span>
+                Cập nhật trạng thái
+            </h1>
+            <p class="text-muted small mb-0">Đơn hàng #@Model.Id — Kh—ch: <strong>@(Model.Customer?.FullName ?? "Không rõ")</strong></p>
+        </div>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn-premium-outline text-decoration-none d-inline-flex align-items-center gap-1">
+            <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">arrow_back</span>
+            Quay lại
+        </a>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger border-0 rounded-3 mb-4" style="background-color:#fef2f2;color:#991b1b;">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="alert alert-light border rounded-3 mb-4">
+        Trạng thái hiện tại:
+        <span class="badge @OrderStatusHelper.GetBadgeClass(Model.Status)">
+            <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">@OrderStatusHelper.GetMaterialIcon(Model.Status)</span>
+            @OrderStatusHelper.GetDisplayName(Model.Status)
+        </span>
+    </div>
+
+    @if (!nextStatuses.Any() && !canCancel)
+    {
+        <div class="alert alert-secondary border-0 rounded-3">
+            <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">lock</span>
+            Đơn hàng n—y d— ? trạng thái cuối ho?c kh—ng c—n bước x? l— tiếp theo.
+        </div>
+    }
+    else
+    {
+        @if (nextStatuses.Any(s => s != OrderStatus.Cancelled))
+        {
+            <div class="row">
+                <div class="col-md-6">
+                    <form asp-action="UpdateStatus" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Chuyển sang trạng thái</label>
+                            <select name="status" class="form-select" required>
+                                @foreach (var status in nextStatuses.Where(s => s != OrderStatus.Cancelled))
+                                {
+                                    <option value="@status">@OrderStatusHelper.GetDisplayName(status)</option>
+                                }
+                            </select>
+                            <small class="text-muted">Chỉ hiển thị các bước chuyển hợp lệ.</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Ghi chú</label>
+                            <textarea name="notes" class="form-control" rows="3" placeholder="Ghi chú th—m v? đơn hàng...">@Model.Notes</textarea>
+                        </div>
+
+                        <div class="mt-4 pt-2">
+                             <button type="submit" class="btn btn-premium-primary border-0 me-2">Lưu trạng thái</button>
+                             <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-premium-outline text-decoration-none">Hủy bỏ</a>
+                         </div>
+                     </form>
+                 </div>
+             </div>
+         }
+ 
+         @if (canCancel)
+         {
+             <hr class="my-4" />
+             <div class="col-md-6">
+                 <form asp-action="Cancel" asp-route-id="@Model.Id" method="post"
+                       onsubmit="return confirm('Bạn có chắc muốn HỦY đơn hàng #@Model.Id? Hành động này không thể hoàn tác.');">
+                     @Html.AntiForgeryToken()
+                     <div class="mb-3">
+                         <label class="form-label fw-semibold text-danger">Lý do hủy</label>
+                         <textarea name="cancellationReason" class="form-control" rows="2" required placeholder="Ví dụ: khách đổi ý, hết hàng, đặt nhầm..."></textarea>
+                     </div>
+                     <div class="alert alert-warning border-0 rounded-3 small">
+                         <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">warning</span>
+                         Hủy đơn là thao tác nghiệp vụ quan trọng và không thể hoàn tác trong màn hình này.
+                     </div>
+                     <button type="submit" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center gap-1">
+                         <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">cancel</span>
+                         Hủy đơn hàng
+                     </button>
+                </form>
+            </div>
+        }
+    }
+</div>

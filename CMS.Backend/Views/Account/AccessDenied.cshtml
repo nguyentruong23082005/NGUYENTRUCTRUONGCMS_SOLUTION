@@ -3,27 +3,26 @@
     ViewData["Title"] = "Không có quyền truy cập";
 }
 
-<div class="container mt-5 text-center">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card border-danger shadow">
-                <div class="card-body py-5">
-                    <h1 class="display-1 text-danger fw-bold">403</h1>
-                    <h3 class="text-danger mb-3">KHÔNG CÓ QUYỀN TRUY CẬP</h3>
-                    <p class="text-muted mb-4">
-                        Bạn không có đủ quyền hạn để xem trang này.<br />
-                        Vui lòng liên hệ quản trị viên để được cấp quyền.
-                    </p>
-                    <div class="d-flex justify-content-center gap-2">
-                        <a href="/" class="btn btn-primary">
-                            <i class="bi bi-house-fill"></i> Quay lại trang chủ
-                        </a>
-                        <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-secondary">
-                            <i class="bi bi-box-arrow-right"></i> Đăng xuất
-                        </a>
-                    </div>
-                </div>
-            </div>
+<div class="card-premium text-center mx-auto" style="max-width: 720px;">
+    <div class="py-4">
+        <div class="mb-3">
+            <span class="material-symbols-rounded text-danger" aria-hidden="true" style="font-size: 72px;">block</span>
+        </div>
+        <p class="text-uppercase fw-bold text-danger small mb-2">Mã lỗi 403</p>
+        <h1 class="h3 fw-bold mb-3">Không có quyền truy cập</h1>
+        <p class="text-muted mb-4">
+            Bạn không có đủ quyền hạn để xem trang này.<br />
+            Vui lòng liên hệ quản trị viên để được cấp quyền phù hợp.
+        </p>
+        <div class="d-flex justify-content-center gap-2 flex-wrap">
+            <a href="/" class="btn btn-premium-primary border-0 text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">home</span>
+                Quay lại trang chủ
+            </a>
+            <a asp-controller="Account" asp-action="Logout" class="btn btn-premium-outline text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">logout</span>
+                Đăng xuất
+            </a>
         </div>
     </div>
 </div>

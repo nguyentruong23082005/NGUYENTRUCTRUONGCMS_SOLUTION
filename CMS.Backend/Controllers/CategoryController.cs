@@ -19,16 +19,31 @@ namespace CMS.Backend.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index([FromQuery] CategoryFilterModel filter, int page = 1)
         {
             const int pageSize = 10;
-            var categories = await PaginatedList<Category>.CreateAsync(
-                _context.Categories.AsNoTracking().OrderBy(c => c.Id),
+            filter ??= new CategoryFilterModel();
+
+            var query = _context.PostCategories.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                var term = filter.Search.Trim().ToLower();
+                query = query.Where(c => c.Name.ToLower().Contains(term));
+            }
+
+            var categories = await PaginatedList<PostCategory>.CreateAsync(
+                query.OrderBy(c => c.Id),
                 page,
                 pageSize);
 
-            // Đẩy sang View
-            return View(categories);
+            var viewModel = new CategoryIndexViewModel
+            {
+                Categories = categories,
+                Filter = filter
+            };
+
+            return View(viewModel);
         }
 
         // GET: Category/Create
@@ -40,11 +55,11 @@ namespace CMS.Backend.Controllers
         // POST: Category/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Category category)
+        public IActionResult Create(PostCategory category)
         {
             if (ModelState.IsValid)
             {
-                _context.Categories.Add(category);
+                _context.PostCategories.Add(category);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
@@ -54,7 +69,7 @@ namespace CMS.Backend.Controllers
         // GET: Category/Edit/5
         public IActionResult Edit(int id)
         {
-            var category = _context.Categories.Find(id);
+            var category = _context.PostCategories.Find(id);
             if (category == null)
             {
                 return NotFound();
@@ -65,7 +80,7 @@ namespace CMS.Backend.Controllers
         // POST: Category/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Category category)
+        public IActionResult Edit(int id, PostCategory category)
         {
             if (id != category.Id)
             {
@@ -74,7 +89,7 @@ namespace CMS.Backend.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Categories.Update(category);
+                _context.PostCategories.Update(category);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
@@ -86,13 +101,50 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
-            var category = _context.Categories.Find(id);
+            var category = _context.PostCategories.Find(id);
             if (category != null)
             {
-                _context.Categories.Remove(category);
+                // Remove sẽ được ApplicationDbContext chuyển thành xóa mềm nếu entity kế thừa BaseEntity.
+                _context.PostCategories.Remove(category);
                 _context.SaveChanges();
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Category/Trash
+        public async Task<IActionResult> Trash(int page = 1)
+        {
+            const int pageSize = 10;
+            var categories = await PaginatedList<PostCategory>.CreateAsync(
+                _context.PostCategories
+                    .IgnoreQueryFilters()
+                    .Where(c => c.IsDeleted)
+                    .AsNoTracking()
+                    .OrderByDescending(c => c.DeletedAt),
+                page,
+                pageSize);
+
+            return View(categories);
+        }
+
+        // POST: Category/Restore/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Restore(int id)
+        {
+            var category = _context.PostCategories
+                .IgnoreQueryFilters()
+                .FirstOrDefault(c => c.Id == id && c.IsDeleted);
+
+            if (category == null) return NotFound();
+
+            category.IsDeleted = false;
+            category.DeletedAt = null;
+            category.UpdatedAt = DateTime.UtcNow;
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = $"Đã khôi phục danh mục '{category.Name}'.";
+            return RedirectToAction(nameof(Trash));
         }
     }
 }

@@ -38,7 +38,7 @@ namespace CMS.Backend.Controllers
 
                 try
                 {
-                    // Thử xác thực với tư cách mật khẩu đã băm
+                    // VerifyHashedPassword dùng cho mật khẩu đã hash bằng PasswordHasher.
                     var verificationResult = passwordHasher.VerifyHashedPassword(user, user.PasswordHash ?? "", password ?? "");
                     if (verificationResult == PasswordVerificationResult.Success || verificationResult == PasswordVerificationResult.SuccessRehashNeeded)
                     {
@@ -47,8 +47,7 @@ namespace CMS.Backend.Controllers
                 }
                 catch (FormatException)
                 {
-                    // Nếu gặp lỗi FormatException (do chuỗi trong DB là Plaintext cũ, không phải Base64)
-                    // So sánh trực tiếp, nếu đúng thì tự động băm lại mật khẩu để lần sau đăng nhập không bị lỗi nữa
+                    // Hỗ trợ dữ liệu cũ: nếu DB còn mật khẩu plain text thì đăng nhập xong sẽ hash lại.
                     if (user.PasswordHash == password)
                     {
                         user.PasswordHash = passwordHasher.HashPassword(user, password);
@@ -59,23 +58,23 @@ namespace CMS.Backend.Controllers
 
                 if (isPasswordValid)
                 {
-                // Bước 2: Thiết lập danh tính (Claims) — "Thẻ bài" của người dùng
-                var claims = new List<Claim>
+                    // Bước 2: Thiết lập danh tính (Claims) — "Thẻ bài" của người dùng
+                    var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.Username),
                     new Claim(ClaimTypes.Role, user.Role), // Admin hoặc Editor
                     new Claim("FullName", user.FullName)
                 };
 
-                var claimsIdentity = new ClaimsIdentity(
-                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var claimsIdentity = new ClaimsIdentity(
+                        claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                // Bước 3: Đăng nhập và lưu Cookie vào trình duyệt
-                await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity));
+                    // SignInAsync tạo cookie đăng nhập để các controller [Authorize] nhận ra người dùng.
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity));
 
-                return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home");
                 }
             }
 

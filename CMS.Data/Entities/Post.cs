@@ -6,16 +6,21 @@ using System.Threading.Tasks;
 
 namespace CMS.Data.Entities
 {
-    public class Post
+    public class Post : BaseEntity
     {
         public int Id { get; set; }
         public string Title { get; set; }         // Tiêu đề bài viết
         public string Content { get; set; }       // Nội dung chi tiết
         public string? ImageUrl { get; set; }     // Hình ảnh đại diện (có thể để trống)
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        
+        public string? ExternalId { get; set; }     // ID bài viết từ nguồn ngoài
+        public string? SourceUrl { get; set; }      // URL gốc bài viết
+        public DateTime? PublishedAt { get; set; }  // Ngày đăng thật của bài viết
 
-        // Khóa ngoại liên kết tới Category
-        public int CategoryId { get; set; }
-        public virtual Category? Category { get; set; }  // Nullable - không bắt buộc khi tạo
+        // Khóa ngoại liên kết tới PostCategory
+        public int PostCategoryId { get; set; }
+        public virtual PostCategory? PostCategory { get; set; }  // Nullable - không bắt buộc khi tạo
+
+        public string Slug { get; set; } = string.Empty;
     }
 }

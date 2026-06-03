@@ -1,0 +1,82 @@
+@model CMS.Data.Entities.Banner
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chi tiết banner";
+}
+
+<div class="card-premium">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 fw-bold">
+            <span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">image</span>
+            Chi tiết Banner
+        </h1>
+        <div class="d-flex gap-2 flex-wrap">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">edit_square</span>
+                Sửa
+            </a>
+            <a asp-action="Index" class="btn btn-premium-outline text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">arrow_back</span>
+                Quay lại
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <img src="@Model.ImageUrl" alt="@Model.Title" class="img-fluid rounded-4 shadow-sm border" style="width: 100%; max-height: 360px; object-fit: cover;" />
+        </div>
+        <div class="col-lg-5">
+            <dl class="row mb-0">
+                <dt class="col-sm-4 text-muted">ID</dt>
+                <dd class="col-sm-8 fw-semibold">@Model.Id</dd>
+
+                <dt class="col-sm-4 text-muted">Tên banner</dt>
+                <dd class="col-sm-8 fw-semibold">@Model.Title</dd>
+
+                <dt class="col-sm-4 text-muted">Vị trí</dt>
+                <dd class="col-sm-8"><span class="badge bg-light text-dark">@Model.Position</span></dd>
+
+                <dt class="col-sm-4 text-muted">Thứ tự</dt>
+                <dd class="col-sm-8">@Model.SortOrder</dd>
+
+                <dt class="col-sm-4 text-muted">Trạng thái</dt>
+                <dd class="col-sm-8">
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge bg-success">Đang bật</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Đang tắt</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-4 text-muted">Image URL</dt>
+                <dd class="col-sm-8 text-break"><a href="@Model.ImageUrl" target="_blank" rel="noopener">@Model.ImageUrl</a></dd>
+
+                <dt class="col-sm-4 text-muted">Link</dt>
+                <dd class="col-sm-8 text-break">
+                    @if (!string.IsNullOrWhiteSpace(Model.LinkUrl))
+                    {
+                        <a href="@Model.LinkUrl" target="_blank" rel="noopener">@Model.LinkUrl</a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Không có</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-4 text-muted">Bắt đầu</dt>
+                <dd class="col-sm-8">@(Model.StartsAt?.ToString("dd/MM/yyyy HH:mm") ?? "Không giới hạn")</dd>
+
+                <dt class="col-sm-4 text-muted">Kết thúc</dt>
+                <dd class="col-sm-8">@(Model.EndsAt?.ToString("dd/MM/yyyy HH:mm") ?? "Không giới hạn")</dd>
+
+                <dt class="col-sm-4 text-muted">Ngày tạo</dt>
+                <dd class="col-sm-8">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</dd>
+            </dl>
+        </div>
+    </div>
+</div>

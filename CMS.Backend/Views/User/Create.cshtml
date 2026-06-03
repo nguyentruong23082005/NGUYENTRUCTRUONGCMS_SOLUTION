@@ -7,7 +7,7 @@
 
 <div class="card-premium">
     <div class="mb-4">
-        <h1 class="h3 mb-1 fw-bold"><i class="bi bi-person-plus text-muted"></i> Thêm thành viên hệ thống</h1>
+        <h1 class="h3 mb-1 fw-bold"><span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">person_add</span> Thêm thành viên hệ thống</h1>
         <p class="text-muted small">Nhập đầy đủ thông tin để khởi tạo tài khoản mới.</p>
     </div>
 
@@ -15,12 +15,12 @@
         @Html.AntiForgeryToken()
         <div class="row mb-4">
             <div class="col-md-6">
-                <label asp-for="Username" class="form-label">Tên đăng nhập (Username):</label>
+                <label asp-for="Username" class="form-label fw-semibold">Tên đăng nhập (Username):</label>
                 <input asp-for="Username" class="form-control" placeholder="Ví dụ: admin_thai" required />
                 <span asp-validation-for="Username" class="text-danger small"></span>
             </div>
             <div class="col-md-6">
-                <label asp-for="PasswordHash" class="form-label">Mật khẩu:</label>
+                <label asp-for="PasswordHash" class="form-label fw-semibold">Mật khẩu:</label>
                 <input asp-for="PasswordHash" type="password" class="form-control" placeholder="Nhập mật khẩu" required />
                 <span asp-validation-for="PasswordHash" class="text-danger small"></span>
             </div>
@@ -28,12 +28,12 @@
         
         <div class="row mb-4">
             <div class="col-md-6">
-                <label asp-for="FullName" class="form-label">Họ và Tên:</label>
+                <label asp-for="FullName" class="form-label fw-semibold">Họ và Tên:</label>
                 <input asp-for="FullName" class="form-control" placeholder="Ví dụ: Nguyễn Văn A" required />
                 <span asp-validation-for="FullName" class="text-danger small"></span>
             </div>
             <div class="col-md-6">
-                <label asp-for="Role" class="form-label">Vai trò (Role):</label>
+                <label asp-for="Role" class="form-label fw-semibold">Vai trò (Role):</label>
                 <select asp-for="Role" class="form-select" required>
                     <option value="">Chọn quyền hạn</option>
                     <option value="Admin">Quản trị viên (Admin)</option>
@@ -44,8 +44,14 @@
         </div>
 
         <div class="mt-4 pt-2">
-            <button type="submit" class="btn btn-premium-primary border-0 me-2">Lưu thành viên</button>
-            <a asp-action="Index" class="btn btn-premium-outline text-decoration-none">Quay lại</a>
+            <button type="submit" class="btn btn-premium-primary border-0 me-2">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">save</span>
+                Lưu thành viên
+            </button>
+            <a asp-action="Index" class="btn btn-premium-outline text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">arrow_back</span>
+                Quay lại
+            </a>
         </div>
     </form>
 </div>

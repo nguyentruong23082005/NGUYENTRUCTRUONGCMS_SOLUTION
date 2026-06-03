@@ -1,0 +1,71 @@
+@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.OptionGroup>
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Thùng rác nhóm tùy chọn";
+}
+
+<div class="card-premium">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 fw-bold">
+            <span class="material-symbols-rounded align-middle text-warning" aria-hidden="true">delete</span>
+            Thùng rác nhóm tùy chọn
+        </h1>
+        <a asp-action="Index" class="btn-premium-outline text-decoration-none">
+            <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">arrow_back</span>
+            Quay lại
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 mb-4" role="alert" style="background-color: #f0fdf4; color: #166534;">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 mb-4" role="alert" style="background-color: #fef2f2; color: #991b1b;">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="table-responsive">
+        <table class="table-premium">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Tên nhóm</th>
+                    <th scope="col">Ngày xóa</th>
+                    <th scope="col" width="90">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td class="fw-semibold text-black">@item.Name</td>
+                        <td class="text-muted">@item.DeletedAt?.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <form asp-action="Restore" asp-route-id="@item.Id" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit"
+                                        class="btn btn-sm btn-success d-inline-flex align-items-center justify-content-center"
+                                        title="Khôi phục nhóm"
+                                        aria-label="Khôi phục nhóm tùy chọn @item.Name">
+                                    <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">restore_from_trash</span>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <partial name="_Pagination" model="Model" />
+</div>

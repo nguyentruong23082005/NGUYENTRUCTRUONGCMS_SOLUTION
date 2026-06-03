@@ -28,7 +28,7 @@
                 currentQuery["page"] = (pageIndex - 1).ToString();
             }
             <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
-                <a class="page-link" asp-all-route-data="currentQuery" aria-label="Trang trước">‹</a>
+                <a class="page-link" asp-all-route-data="currentQuery" aria-label="Trang trước">—</a>
             </li>
 
             @for (var i = 1; i <= totalPages; i++)
@@ -43,7 +43,7 @@
                 currentQuery["page"] = (pageIndex + 1).ToString();
             }
             <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
-                <a class="page-link" asp-all-route-data="currentQuery" aria-label="Trang sau">›</a>
+                <a class="page-link" asp-all-route-data="currentQuery" aria-label="Trang sau">—</a>
             </li>
         </ul>
     </nav>

@@ -1,0 +1,120 @@
+frontend/
+│
+├── src/
+│   ├── api/                          # Gọi API đến backend
+│   │   ├── axiosClient.js
+│   │   ├── authApi.js
+│   │   ├── productApi.js
+│   │   ├── categoryApi.js
+│   │   ├── orderApi.js
+│   │   ├── customerApi.js
+│   │   ├── customerAddressApi.js
+│   │   ├── storeApi.js
+│   │   ├── voucherApi.js
+│   │   ├── optionGroupApi.js
+│   │   ├── optionValueApi.js
+│   │   ├── reviewApi.js
+│   │   ├── productImageApi.js
+│   │   └── bannerApi.js
+│   │
+│   ├── services/                     # Logic nghiệp vụ (nếu cần)
+│   │   ├── productService.js
+│   │   ├── orderService.js
+│   │   ├── customerService.js
+│   │   └── storeService.js
+│   │
+│   ├── hooks/                        # Custom hooks
+│   │   ├── useAuth.js
+│   │   ├── useProducts.js
+│   │   ├── useOrders.js
+│   │   ├── useCustomers.js
+│   │   ├── useStores.js
+│   │   ├── useVouchers.js
+│   │   ├── useOptions.js
+│   │   ├── useReviews.js
+│   │   ├── useCart.js
+│   │   └── usePagination.js
+│   │
+│   ├── context/                      # React Context
+│   │   ├── AuthContext.jsx
+│   │   └── CartContext.jsx
+│   │
+│   ├── components/                   # Component dùng chung
+│   │   ├── common/
+│   │   │   ├── Button/
+│   │   │   ├── Input/
+│   │   │   ├── Modal/
+│   │   │   ├── Loading/
+│   │   │   ├── Badge/
+│   │   │   ├── Pagination/
+│   │   │   ├── EmptyState/
+│   │   │   ├── ConfirmDialog/
+│   │   │   ├── SearchBar/
+│   │   │   └── StatusBadge/
+│   │   │
+│   │   ├── layout/
+│   │   │   └── ClientLayout/
+│   │   │       ├── ClientLayout.jsx
+│   │   │       ├── Header.jsx
+│   │   │       └── Footer.jsx
+│   │   │
+│   │   ├── home/
+│   │   │   ├── HeroBanner/
+│   │   │   └── PromotionSection/
+│   │   │
+│   │   ├── product/
+│   │   │   ├── ProductCard/
+│   │   │   ├── ProductOptionSelector/
+│   │   │   └── ProductImageGallery/
+│   │   │
+│   │   ├── order/
+│   │   │   ├── OrderStatusBadge/
+│   │   │   ├── OrderTimeline/
+│   │   │   └── OrderDetailOptions/
+│   │   │
+│   │   ├── store/
+│   │   │   ├── StoreCard/
+│   │   │   └── StoreMap/
+│   │   │
+│   │   ├── customer/
+│   │   │   ├── AddressForm/
+│   │   │   └── MembershipInfo/
+│   │   │
+│   │   └── voucher/
+│   │       └── VoucherInput/
+│   │
+│   ├── pages/                        # Các trang khách hàng
+│   │   ├── Home/
+│   │   ├── Menu/
+│   │   ├── ProductDetail/
+│   │   ├── Cart/
+│   │   ├── Checkout/
+│   │   ├── Login/
+│   │   ├── Register/
+│   │   ├── Profile/
+│   │   ├── Promotions/
+│   │   ├── Stores/
+│   │   └── Membership/
+│   │
+│   ├── routes/                       # Router
+│   │   ├── index.jsx
+│   │   └── ProtectedRoute.jsx
+│   │
+│   ├── utils/                        # Tiện ích
+│   │   ├── formatCurrency.js
+│   │   ├── formatDate.js
+│   │   ├── constants.js
+│   │   ├── validators.js
+│   │   └── storage.js
+│   │
+│   ├── styles/                       # CSS toàn cục
+│   │   ├── global.css
+│   │   └── variables.css
+│   │
+│   ├── App.jsx
+│   └── main.jsx
+│
+├── index.html
+├── vite.config.js
+├── package.json
+└── .env

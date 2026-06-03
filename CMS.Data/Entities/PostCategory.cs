@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CMS.Data.Entities
 {
-    public class Category
+    public class PostCategory : BaseEntity
     {
         public int Id { get; set; }
         public string Name { get; set; } // Tên danh mục (vd: Tin Giáo Dục)
@@ -14,5 +14,7 @@ namespace CMS.Data.Entities
 
         // Quan hệ: Một danh mục có nhiều bài viết
         public virtual ICollection<Post>? Posts { get; set; } // Nullable - không bắt buộc
+
+        public string Slug { get; set; } = string.Empty;
     }
 }

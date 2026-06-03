@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CMS.Data.Entities
 {
-    public class Customer
+    public class Customer : BaseEntity
     {
         [Key]
         public int Id { get; set; }
@@ -20,10 +20,15 @@ namespace CMS.Data.Entities
         public string Email { get; set; }
 
         public string? Phone { get; set; }
-        public string? Address { get; set; }
 
         public string? Password { get; set; }
 
+        public int TokenVersion { get; set; } = 1;
+
+        // Các danh sách bên dưới là quan hệ 1-nhiều: một khách có nhiều đơn hàng, địa chỉ, voucher, đánh giá.
         public virtual ICollection<Order>? Orders { get; set; }
+        public virtual ICollection<CustomerAddress>? CustomerAddresses { get; set; }
+        public virtual ICollection<CustomerVoucher>? CustomerVouchers { get; set; }
+        public virtual ICollection<Review>? Reviews { get; set; }
     }
 }

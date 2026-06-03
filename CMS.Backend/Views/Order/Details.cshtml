@@ -1,0 +1,172 @@
+@using CMS.Backend.Helpers
+@using CMS.Data.Entities
+@model CMS.Data.Entities.Order
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = $"Chi tiết đơn hàng #{Model.Id}";
+    var total = Model.OrderDetails?.Sum(od => od.Quantity * od.UnitPrice) ?? 0;
+}
+
+<div class="card-premium">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1 fw-bold">
+                <span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">receipt_long</span>
+                Đơn hàng #@Model.Id
+            </h1>
+            <p class="text-muted small mb-0">Ngày đặt: @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+        </div>
+        <div class="d-flex gap-2">
+            @if (OrderStatusHelper.GetNextStatuses(Model.Status).Any())
+            {
+                <a asp-action="UpdateStatus" asp-route-id="@Model.Id" class="btn btn-warning btn-sm d-inline-flex align-items-center gap-1">
+                    <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">published_with_changes</span>
+                    Cập nhật trạng thái
+                </a>
+            }
+            <a asp-action="Index" class="btn-premium-outline text-decoration-none d-inline-flex align-items-center gap-1">
+                <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">arrow_back</span>
+                Quay lại
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success border-0 rounded-3 mb-4" style="background-color:#f0fdf4;color:#166534;">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger border-0 rounded-3 mb-4" style="background-color:#fef2f2;color:#991b1b;">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (Model.Status == OrderStatus.Cancelled)
+    {
+        <div class="alert alert-danger border-0 rounded-3 mb-4">
+            <div class="d-flex align-items-start gap-2">
+                <span class="material-symbols-rounded" aria-hidden="true">cancel</span>
+                <div>
+                    <strong>Đơn hàng này đã bị hủy.</strong>
+                    @if (!string.IsNullOrWhiteSpace(Model.Notes))
+                    {
+                        <div class="small mt-1">@Model.Notes</div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    @* Thông tin đơn hàng *@
+    <div class="row mb-4 g-3">
+        <div class="col-md-6">
+            <div class="border rounded-3 p-3 h-100" style="background:#f8f9fa;">
+                <h6 class="fw-bold mb-3">
+                    <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">person</span>
+                    Khách hàng
+                </h6>
+                <p class="mb-1"><span class="text-muted">Họ tên:</span> <strong>@(Model.Customer?.FullName ?? "Không rõ")</strong></p>
+                <p class="mb-1"><span class="text-muted">Email:</span> @(Model.Customer?.Email ?? "—")</p>
+                <p class="mb-0"><span class="text-muted">SĐT:</span> @(Model.Customer?.Phone ?? "—")</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="border rounded-3 p-3 h-100" style="background:#f8f9fa;">
+                <h6 class="fw-bold mb-3">
+                    <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">local_shipping</span>
+                    Giao hàng
+                </h6>
+                <p class="mb-1"><span class="text-muted">Người nhận:</span> @(Model.ReceiverName ?? "—")</p>
+                <p class="mb-1"><span class="text-muted">SĐT:</span> @(Model.ReceiverPhone ?? "—")</p>
+                <p class="mb-1"><span class="text-muted">Địa chỉ:</span> @(Model.ShippingAddress ?? "—")</p>
+                <p class="mb-0">
+                    <span class="text-muted">Trạng thái:</span>
+                    <span class="badge @OrderStatusHelper.GetBadgeClass(Model.Status)">
+                        <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">@OrderStatusHelper.GetMaterialIcon(Model.Status)</span>
+                        @OrderStatusHelper.GetDisplayName(Model.Status)
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    @* Bảng sản phẩm (reađãonly) *@
+    <h6 class="fw-bold mb-3">
+        <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">inventory_2</span>
+        Sản phẩm trong don
+    </h6>
+    <div class="table-responsive mb-3">
+        <table class="table-premium">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Sản phẩm</th>
+                    <th scope="col" class="text-end">Đơn giá</th>
+                    <th scope="col" class="text-center">SL</th>
+                    <th scope="col" class="text-end">Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.OrderDetails == null || !Model.OrderDetails.Any())
+                {
+                    <tr><td colspan="5" class="text-center text-muted py-3">Không có sản phẩm n—o.</td></tr>
+                }
+                else
+                {
+                    int stt = 1;
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td class="text-muted">@(stt++)</td>
+                            <td class="fw-semibold">
+                                @(item.Product?.Name ?? "Không rõ")
+                                @if (item.OrderDetailOptions?.Any() == true)
+                                {
+                                    <div class="mt-2 d-flex flex-wrap gap-2">
+                                        @foreach (var option in item.OrderDetailOptions)
+                                        {
+                                            <span class="badge bg-light text-dark border">
+                                                <span class="material-symbols-rounded admin-icon-sm align-middle" style="font-size:16px;" aria-hidden="true">tune</span>
+                                                @(option.OptionValue?.OptionGroup?.Name ?? "T—y ch?n"):
+                                                @(option.OptionValue?.Name ?? "Không rõ")
+                                                @if (option.Price > 0)
+                                                {
+                                                    <span class="text-danger">(+@option.Price.ToString("N0") d)</span>
+                                                }
+                                            </span>
+                                        }
+                                    </div>
+                                }
+                            </td>
+                            <td class="text-end">@item.UnitPrice.ToString("N0") d</td>
+                            <td class="text-center">@item.Quantity</td>
+                            <td class="text-end fw-bold text-danger">@((item.Quantity * item.UnitPrice).ToString("N0")) d</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" class="text-end fw-bold">Giảm gi—:</td>
+                    <td class="text-end text-success fw-bold">- @Model.DiscountAmount.ToString("N0") d</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-end fw-bold fs-6">Tổng cộng:</td>
+                    <td class="text-end text-danger fw-bold fs-6">@Model.TotalAmount.ToString("N0") d</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Notes))
+    {
+        <div class="alert alert-secondary border-0 rounded-3 mb-0">
+            <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">notes</span>
+            <strong>Ghi chú:</strong> @Model.Notes
+        </div>
+    }
+</div>

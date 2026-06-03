@@ -81,11 +81,11 @@
                             }
 
                             <div class="p-4 d-flex flex-column flex-grow-1">
-                                <span class="public-badge mb-3">@(item.Category?.Name ?? "Chưa phân loại")</span>
+                                <span class="public-badge mb-3">@(item.PostCategory?.Name ?? "Chưa phân loại")</span>
                                 <h3 class="public-news-title h4 mb-3">@item.Title</h3>
                                 <p class="text-muted small mb-4">
                                     <i class="bi bi-calendar3 me-1" aria-hidden="true"></i>
-                                    Đăng ngày @item.CreatedDate.ToString("dd/MM/yyyy")
+                                    Đăng ngày @item.CreatedAt.ToString("dd/MM/yyyy")
                                 </p>
                                 <a asp-controller="Post" asp-action="Details" asp-route-id="@item.Id"
                                    class="btn btn-public-outline mt-auto align-self-start"

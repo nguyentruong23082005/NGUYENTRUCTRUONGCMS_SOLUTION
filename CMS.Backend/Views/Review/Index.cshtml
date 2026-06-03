@@ -1,0 +1,125 @@
+@model CMS.Backend.Models.ReviewIndexViewModel
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Đánh giá";
+}
+
+<div class="card-premium">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 fw-bold">
+            <span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">reviews</span>
+            Danh sách Đánh giá
+        </h1>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 mb-4" role="alert" style="background-color: #f0fdf4; color: #166534;">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 mb-4" role="alert" style="background-color: #fef2f2; color: #991b1b;">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Filter Form -->
+    <form asp-action="Index" method="get" class="filter-section mb-4">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label fw-semibold text-muted small">Tìm kiếm</label>
+                <input type="text" name="Search" value="@Model.Filter.Search" class="form-control" placeholder="Tìm theo tên sản phẩm, khách hàng, nội dung..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold text-muted small">Số sao (Rating)</label>
+                <select name="Rating" class="form-select">
+                    <option value="" selected="@(Model.Filter.Rating == null)">-- Chọn số sao --</option>
+                    <option value="5" selected="@(Model.Filter.Rating == 5)">5 sao</option>
+                    <option value="4" selected="@(Model.Filter.Rating == 4)">4 sao</option>
+                    <option value="3" selected="@(Model.Filter.Rating == 3)">3 sao</option>
+                    <option value="2" selected="@(Model.Filter.Rating == 2)">2 sao</option>
+                    <option value="1" selected="@(Model.Filter.Rating == 1)">1 sao</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button type="submit" class="btn-search-premium flex-grow-1">
+                    <span class="material-symbols-rounded align-middle">search</span> Tìm kiếm
+                </button>
+                <a asp-action="Index" class="btn-reset-premium" title="Xóa bộ lọc">
+                    <span class="material-symbols-rounded align-middle">restart_alt</span>
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table-premium">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Sản phẩm</th>
+                    <th scope="col">Khách hàng</th>
+                    <th scope="col">Rating</th>
+                    <th scope="col">Bình luận</th>
+                    <th scope="col" width="100">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Reviews.Items.Any())
+                {
+                    @foreach (var item in Model.Reviews.Items)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td class="fw-semibold text-black">@(item.Product?.Name ?? "Không rõ")</td>
+                            <td class="text-muted">@(item.Customer?.FullName ?? "Không rõ")</td>
+                            <td>
+                                <span class="text-warning d-inline-flex align-items-center gap-1">
+                                    @for (var i = 0; i < item.Rating; i++)
+                                    {
+                                        <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">star</span>
+                                    }
+                                </span>
+                            </td>
+                            <td class="text-muted">@(string.IsNullOrWhiteSpace(item.Comment) ? "—" : item.Comment)</td>
+                            <td>
+                                <div class="d-flex gap-2 flex-nowrap">
+                                    <a asp-action="Details" asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-info text-white d-inline-flex align-items-center justify-content-center"
+                                       title="Xem chi tiết"
+                                       aria-label="Xem chi tiết đánh giá @item.Id">
+                                        <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">visibility</span>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post"
+                                          onsubmit="return confirm('Chuyển đánh giá này vào thùng rác?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger d-inline-flex align-items-center justify-content-center"
+                                                title="Xóa đánh giá"
+                                                aria-label="Xóa đánh giá @item.Id">
+                                            <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">delete</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">Không tìm thấy đánh giá nào khớp với bộ lọc.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <partial name="_Pagination" model="Model.Reviews" />
+</div>

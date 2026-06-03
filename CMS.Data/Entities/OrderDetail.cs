@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CMS.Data.Entities
 {
-    public class OrderDetail
+    public class OrderDetail : BaseEntity
     {
         [Key]
         public int Id { get; set; }
@@ -27,5 +27,7 @@ namespace CMS.Data.Entities
 
         [ForeignKey("ProductId")]
         public virtual Product? Product { get; set; }
+
+        public virtual ICollection<OrderDetailOption>? OrderDetailOptions { get; set; }
     }
 }

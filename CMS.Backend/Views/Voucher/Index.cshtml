@@ -1,0 +1,130 @@
+@model CMS.Backend.Models.VoucherIndexViewModel
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Voucher";
+}
+
+<div class="card-premium">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 fw-bold">
+            <span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">sell</span>
+            Danh sách Voucher
+        </h1>
+        <div class="d-flex gap-2 flex-wrap">
+            <a asp-action="Trash" class="btn btn-premium-outline text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">delete</span>
+                Thùng rác
+            </a>
+            <a asp-action="Create" class="btn-premium-primary text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">add</span>
+                Thêm voucher
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Form -->
+    <form asp-action="Index" method="get" class="filter-section mb-4">
+        <div class="row g-3">
+            <div class="col-md-9">
+                <label class="form-label fw-semibold text-muted small">Tìm kiếm mã voucher</label>
+                <input type="text" name="Search" value="@Model.Filter.Search" class="form-control" placeholder="Nhập mã voucher cần tìm..." />
+            </div>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button type="submit" class="btn-search-premium flex-grow-1">
+                    <span class="material-symbols-rounded align-middle">search</span> Tìm kiếm
+                </button>
+                <a asp-action="Index" class="btn-reset-premium" title="Xóa bộ lọc">
+                    <span class="material-symbols-rounded align-middle">restart_alt</span>
+                </a>
+            </div>
+        </div>
+    </form>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 mb-4" role="alert" style="background-color: #f0fdf4; color: #166534;">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 mb-4" role="alert" style="background-color: #fef2f2; color: #991b1b;">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="table-responsive">
+        <table class="table-premium">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Mã</th>
+                    <th scope="col">Giảm</th>
+                    <th scope="col">Đơn tối thiểu</th>
+                    <th scope="col">Hết hạn</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col" width="130">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Vouchers.Items.Any())
+                {
+                    @foreach (var item in Model.Vouchers.Items)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td class="fw-bold text-black">@item.Code</td>
+                            <td class="text-muted">@(item.IsPercent ? $"{item.DiscountValue:N0}%" : $"{item.DiscountValue:N0} đ")</td>
+                            <td class="text-muted">@item.MinimumOrderAmount.ToString("N0") đ</td>
+                            <td class="text-muted">@item.ExpiryDate.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <span class="badge @(item.IsActive ? "bg-success" : "bg-secondary") rounded-pill px-2.5 py-1">
+                                    <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">@(item.IsActive ? "check_circle" : "remove_circle")</span>
+                                    @(item.IsActive ? "Đang bật" : "Đã tắt")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2 flex-nowrap">
+                                    <a asp-action="Details" asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-info text-white d-inline-flex align-items-center justify-content-center"
+                                       title="Xem chi tiết"
+                                       aria-label="Xem chi tiết voucher @item.Code">
+                                        <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">visibility</span>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-warning d-inline-flex align-items-center justify-content-center"
+                                       title="Sửa voucher"
+                                       aria-label="Sửa voucher @item.Code">
+                                        <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">edit_square</span>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post"
+                                          onsubmit="return confirm('Chuyển voucher này vào thùng rác?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger d-inline-flex align-items-center justify-content-center"
+                                                title="Xóa voucher"
+                                                aria-label="Xóa voucher @item.Code">
+                                            <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">delete</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">Không tìm thấy voucher nào khớp với bộ lọc.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <partial name="_Pagination" model="Model.Vouchers" />
+</div>

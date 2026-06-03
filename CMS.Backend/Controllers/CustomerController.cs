@@ -18,17 +18,33 @@ namespace CMS.Backend.Controllers
         }
 
         // GET: /Customer
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index([FromQuery] CustomerFilterModel filter, int page = 1)
         {
             const int pageSize = 10;
+            filter ??= new CustomerFilterModel();
+
+            var query = _context.Customers.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                var term = filter.Search.Trim().ToLower();
+                query = query.Where(c => (c.FullName != null && c.FullName.ToLower().Contains(term)) || 
+                                         (c.Phone != null && c.Phone.Contains(term)) || 
+                                         (c.Email != null && c.Email.ToLower().Contains(term)));
+            }
+
             var customers = await PaginatedList<Customer>.CreateAsync(
-                _context.Customers
-                    .AsNoTracking()
-                    .OrderBy(c => c.FullName),
+                query.OrderBy(c => c.FullName),
                 page,
                 pageSize);
 
-            return View(customers);
+            var viewModel = new CustomerIndexViewModel
+            {
+                Customers = customers,
+                Filter = filter
+            };
+
+            return View(viewModel);
         }
 
         // GET: /Customer/Create
@@ -58,6 +74,8 @@ namespace CMS.Backend.Controllers
 
                 var passwordHasher = new Microsoft.AspNetCore.Identity.PasswordHasher<Customer>();
                 var password = model.Password!;
+
+                // Không lưu mật khẩu gốc, chỉ lưu chuỗi đã hash vào database.
                 model.Password = passwordHasher.HashPassword(model, password);
 
                 _context.Customers.Add(model);
@@ -96,6 +114,7 @@ namespace CMS.Backend.Controllers
 
                 if (string.IsNullOrWhiteSpace(model.Password))
                 {
+                    // Nếu không nhập mật khẩu mới thì giữ lại mật khẩu cũ.
                     model.Password = existingCustomer.Password;
                 }
                 else
@@ -119,18 +138,47 @@ namespace CMS.Backend.Controllers
             var customer = _context.Customers.Find(id);
             if (customer == null) return NotFound();
 
-            // Kiểm tra khóa ngoại từ Orders
-            var hasOrders = _context.Orders.Any(o => o.CustomerId == id);
-            if (hasOrders)
-            {
-                TempData["ErrorMessage"] = $"Không thể xóa khách hàng '{customer.FullName}' vì đã có đơn hàng.";
-                return RedirectToAction(nameof(Index));
-            }
-
+            // Xóa mềm khách hàng để ẩn khỏi danh sách thường nhưng vẫn giữ lịch sử đơn hàng.
             _context.Customers.Remove(customer);
             _context.SaveChanges();
-            TempData["SuccessMessage"] = $"Đã xóa khách hàng '{customer.FullName}'.";
+            TempData["SuccessMessage"] = $"Đã chuyển khách hàng '{customer.FullName}' vào thùng rác.";
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: /Customer/Trash
+        public async Task<IActionResult> Trash(int page = 1)
+        {
+            const int pageSize = 10;
+            var customers = await PaginatedList<Customer>.CreateAsync(
+                _context.Customers
+                    .IgnoreQueryFilters()
+                    .Where(c => c.IsDeleted)
+                    .AsNoTracking()
+                    .OrderByDescending(c => c.DeletedAt),
+                page,
+                pageSize);
+
+            return View(customers);
+        }
+
+        // POST: /Customer/Restore/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Restore(int id)
+        {
+            var customer = _context.Customers
+                .IgnoreQueryFilters()
+                .FirstOrDefault(c => c.Id == id && c.IsDeleted);
+
+            if (customer == null) return NotFound();
+
+            customer.IsDeleted = false;
+            customer.DeletedAt = null;
+            customer.UpdatedAt = DateTime.UtcNow;
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = $"Đã khôi phục khách hàng '{customer.FullName}'.";
+            return RedirectToAction(nameof(Trash));
         }
     }
 }

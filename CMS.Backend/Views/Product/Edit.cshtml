@@ -5,60 +5,218 @@
     ViewData["Title"] = "Sửa sản phẩm";
 }
 
-<div class="card-premium">
-    <div class="mb-4">
-        <h1 class="h3 mb-1 fw-bold"><i class="bi bi-pencil-square text-muted"></i> Chỉnh sửa sản phẩm</h1>
-        <p class="text-muted small">Cập nhật thông tin chi tiết của sản phẩm.</p>
+<div class="card-premium mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 fw-bold">
+            <span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">edit_square</span>
+            Chỉnh sửa sản phẩm
+        </h1>
+        <a asp-action="Index" class="btn btn-premium-outline text-decoration-none">
+            <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">arrow_back</span>
+            Quay lại
+        </a>
     </div>
 
+    @if (TempData["SuccessMessage"] != null) { <div class="alert alert-success border-0 rounded-3">@TempData["SuccessMessage"]</div> }
+    @if (TempData["ErrorMessage"] != null) { <div class="alert alert-danger border-0 rounded-3">@TempData["ErrorMessage"]</div> }
+
     <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
         <input type="hidden" asp-for="Id" />
 
         <div class="row mb-4">
             <div class="col-md-6">
-                <label asp-for="Name" class="form-label">Tên sản phẩm</label>
+                <label asp-for="Name" class="form-label fw-semibold">Tên sản phẩm</label>
                 <input asp-for="Name" class="form-control" placeholder="Tên sản phẩm" required />
                 <span asp-validation-for="Name" class="text-danger small"></span>
             </div>
             <div class="col-md-6">
-                <label asp-for="CategoryProductId" class="form-label">Danh mục</label>
-                <select asp-for="CategoryProductId" class="form-select" asp-items="ViewBag.CategoryProductId" required>
+                <label asp-for="ProductCategoryId" class="form-label fw-semibold">Danh mục</label>
+                <select asp-for="ProductCategoryId" class="form-select" asp-items="ViewBag.ProductCategoryId" required>
                     <option value="">Chọn danh mục</option>
                 </select>
-                <span asp-validation-for="CategoryProductId" class="text-danger small"></span>
+                <span asp-validation-for="ProductCategoryId" class="text-danger small"></span>
             </div>
         </div>
 
         <div class="row mb-4">
             <div class="col-md-6">
-                <label asp-for="Price" class="form-label">Giá bán (VNĐ)</label>
+                <label asp-for="Price" class="form-label fw-semibold">Giá bán (VNĐ)</label>
                 <input asp-for="Price" type="number" step="0.01" class="form-control" placeholder="Giá bán" required />
                 <span asp-validation-for="Price" class="text-danger small"></span>
             </div>
             <div class="col-md-6">
-                <label asp-for="StockQuantity" class="form-label">Số lượng tồn kho</label>
+                <label asp-for="StockQuantity" class="form-label fw-semibold">Số lượng tồn kho</label>
                 <input asp-for="StockQuantity" type="number" class="form-control" placeholder="Tồn kho" required />
                 <span asp-validation-for="StockQuantity" class="text-danger small"></span>
             </div>
         </div>
 
         <div class="mb-4">
-            <label asp-for="ImageUrl" class="form-label">Đường dẫn ảnh sản phẩm (URL)</label>
+            <label asp-for="ImageUrl" class="form-label fw-semibold">Đường dẫn ảnh đại diện cũ (URL)</label>
             <input asp-for="ImageUrl" class="form-control" placeholder="http://example.com/image.jpg" />
             <span asp-validation-for="ImageUrl" class="text-danger small"></span>
         </div>
 
         <div class="mb-4">
-            <label asp-for="Description" class="form-label">Mô tả sản phẩm</label>
+            <label asp-for="Description" class="form-label fw-semibold">Mô tả sản phẩm</label>
             <textarea asp-for="Description" class="form-control" rows="4" placeholder="Mô tả sản phẩm..."></textarea>
             <span asp-validation-for="Description" class="text-danger small"></span>
         </div>
 
         <div class="mt-4 pt-2">
-            <button type="submit" class="btn btn-premium-primary border-0 me-2">Cập nhật sản phẩm</button>
-            <a asp-action="Index" class="btn btn-premium-outline text-decoration-none">Hủy bỏ</a>
+            <button type="submit" class="btn btn-premium-primary border-0 me-2">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">save</span>
+                Cập nhật sản phẩm
+            </button>
         </div>
     </form>
+</div>
+
+<div class="card-premium mb-4">
+    <h2 class="h4 fw-bold mb-3">
+        <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">image</span>
+        Hình ảnh sản phẩm
+    </h2>
+    <form asp-action="AddImage" method="post" class="row g-3 align-items-end mb-4">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="productId" value="@Model.Id" />
+        <div class="col-md-8">
+            <label class="form-label fw-semibold" for="imageUrl">URL ảnh</label>
+            <input id="imageUrl" name="imageUrl" class="form-control" placeholder="https://example.com/product.jpg" />
+        </div>
+        <div class="col-md-2 form-check mb-2">
+            <input id="isPrimary" name="isPrimary" value="true" type="checkbox" class="form-check-input" />
+            <label for="isPrimary" class="form-check-label">Ảnh chính</label>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn-premium-primary w-100">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">add</span>
+                Thêm
+            </button>
+        </div>
+    </form>
+    <div class="table-responsive">
+        <table class="table-premium">
+            <thead>
+                <tr>
+                    <th scope="col">Ảnh</th>
+                    <th scope="col">URL</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col" width="120">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var image in Model.ProductImages ?? Enumerable.Empty<CMS.Data.Entities.ProductImage>())
+                {
+                    <tr>
+                        <td>
+                            <img src="@image.ImageUrl" alt="ảnh sản phẩm" style="width:72px;height:72px;object-fit:cover;border-radius:12px;" />
+                        </td>
+                        <td class="text-break text-muted">@image.ImageUrl</td>
+                        <td>
+                            @if (image.IsPrimary)
+                            {
+                                <span class="badge bg-success rounded-pill px-2.5 py-1">
+                                    <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">check_circle</span>
+                                    Ảnh chính
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">—</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                @if (!image.IsPrimary)
+                                {
+                                    <form asp-action="SetPrimaryImage" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="imageId" value="@image.Id" />
+                                        <button type="submit"
+                                                class="btn btn-sm btn-info d-inline-flex align-items-center justify-content-center"
+                                                title="Đặt làm ảnh chính"
+                                                aria-label="Đặt ảnh @image.Id làm ảnh chính">
+                                            <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">check_circle</span>
+                                        </button>
+                                    </form>
+                                }
+                                <form asp-action="RemoveImage" method="post" onsubmit="return confirm('Chuyển ảnh này vào thùng rác?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="imageId" value="@image.Id" />
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger d-inline-flex align-items-center justify-content-center"
+                                            title="Xóa ảnh"
+                                            aria-label="Xóa ảnh @image.Id">
+                                        <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">delete</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card-premium">
+    <h2 class="h4 fw-bold mb-3">
+        <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">tune</span>
+        Nhóm tùy chọn
+    </h2>
+    <form asp-action="AttachOptionGroup" method="post" class="row g-3 align-items-end mb-4">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="productId" value="@Model.Id" />
+        <div class="col-md-9">
+            <label class="form-label fw-semibold" for="optionGroupId">Gắn nhóm tùy chọn</label>
+            <select id="optionGroupId" name="optionGroupId" class="form-select" asp-items="ViewBag.AvailableOptionGroups">
+                <option value="">-- Chọn nhóm --</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn-premium-primary w-100">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">add_link</span>
+                Gắn nhóm
+            </button>
+        </div>
+    </form>
+    <div class="table-responsive">
+        <table class="table-premium">
+            <thead>
+                <tr>
+                    <th scope="col">Nhóm</th>
+                    <th scope="col">Bắt buộc</th>
+                    <th scope="col">Tối đa</th>
+                    <th scope="col" width="90">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var link in Model.ProductOptionGroups ?? Enumerable.Empty<CMS.Data.Entities.ProductOptionGroup>())
+                {
+                    <tr>
+                        <td class="fw-semibold text-black">@link.OptionGroup?.Name</td>
+                        <td class="text-muted">@(link.OptionGroup?.IsRequired == true ? "Có" : "Không")</td>
+                        <td class="text-muted">@link.OptionGroup?.MaxSelectable</td>
+                        <td>
+                            <form asp-action="DetachOptionGroup" method="post" onsubmit="return confirm('Bỏ gắn nhóm tùy chọn này khỏi sản phẩm?');">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@Model.Id" />
+                                <input type="hidden" name="optionGroupId" value="@link.OptionGroupId" />
+                                <button type="submit"
+                                        class="btn btn-sm btn-danger d-inline-flex align-items-center justify-content-center"
+                                        title="Bỏ gắn nhóm"
+                                        aria-label="Bỏ gắn nhóm tùy chọn @link.OptionGroup?.Name">
+                                    <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">link_off</span>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @section Scripts {

@@ -21,9 +21,9 @@ namespace CMS.Backend.Controllers
         {
             // Lấy 3 bài viết mới nhất kèm tên danh mục
             var latestPosts = _context.Posts
-                .Include(p => p.Category)
+                .Include(p => p.PostCategory)
                 .AsNoTracking()
-                .OrderByDescending(p => p.CreatedDate)
+                .OrderByDescending(p => p.CreatedAt)
                 .Take(3)
                 .ToList();
 
@@ -32,8 +32,9 @@ namespace CMS.Backend.Controllers
 
         public IActionResult Dashboard()
         {
+            // Các số liệu tổng quan để hiển thị trên trang Dashboard quản trị.
             ViewBag.PostCount = _context.Posts.Count();
-            ViewBag.CategoryCount = _context.Categories.Count();
+            ViewBag.CategoryCount = _context.PostCategories.Count();
             ViewBag.UserCount = _context.Users.Count();
             ViewBag.ProductCount = _context.Products.Count();
             ViewBag.CustomerCount = _context.Customers.Count();

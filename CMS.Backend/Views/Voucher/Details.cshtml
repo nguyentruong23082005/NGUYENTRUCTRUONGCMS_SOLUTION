@@ -1,0 +1,139 @@
+@model CMS.Data.Entities.Voucher
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chi tiết voucher";
+}
+
+<div class="card-premium">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 fw-bold">
+            <span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">sell</span>
+            @Model.Code
+        </h1>
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-premium-primary border-0 text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">edit_square</span>
+                Sửa
+            </a>
+            <a asp-action="Index" class="btn btn-premium-outline text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">arrow_back</span>
+                Quay lại
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 mb-4" role="alert" style="background-color: #f0fdf4; color: #166534;">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 mb-4" role="alert" style="background-color: #fef2f2; color: #991b1b;">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <dl class="row mb-4">
+        <dt class="col-sm-3 text-muted">Giá trị</dt>
+        <dd class="col-sm-9 fw-semibold">@(Model.IsPercent ? $"{Model.DiscountValue:N0}%" : $"{Model.DiscountValue:N0} d")</dd>
+
+        <dt class="col-sm-3 text-muted">Đơn tối thiểu</dt>
+        <dd class="col-sm-9">@Model.MinimumOrderAmount.ToString("N0") d</dd>
+
+        <dt class="col-sm-3 text-muted">Hết hạn</dt>
+        <dd class="col-sm-9">@Model.ExpiryDate.ToString("dd/MM/yyyy")</dd>
+
+        <dt class="col-sm-3 text-muted">Trạng thái</dt>
+        <dd class="col-sm-9">
+            <span class="badge @(Model.IsActive ? "bg-success" : "bg-secondary") rounded-pill px-2.5 py-1">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">@(Model.IsActive ? "check_circle" : "remove_circle")</span>
+                @(Model.IsActive ? "Đang hoạt động" : "Đã tắt")
+            </span>
+        </dd>
+    </dl>
+
+    <div class="mt-4">
+        <h2 class="h5 fw-bold mb-3">
+            <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">person_add</span>
+            Gắn voucher cho khách hàng
+        </h2>
+        <form asp-action="AssignCustomer" method="post" class="row g-3 align-items-end mb-4">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="voucherId" value="@Model.Id" />
+            <div class="col-md-9">
+                <label class="form-label fw-semibold" for="customerId">Khách hàng chưa nhận voucher</label>
+                <select id="customerId" name="customerId" class="form-select" asp-items="ViewBag.AvailableCustomers">
+                    <option value="">-- Chọn khách hàng --</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-premium-primary border-0 w-100">
+                    <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">add</span>
+                    Gắn voucher
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <h2 class="h5 fw-bold mt-4 mb-3">
+        <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">groups</span>
+        Khách hàng đã nhận
+    </h2>
+    <div class="table-responsive">
+        <table class="table-premium">
+            <thead>
+                <tr>
+                    <th scope="col">Khách hàng</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Ngày nhận</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Ngày dùng</th>
+                    <th scope="col" width="90">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.CustomerVouchers ?? Enumerable.Empty<CMS.Data.Entities.CustomerVoucher>())
+                {
+                    <tr>
+                        <td class="fw-semibold text-black">@(item.Customer?.FullName ?? "Không rõ")</td>
+                        <td class="text-muted">@item.Customer?.Email</td>
+                        <td class="text-muted">@item.ClaimedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <span class="badge @(item.IsUsed ? "bg-success" : "bg-secondary") rounded-pill px-2.5 py-1">
+                                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">@(item.IsUsed ? "check_circle" : "radio_button_unchecked")</span>
+                                @(item.IsUsed ? "Đã dùng" : "Chưa dùng")
+                            </span>
+                        </td>
+                        <td class="text-muted">@(item.UsedAt?.ToString("dd/MM/yyyy HH:mm") ?? "—")</td>
+                        <td>
+                            @if (!item.IsUsed)
+                            {
+                                <form asp-action="RemoveCustomer" method="post" onsubmit="return confirm('Bỏ gán voucher khỏi khách hàng này?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="voucherId" value="@Model.Id" />
+                                    <input type="hidden" name="customerId" value="@item.CustomerId" />
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger d-inline-flex align-items-center justify-content-center"
+                                            title="Bỏ gán voucher"
+                                            aria-label="Bỏ gán voucher khỏi @(item.Customer?.FullName ?? "khách hàng")">
+                                        <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">link_off</span>
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">Giữ lịch sử</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
