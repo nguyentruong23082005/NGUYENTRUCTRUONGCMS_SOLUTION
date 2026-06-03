@@ -9,8 +9,8 @@ namespace CMS.Data.Entities
     public class Post : BaseEntity
     {
         public int Id { get; set; }
-        public string Title { get; set; }         // Tiêu đề bài viết
-        public string Content { get; set; }       // Nội dung chi tiết
+        public string Title { get; set; } = string.Empty;         // Tiêu đề bài viết
+        public string Content { get; set; } = string.Empty;       // Nội dung chi tiết
         public string? ImageUrl { get; set; }     // Hình ảnh đại diện (có thể để trống)
         
         public string? ExternalId { get; set; }     // ID bài viết từ nguồn ngoài

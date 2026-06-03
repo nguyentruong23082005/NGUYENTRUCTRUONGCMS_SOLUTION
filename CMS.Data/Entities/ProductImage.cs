@@ -12,7 +12,7 @@ namespace CMS.Data.Entities
         public int ProductId { get; set; }
         
         [Required]
-        public string ImageUrl { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
         
         public bool IsPrimary { get; set; }
 

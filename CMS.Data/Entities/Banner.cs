@@ -7,13 +7,13 @@ namespace CMS.Data.Entities
     {
         public int Id { get; set; }
 
-        public string Title { get; set; }  // Tên banner để quản trị dễ nhận biết.
+        public string Title { get; set; } = string.Empty;  // Tên banner để quản trị dễ nhận biết.
 
-        public string ImageUrl { get; set; }  // Đường dẫn ảnh banner.
+        public string ImageUrl { get; set; } = string.Empty;  // Đường dẫn ảnh banner.
 
         public string? LinkUrl { get; set; }  // Link khi người dùng bấm vào banner, có thể trỏ tới bài khuyến mãi hoặc trang khác.
 
-        public string Position { get; set; }  // Vị trí hiển thị banner, ví dụ: HomeHero = slider chính trang chủ.
+        public string Position { get; set; } = string.Empty;  // Vị trí hiển thị banner, ví dụ: HomeHero = slider chính trang chủ.
 
         public int SortOrder { get; set; }  // Thứ tự hiển thị trong cùng một vị trí.
 

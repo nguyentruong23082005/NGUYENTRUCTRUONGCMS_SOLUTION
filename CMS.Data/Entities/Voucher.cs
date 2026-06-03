@@ -12,7 +12,7 @@ namespace CMS.Data.Entities
 
         [Required]
         [StringLength(50)]
-        public string Code { get; set; } // Mã giảm giá, ví dụ: SALE20.
+        public string Code { get; set; } = string.Empty; // Mã giảm giá, ví dụ: SALE20.
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal DiscountValue { get; set; }

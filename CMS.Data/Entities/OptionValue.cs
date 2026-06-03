@@ -13,7 +13,7 @@ namespace CMS.Data.Entities
         public int OptionGroupId { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal PriceSurcharge { get; set; }

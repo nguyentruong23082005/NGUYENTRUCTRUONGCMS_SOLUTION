@@ -10,7 +10,7 @@ namespace CMS.Data.Entities
         public int Id { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public bool IsRequired { get; set; } // Nhóm này có bắt buộc chọn hay không.
         public int MaxSelectable { get; set; } // Số lựa chọn tối đa trong nhóm.
 

@@ -86,12 +86,12 @@ namespace CMS.Backend.Services.Api
                             .Where(og => og != null && !og.IsDeleted)
                             .Select(og => new OptionGroupDto
                             {
-                                Id = og.Id,
-                                Name = og.Name,
-                                IsRequired = og.IsRequired,
-                                MaxSelectable = og.MaxSelectable,
-                                OptionValues = og.OptionValues != null
-                                    ? og.OptionValues
+                                Id = og!.Id,
+                                Name = og!.Name,
+                                IsRequired = og!.IsRequired,
+                                MaxSelectable = og!.MaxSelectable,
+                                OptionValues = og!.OptionValues != null
+                                    ? og!.OptionValues
                                         .Where(ov => !ov.IsDeleted && ov.IsActive)
                                         .Select(ov => new OptionValueDto
                                         {
@@ -131,12 +131,12 @@ namespace CMS.Backend.Services.Api
                             .Where(og => og != null && !og.IsDeleted)
                             .Select(og => new OptionGroupDto
                             {
-                                Id = og.Id,
-                                Name = og.Name,
-                                IsRequired = og.IsRequired,
-                                MaxSelectable = og.MaxSelectable,
-                                OptionValues = og.OptionValues != null
-                                    ? og.OptionValues
+                                Id = og!.Id,
+                                Name = og!.Name,
+                                IsRequired = og!.IsRequired,
+                                MaxSelectable = og!.MaxSelectable,
+                                OptionValues = og!.OptionValues != null
+                                    ? og!.OptionValues
                                         .Where(ov => !ov.IsDeleted && ov.IsActive)
                                         .Select(ov => new OptionValueDto
                                         {
