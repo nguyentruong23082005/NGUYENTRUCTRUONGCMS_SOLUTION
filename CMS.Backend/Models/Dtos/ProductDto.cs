@@ -9,5 +9,6 @@ namespace CMS.Backend.Models.Dtos
         public string? ImageUrl { get; init; }
         public string? ProductCategoryName { get; init; }
         public string? Description { get; init; }
+        public System.Collections.Generic.ICollection<OptionGroupDto>? OptionGroups { get; set; }
     }
 }

@@ -79,7 +79,32 @@ namespace CMS.Backend.Services.Api
                     Price = p.Price,
                     ImageUrl = p.ImageUrl,
                     ProductCategoryName = p.ProductCategory != null ? p.ProductCategory.Name : null,
-                    Description = p.Description
+                    Description = p.Description,
+                    OptionGroups = p.ProductOptionGroups != null
+                        ? p.ProductOptionGroups
+                            .Select(pog => pog.OptionGroup)
+                            .Where(og => og != null && !og.IsDeleted)
+                            .Select(og => new OptionGroupDto
+                            {
+                                Id = og.Id,
+                                Name = og.Name,
+                                IsRequired = og.IsRequired,
+                                MaxSelectable = og.MaxSelectable,
+                                OptionValues = og.OptionValues != null
+                                    ? og.OptionValues
+                                        .Where(ov => !ov.IsDeleted && ov.IsActive)
+                                        .Select(ov => new OptionValueDto
+                                        {
+                                            Id = ov.Id,
+                                            Name = ov.Name,
+                                            PriceSurcharge = ov.PriceSurcharge,
+                                            StockQuantity = ov.StockQuantity
+                                        })
+                                        .ToList()
+                                    : new List<OptionValueDto>()
+                            })
+                            .ToList()
+                        : null
                 })
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
@@ -99,7 +124,32 @@ namespace CMS.Backend.Services.Api
                     Price = p.Price,
                     ImageUrl = p.ImageUrl,
                     ProductCategoryName = p.ProductCategory != null ? p.ProductCategory.Name : null,
-                    Description = p.Description
+                    Description = p.Description,
+                    OptionGroups = p.ProductOptionGroups != null
+                        ? p.ProductOptionGroups
+                            .Select(pog => pog.OptionGroup)
+                            .Where(og => og != null && !og.IsDeleted)
+                            .Select(og => new OptionGroupDto
+                            {
+                                Id = og.Id,
+                                Name = og.Name,
+                                IsRequired = og.IsRequired,
+                                MaxSelectable = og.MaxSelectable,
+                                OptionValues = og.OptionValues != null
+                                    ? og.OptionValues
+                                        .Where(ov => !ov.IsDeleted && ov.IsActive)
+                                        .Select(ov => new OptionValueDto
+                                        {
+                                            Id = ov.Id,
+                                            Name = ov.Name,
+                                            PriceSurcharge = ov.PriceSurcharge,
+                                            StockQuantity = ov.StockQuantity
+                                        })
+                                        .ToList()
+                                    : new List<OptionValueDto>()
+                            })
+                            .ToList()
+                        : null
                 })
                 .FirstOrDefaultAsync(p => p.Slug == slug);
         }
