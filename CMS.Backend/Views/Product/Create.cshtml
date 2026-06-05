@@ -11,7 +11,7 @@
         <p class="text-muted small">Cung cấp các thông tin chi tiết dưới đây để thêm sản phẩm mới vào danh mục bán hàng.</p>
     </div>
 
-    <form asp-action="Create" method="post">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
         <div class="row mb-4">
             <div class="col-md-6">
                 <label asp-for="Name" class="form-label fw-semibold">Tên sản phẩm</label>
@@ -44,6 +44,11 @@
             <label asp-for="ImageUrl" class="form-label fw-semibold">Đường dẫn ảnh sản phẩm (URL)</label>
             <input asp-for="ImageUrl" class="form-control" placeholder="http://example.com/image.jpg" />
             <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Hoặc tải ảnh đại diện lên từ máy tính</label>
+            <input type="file" name="uploadImage" class="form-control" accept="image/*" />
         </div>
 
         <div class="mb-4">

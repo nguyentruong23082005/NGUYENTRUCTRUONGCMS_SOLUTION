@@ -69,10 +69,26 @@ namespace CMS.Backend.Controllers
         // POST: /Product/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Product model)
+        public IActionResult Create(Product model, IFormFile? uploadImage)
         {
             if (ModelState.IsValid)
             {
+                if (uploadImage != null && uploadImage.Length > 0)
+                {
+                    string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                    if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadImage.FileName);
+                    string filePath = Path.Combine(folder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        uploadImage.CopyTo(stream);
+                    }
+
+                    model.ImageUrl = "/uploads/" + fileName;
+                }
+
                 _context.Products.Add(model);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
@@ -99,12 +115,37 @@ namespace CMS.Backend.Controllers
         // POST: /Product/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Product model)
+        public IActionResult Edit(int id, Product model, IFormFile? uploadImage)
         {
             if (id != model.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
+                if (uploadImage != null && uploadImage.Length > 0)
+                {
+                    string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                    if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadImage.FileName);
+                    string filePath = Path.Combine(folder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        uploadImage.CopyTo(stream);
+                    }
+
+                    model.ImageUrl = "/uploads/" + fileName;
+                }
+                else
+                {
+                    // Giữ lại ảnh cũ nếu không nhập ảnh mới
+                    var oldProduct = _context.Products.AsNoTracking().FirstOrDefault(p => p.Id == model.Id);
+                    if (oldProduct != null && string.IsNullOrEmpty(model.ImageUrl))
+                    {
+                        model.ImageUrl = oldProduct.ImageUrl;
+                    }
+                }
+
                 _context.Products.Update(model);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));

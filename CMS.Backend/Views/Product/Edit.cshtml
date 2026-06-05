@@ -20,7 +20,7 @@
     @if (TempData["SuccessMessage"] != null) { <div class="alert alert-success border-0 rounded-3">@TempData["SuccessMessage"]</div> }
     @if (TempData["ErrorMessage"] != null) { <div class="alert alert-danger border-0 rounded-3">@TempData["ErrorMessage"]</div> }
 
-    <form asp-action="Edit" method="post">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
         @Html.AntiForgeryToken()
         <input type="hidden" asp-for="Id" />
 
@@ -56,6 +56,11 @@
             <label asp-for="ImageUrl" class="form-label fw-semibold">Đường dẫn ảnh đại diện cũ (URL)</label>
             <input asp-for="ImageUrl" class="form-control" placeholder="http://example.com/image.jpg" />
             <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Hoặc tải ảnh đại diện lên từ máy tính (Tùy chọn)</label>
+            <input type="file" name="uploadImage" class="form-control" accept="image/*" />
         </div>
 
         <div class="mb-4">
