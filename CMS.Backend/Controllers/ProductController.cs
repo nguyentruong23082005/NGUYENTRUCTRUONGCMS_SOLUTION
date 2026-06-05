@@ -157,14 +157,35 @@ namespace CMS.Backend.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddImage(int productId, string imageUrl, bool isPrimary = false)
+        public IActionResult AddImage(int productId, string imageUrl, IFormFile? uploadGalleryImage, bool isPrimary = false)
         {
             var product = _context.Products.Find(productId);
             if (product == null) return NotFound();
 
-            if (string.IsNullOrWhiteSpace(imageUrl))
+            string finalImageUrl = string.Empty;
+
+            if (uploadGalleryImage != null && uploadGalleryImage.Length > 0)
             {
-                TempData["ErrorMessage"] = "Vui lòng nhập URL ảnh sản phẩm.";
+                string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadGalleryImage.FileName);
+                string filePath = Path.Combine(folder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    uploadGalleryImage.CopyTo(stream);
+                }
+
+                finalImageUrl = "/uploads/" + fileName;
+            }
+            else if (!string.IsNullOrWhiteSpace(imageUrl))
+            {
+                finalImageUrl = imageUrl.Trim();
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Vui lòng nhập URL ảnh hoặc tải lên tệp ảnh.";
                 return RedirectToAction(nameof(Edit), new { id = productId });
             }
 
@@ -176,7 +197,7 @@ namespace CMS.Backend.Controllers
             _context.ProductImages.Add(new ProductImage
             {
                 ProductId = productId,
-                ImageUrl = imageUrl.Trim(),
+                ImageUrl = finalImageUrl,
                 IsPrimary = isPrimary
             });
             _context.SaveChanges();

@@ -83,12 +83,16 @@
         <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">image</span>
         Hình ảnh sản phẩm
     </h2>
-    <form asp-action="AddImage" method="post" class="row g-3 align-items-end mb-4">
+    <form asp-action="AddImage" method="post" enctype="multipart/form-data" class="row g-3 align-items-end mb-4">
         @Html.AntiForgeryToken()
         <input type="hidden" name="productId" value="@Model.Id" />
-        <div class="col-md-8">
+        <div class="col-md-4">
             <label class="form-label fw-semibold" for="imageUrl">URL ảnh</label>
             <input id="imageUrl" name="imageUrl" class="form-control" placeholder="https://example.com/product.jpg" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-semibold" for="uploadGalleryImage">Hoặc tải ảnh lên từ máy tính</label>
+            <input type="file" id="uploadGalleryImage" name="uploadGalleryImage" class="form-control" accept="image/*" />
         </div>
         <div class="col-md-2 form-check mb-2">
             <input id="isPrimary" name="isPrimary" value="true" type="checkbox" class="form-check-input" />
