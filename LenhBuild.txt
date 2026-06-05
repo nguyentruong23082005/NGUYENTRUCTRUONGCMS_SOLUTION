@@ -1,2 +1,0 @@
-Build dự án: dotnet build
-Chạy dự án: dotnet run --project CMS.Backend
