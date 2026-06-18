@@ -101,6 +101,15 @@ Giải pháp được tổ chức thành 3 Project độc lập:
         *   `AuthContext`: Quản lý trạng thái đăng nhập và thông tin người dùng.
     *   Xây dựng các UI Components tĩnh cốt lõi cho Trang chủ: Header, Footer, HeroBanner, CategoryMenu, ProductCard, StoreLocator, PostGrid.
 
+### Buổi 8: Tích hợp API & Kết nối Frontend với Backend WebAPI (API Integration)
+*   **Mục tiêu**: Kết nối ứng dụng ReactJS với hệ thống WebAPI để xử lý dữ liệu động thực tế từ cơ sở dữ liệu.
+*   **Nội dung thực hiện**:
+    *   Cấu hình biến môi trường `.env` (`VITE_API_URL`) và khởi tạo Axios Client tự động đính kèm token JWT vào header `Authorization` cho các yêu cầu bảo mật.
+    *   Xây dựng các dịch vụ API frontend (`authApi`, `productApi`, `categoryApi`, `orderApi`, `storeApi`, `voucherApi`, v.v.) gọi trực tiếp đến các Endpoint tương ứng trên Backend.
+    *   Phát triển các custom hooks (`useAuth`, `useCart`, `useProducts`, `useOrders`, v.v.) để đóng gói logic tương tác dữ liệu và quản lý trạng thái tải.
+    *   Thay thế toàn bộ dữ liệu mockup bằng dữ liệu thực tế từ Database trên các trang: Menu, Chi tiết sản phẩm (hiển thị tùy chọn size, toppings, đánh giá), Giỏ hàng (đồng bộ giỏ hàng, áp dụng Voucher), Thanh toán (chọn địa chỉ giao hàng, phương thức thanh toán, tạo đơn hàng), Cá nhân (lịch sử đơn hàng, sổ địa chỉ) và Danh sách cửa hàng.
+    *   Cập nhật cơ sở dữ liệu và API Backend: bổ sung liên kết danh mục cha (Parent Category) và ảnh danh mục, hỗ trợ tải ảnh sản phẩm lên thư mục Server.
+
 ---
 
 ## 🚀 Hướng dẫn khởi chạy dự án

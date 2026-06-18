@@ -16,5 +16,9 @@ namespace CMS.Data.Entities
         public virtual ICollection<Post>? Posts { get; set; } // Nullable - không bắt buộc
 
         public string Slug { get; set; } = string.Empty;
+
+        public int? ParentId { get; set; }
+        public virtual PostCategory? Parent { get; set; }
+        public virtual ICollection<PostCategory>? Children { get; set; }
     }
 }

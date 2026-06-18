@@ -141,12 +141,22 @@ namespace CMS.Data
             {
                 entity.Property(c => c.Slug).HasMaxLength(150).IsRequired();
                 entity.HasIndex(c => c.Slug).IsUnique();
+
+                entity.HasOne(c => c.Parent)
+                      .WithMany(c => c.Children)
+                      .HasForeignKey(c => c.ParentId)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<PostCategory>(entity =>
             {
                 entity.Property(c => c.Slug).HasMaxLength(150).IsRequired();
                 entity.HasIndex(c => c.Slug).IsUnique();
+
+                entity.HasOne(c => c.Parent)
+                      .WithMany(c => c.Children)
+                      .HasForeignKey(c => c.ParentId)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             // Tự động ẩn bản ghi đã xóa mềm (IsDeleted = true) khỏi mọi truy vấn.

@@ -50,9 +50,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactDevelopmentCors", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(
+                  "http://localhost:5173",
+                  "http://localhost:5174",
+                  "https://localhost:5173",
+                  "https://localhost:5174")
               .AllowAnyHeader()
-              .WithMethods("GET", "POST", "PUT", "DELETE"); // GET là chính trong Phase 6
+              .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS");
     });
 });
 

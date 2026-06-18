@@ -29,6 +29,10 @@ namespace CMS.Backend.Services.Api
             {
                 dbQuery = dbQuery.Where(p => p.ProductCategoryId == query.CategoryId.Value);
             }
+            else if (!string.IsNullOrWhiteSpace(query.CategorySlug))
+            {
+                dbQuery = dbQuery.Where(p => p.ProductCategory != null && p.ProductCategory.Slug == query.CategorySlug);
+            }
 
             // Tìm kiếm theo từ khóa
             if (!string.IsNullOrWhiteSpace(query.Keyword))
@@ -59,7 +63,8 @@ namespace CMS.Backend.Services.Api
                     Price = p.Price,
                     ImageUrl = p.ImageUrl,
                     ProductCategoryName = p.ProductCategory != null ? p.ProductCategory.Name : null,
-                    Description = p.Description
+                    Description = p.Description,
+                    StockQuantity = p.StockQuantity
                 })
                 .ToListAsync();
 
@@ -80,6 +85,7 @@ namespace CMS.Backend.Services.Api
                     ImageUrl = p.ImageUrl,
                     ProductCategoryName = p.ProductCategory != null ? p.ProductCategory.Name : null,
                     Description = p.Description,
+                    StockQuantity = p.StockQuantity,
                     OptionGroups = p.ProductOptionGroups != null
                         ? p.ProductOptionGroups
                             .Select(pog => pog.OptionGroup)
@@ -125,6 +131,7 @@ namespace CMS.Backend.Services.Api
                     ImageUrl = p.ImageUrl,
                     ProductCategoryName = p.ProductCategory != null ? p.ProductCategory.Name : null,
                     Description = p.Description,
+                    StockQuantity = p.StockQuantity,
                     OptionGroups = p.ProductOptionGroups != null
                         ? p.ProductOptionGroups
                             .Select(pog => pog.OptionGroup)
