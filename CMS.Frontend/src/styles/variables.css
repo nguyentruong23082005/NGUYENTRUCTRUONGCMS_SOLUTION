@@ -1,0 +1,76 @@
+/* ========================================
+   Biến CSS toàn cục — Design System Phúc Long
+   Tham chiếu từ: designphuclong.md
+   ======================================== */
+:root {
+  /* --- Primary Colors --- */
+  --color-primary: #006F3C;
+  --color-primary-hover: #0C713D;
+  --color-primary-active: #005230;
+
+  /* --- Interactive --- */
+  --color-link: #007AFF;
+  --color-error: #B71C1C;
+
+  /* --- Neutrals --- */
+  --color-text-primary: #333333;
+  --color-text-emphasis: #000000;
+  --color-text-secondary: #666666;
+  --color-text-tertiary: #9B9B9B;
+  --color-border: #CCCCCC;
+
+  /* --- Surfaces --- */
+  --color-surface: #FFFFFF;
+  --color-surface-alt: #ECEFF1;
+  --color-surface-dark: #171717;
+
+  /* --- Typography --- */
+  --font-primary: 'Arimo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-secondary: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+
+  /* --- Spacing (bội số 4px) --- */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-base: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 40px;
+  --space-3xl: 48px;
+  --space-4xl: 64px;
+
+  /* --- Border Radius --- */
+  --radius-none: 0px;
+  --radius-sm: 2px;
+  --radius-base: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 24px;
+  --radius-circle: 50%;
+  --radius-full: 100px;
+
+  /* --- Shadow --- */
+  --shadow-subtle: rgba(204, 204, 204, 0.3) 0px 2px 4px 0px;
+  --shadow-dropdown: rgba(0, 0, 0, 0.12) 0px 2px 8px 0px;
+  --shadow-modal: rgba(0, 0, 0, 0.16) 0px 21px 36px 0px;
+
+  /* --- Container --- */
+  --container-max: 1280px;
+  --container-padding: 40px;
+  --container-wide-max: 1600px;
+  --container-wide-width: min(var(--container-wide-max), 84vw);
+
+  /* --- Legacy aliases used by older modules --- */
+  --primary-color: var(--color-primary);
+  --primary-hover: var(--color-primary-hover);
+  --secondary-color: var(--color-primary);
+  --text-color: var(--color-text-primary);
+  --text-muted: var(--color-text-tertiary);
+  --border-color: var(--color-border);
+  --bg-white: var(--color-surface);
+  --bg-light: var(--color-surface);
+  --footer-bg: var(--color-primary);
+  --shadow-sm: var(--shadow-subtle);
+  --shadow-md: var(--shadow-dropdown);
+  --transition-fast: 0.2s ease;
+}

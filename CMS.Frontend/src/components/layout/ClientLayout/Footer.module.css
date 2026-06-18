@@ -1,0 +1,84 @@
+.footer {
+  background-color: #006f3c;
+  color: #ffffff;
+  font-family: var(--font-primary);
+  margin-top: auto;
+}
+
+.container {
+  padding-top: 28px;
+  padding-bottom: 28px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2.2fr repeat(4, 1fr);
+  gap: 34px;
+}
+
+.column h3 {
+  margin: 0 0 12px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.subHead {
+  margin-top: 28px !important;
+}
+
+.column p {
+  margin: 0 0 7px;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.column strong {
+  color: #ffffff;
+}
+
+.links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.links li {
+  margin-bottom: 8px;
+}
+
+.links a {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 12px;
+  line-height: 18px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.links a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.bottom {
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  color: #006f3c;
+  font-size: 12px;
+}
+
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

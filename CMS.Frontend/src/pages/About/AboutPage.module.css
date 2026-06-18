@@ -1,0 +1,147 @@
+.page {
+  min-height: 100vh;
+  padding: 40px 0 64px;
+  background-color: #ffffff;
+  font-family: var(--font-secondary);
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #d8d8d8;
+  color: #4f5b55;
+  font-size: 14px;
+}
+
+.breadcrumbs a {
+  color: #00713f;
+  text-decoration: none;
+}
+
+.breadcrumbs strong {
+  color: #333333;
+  font-weight: 500;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.item,
+.categoryCard {
+  overflow: hidden;
+  border: 1px solid #d8d8d8;
+  border-radius: 3px;
+  background-color: #ffffff;
+}
+
+.imageWrapper {
+  width: 100%;
+  aspect-ratio: 300 / 190;
+  background-color: #f0f3f2;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imagePlaceholder {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: #00713f;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.info {
+  display: flex;
+  min-height: 148px;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+}
+
+.postTitle {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 16px;
+  line-height: 23px;
+  text-transform: uppercase;
+}
+
+.postTitle a {
+  color: #333333;
+  text-decoration: none;
+}
+
+.postTitle a:hover {
+  color: #00713f;
+}
+
+.summary {
+  margin: 0;
+  color: #666666;
+  font-size: 14px;
+  line-height: 21px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.readMore {
+  margin-top: auto;
+  color: #00713f;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.categoryCard {
+  min-height: 132px;
+  padding: 20px;
+}
+
+.categoryCard h2 {
+  margin: 0 0 10px;
+  color: #00713f;
+  font-size: 20px;
+  line-height: 27px;
+}
+
+.categoryCard p {
+  margin: 0;
+  color: #666666;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+@media (max-width: 992px) {
+  .list,
+  .categoryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .list,
+  .categoryGrid {
+    grid-template-columns: 1fr;
+  }
+}

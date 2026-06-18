@@ -1,0 +1,135 @@
+.authPage {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #edf7ff;
+  font-family: var(--font-secondary);
+}
+
+.panel {
+  position: relative;
+  width: min(100%, 430px);
+  min-height: 100vh;
+  padding: 26px 30px 48px;
+  background-color: #ffffff;
+}
+
+.homeLink {
+  position: absolute;
+  top: 34px;
+  right: 34px;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  color: #8a8a8a;
+}
+
+.homeLink svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.logo {
+  display: block;
+  width: 112px;
+  height: auto;
+  margin: 0 auto 24px;
+}
+
+.header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.header h1 {
+  margin: 0 0 6px;
+  color: #2f3432;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.header p {
+  margin: 0;
+  color: #606866;
+  font-size: 14px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1px solid #cfcfcf;
+  border-radius: 3px;
+  background-color: #ffffff;
+  color: #333333;
+  font-size: 15px;
+}
+
+.input:focus {
+  border-color: #00713f;
+  outline: none;
+}
+
+.forgotLink {
+  align-self: flex-end;
+  color: #00713f;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.submitBtn {
+  display: flex;
+  width: 100%;
+  min-height: 54px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 3px;
+  background-color: #00713f;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background-color: #005f35;
+}
+
+.submitBtn:disabled {
+  cursor: not-allowed;
+  background-color: #9ea7a3;
+}
+
+.errorAlert {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border: 1px solid #fed7d7;
+  border-radius: 3px;
+  background-color: #fff5f5;
+  color: #c0392b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.footerLink {
+  margin-top: 22px;
+  color: #7a7a7a;
+  font-size: 14px;
+  text-align: center;
+}
+
+.footerLink a {
+  color: #00713f;
+  font-weight: 700;
+  text-decoration: none;
+}

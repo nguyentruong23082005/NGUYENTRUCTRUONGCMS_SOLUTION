@@ -1,0 +1,149 @@
+.slider {
+  position: relative;
+  width: min(1600px, 84vw);
+  width: var(--container-wide-width);
+  max-width: 1600px;
+  max-width: var(--container-wide-max);
+  aspect-ratio: 1600 / 480;
+  height: auto;
+  min-height: 240px;
+  margin: 0 auto;
+  overflow: hidden;
+  background-color: #eceff1;
+  font-family: var(--font-primary);
+}
+
+.loading {
+  background: linear-gradient(90deg, #eceff1 25%, #f7f7f7 37%, #eceff1 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.emptyHero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 260px;
+  padding: 48px 16px;
+  background-color: #f7faf8;
+  color: #666666;
+  text-align: center;
+  border-bottom: 1px solid #eceff1;
+}
+
+.emptyHero strong {
+  color: #006f3c;
+  font-size: 20px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+
+.slidesContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.55s ease-in-out;
+  z-index: 1;
+}
+
+.slide.active {
+  opacity: 1;
+  z-index: 2;
+}
+
+.bannerImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(23, 23, 23, 0.32);
+  color: #ffffff;
+  font-size: 22px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.arrow:hover {
+  background-color: rgba(0, 111, 60, 0.9);
+  transform: translateY(-50%) scale(1.04);
+}
+
+.arrowLeft {
+  left: 22px;
+}
+
+.arrowRight {
+  right: 22px;
+}
+
+.dots {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  gap: 10px;
+}
+
+.dot {
+  width: 8px;
+  min-width: 8px;
+  height: 8px;
+  min-height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.62);
+  cursor: pointer;
+}
+
+.dotActive {
+  width: 24px;
+  border-radius: 20px;
+  background-color: #006f3c;
+}
+
+@media (max-width: 768px) {
+  .slider {
+    width: 100%;
+    min-height: 190px;
+  }
+
+  .arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .arrowLeft {
+    left: 10px;
+  }
+
+  .arrowRight {
+    right: 10px;
+  }
+}

@@ -1,0 +1,41 @@
+.card {
+  background-color: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 380px;
+}
+
+.image {
+  width: 100%;
+  height: 220px;
+}
+
+.content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 12px;
+}
+
+.title {
+  height: 20px;
+  width: 80%;
+  border-radius: var(--radius-sm);
+}
+
+.price {
+  height: 18px;
+  width: 40%;
+  border-radius: var(--radius-sm);
+}
+
+.button {
+  height: 40px;
+  width: 100%;
+  margin-top: auto;
+  border-radius: var(--radius-md);
+}

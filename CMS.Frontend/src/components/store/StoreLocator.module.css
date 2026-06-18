@@ -1,0 +1,257 @@
+.section {
+  padding: 40px 0 64px;
+  background-color: #ffffff;
+}
+
+.listSection {
+  padding-top: 0;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: #006f3c;
+  font-family: var(--font-primary);
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.sectionSubtitle {
+  margin: 8px 0 24px;
+  color: #666666;
+  font-size: 13px;
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 1fr);
+  gap: 32px;
+  align-items: stretch;
+}
+
+.mapPanel {
+  min-height: 560px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+  background-color: #eceff1;
+}
+
+.mapFrame {
+  width: 100%;
+  height: 100%;
+  min-height: 560px;
+  border: 0;
+  display: block;
+}
+
+.sidePanel {
+  min-width: 0;
+}
+
+.searchInput,
+.select {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #333333;
+  padding: 10px 12px;
+  font-family: var(--font-primary);
+  font-size: 13px;
+}
+
+.searchInput {
+  border-radius: 24px;
+  background-color: #eceff1;
+  border-color: transparent;
+  padding-left: 42px;
+}
+
+.listPage {
+  padding-top: 12px;
+}
+
+.filterTitle,
+.currentLocation,
+.listTitle {
+  color: #006f3c;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.filterTitle {
+  margin: 22px 0 10px;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.currentLocation {
+  margin: 22px 0 12px;
+}
+
+.currentLocation::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  border: 3px solid #006f3c;
+  border-radius: 50%;
+  vertical-align: -3px;
+}
+
+.listTitle {
+  margin: 0 0 12px;
+}
+
+.regionToggle {
+  min-height: 28px;
+  margin: 0 0 18px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #006f3c;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.resultCount {
+  margin: 0 0 18px;
+  padding-top: 16px;
+  border-top: 8px solid #eceff1;
+  color: #333333;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.fullList {
+  display: flex;
+  flex-direction: column;
+}
+
+.listStoreItem {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 14px;
+  padding: 14px 0 18px;
+  border-bottom: 1px solid #e7ebea;
+}
+
+.list {
+  max-height: 520px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.storeItemBtn {
+  width: 100%;
+  min-height: auto;
+  padding: 0 0 18px;
+  margin-bottom: 18px;
+  border: 0;
+  border-bottom: 1px solid #eceff1;
+  background-color: #ffffff;
+  text-align: left;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 12px;
+  transition: opacity 0.2s ease;
+}
+
+.storeItemBtn:hover {
+  opacity: 0.86;
+}
+
+.activeStore .storeName {
+  text-decoration: underline;
+}
+
+.storeThumb {
+  width: 44px;
+  height: 44px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background-color: #e8f3ed;
+  background-position: center;
+  background-size: cover;
+  border: 1px solid #d5e6dd;
+}
+
+.storeCopy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.storeStatus {
+  color: #9b9b9b;
+  font-size: 12px;
+}
+
+.storeName {
+  color: #006f3c;
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.storeLine {
+  color: #333333;
+  font-size: 13px;
+  line-height: 19.5px;
+}
+
+.directionLink {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  margin-top: 8px;
+  padding: 8px 22px;
+  border-radius: 4px;
+  background-color: #006f3c;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.emptyState {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 28px;
+  border: 1px dashed #cccccc;
+  border-radius: 8px;
+  background-color: #fafafa;
+  color: #666666;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.emptyState strong {
+  color: #333333;
+}
+
+@media (max-width: 900px) {
+  .grid,
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .mapPanel,
+  .mapFrame {
+    min-height: 360px;
+  }
+}

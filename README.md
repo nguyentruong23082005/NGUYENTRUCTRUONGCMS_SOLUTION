@@ -77,6 +77,30 @@ Giải pháp được tổ chức thành 3 Project độc lập:
     *   Xây dựng Controller và giao diện trang đăng nhập/đăng xuất cho quản trị viên.
     *   Thực hiện băm mật khẩu bảo mật (Password Hashing) thay vì lưu mật khẩu thô để đảm bảo an toàn thông tin.
 
+### Buổi 6: Xây dựng WebAPI RESTful Service (WebAPI RESTful)
+*   **Mục tiêu**: Xây dựng hệ thống RESTful WebAPI phục vụ cho ứng dụng Single Page Application (ReactJS) cùng cơ chế xác thực và bảo mật nâng cao.
+*   **Nội dung thực hiện**:
+    *   Cấu hình cơ chế xác thực JWT Bearer trong `Program.cs` kết hợp với sự kiện `OnTokenValidated` để kiểm tra phiên bản token (`TokenVersion`) nhằm hỗ trợ thu hồi token từ xa (Token Revocation) khi khách hàng đăng xuất hoặc đổi mật khẩu.
+    *   Xây dựng các API nghiệp vụ chính:
+        *   `CustomersController`: Đăng ký, đăng nhập, lấy thông tin cá nhân và đăng xuất an toàn.
+        *   `CustomerAddressesController`: Quản lý sổ địa chỉ CRUD và tự động thiết lập địa chỉ mặc định duy nhất.
+        *   `VouchersController`: Kiểm tra và xác thực tính hợp lệ của mã giảm giá (5 điều kiện bao gồm hạn dùng, giá trị đơn tối thiểu, trạng thái hoạt động, và lịch sử sử dụng).
+        *   `OrdersController`: Quản lý đặt hàng, lịch sử đơn hàng và yêu cầu hủy đơn hàng.
+        *   `ReviewsController`: Xử lý đánh giá sản phẩm có ràng buộc mua hàng và chống spam.
+    *   Tối ưu hóa tranh chấp tồn kho bằng cơ chế khóa bi quan (Pessimistic Locking) trong SQL Server sử dụng chỉ dẫn `UPDLOCK, ROWLOCK`.
+    *   Cấu hình Swagger tự động xử lý JWT Bearer Scheme và viết bộ kiểm thử tự động (Unit Tests) với EF Core InMemory Database.
+
+### Buổi 7: Thiết lập Frontend ReactJS & Giao diện tĩnh Phúc Long (ReactJS Setup)
+*   **Mục tiêu**: Khởi tạo dự án ReactJS (Vite) và thiết kế hệ thống giao diện, các thành phần giao diện tĩnh mô phỏng thương hiệu Phúc Long.
+*   **Nội dung thực hiện**:
+    *   Khởi tạo dự án ReactJS với Vite trong thư mục `CMS.Frontend`, gỡ bỏ gói Shopify Polaris và cài đặt các thư viện bổ sung (`react-router-dom`, `axios`).
+    *   Thiết lập CSS Hệ thống giao diện (Design System) Phúc Long trong `index.css` định nghĩa các biến màu chủ đạo (`#006F3C` - xanh lá đậm, `#0C713D` - xanh hover, `#B71C1C` - đỏ nhấn, `#ECEFF1` - xám nhạt) và các quy tắc typography (Arimo, Roboto).
+    *   Xây dựng cấu trúc định tuyến SPA với `react-router-dom` qua các trang trống: Trang chủ, Thực đơn, Giỏ hàng, Thanh toán, Đăng nhập, Đăng ký, Cá nhân, Cửa hàng.
+    *   Thiết lập quản lý trạng thái toàn cục bằng Context API:
+        *   `CartContext`: Quản lý giỏ hàng (thêm, sửa số lượng, xóa) và lưu trữ giỏ hàng trong `localStorage`.
+        *   `AuthContext`: Quản lý trạng thái đăng nhập và thông tin người dùng.
+    *   Xây dựng các UI Components tĩnh cốt lõi cho Trang chủ: Header, Footer, HeroBanner, CategoryMenu, ProductCard, StoreLocator, PostGrid.
+
 ---
 
 ## 🚀 Hướng dẫn khởi chạy dự án

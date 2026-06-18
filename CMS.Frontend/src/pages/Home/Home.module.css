@@ -1,0 +1,137 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+.productSection {
+  padding: 34px 0 44px;
+  background-color: #ffffff;
+}
+
+.productInner {
+  width: min(1600px, 84vw);
+  width: var(--container-wide-width);
+  max-width: 1600px;
+  max-width: var(--container-wide-max);
+  margin: 0 auto;
+  padding: 0;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.title {
+  margin: 0;
+  color: #006f3c;
+  font-family: var(--font-primary);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 36px;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  margin: 4px auto 0;
+  max-width: 640px;
+  color: #666666;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 30px;
+  align-items: stretch;
+}
+
+.moreActions {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.moreButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 10px 18px;
+  border: 1px solid #006f3c;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #006f3c;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.moreButton:hover {
+  background-color: #006f3c;
+  color: #ffffff;
+}
+
+.emptyState {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px;
+  border: 1px dashed #cccccc;
+  border-radius: 8px;
+  background-color: #fafafa;
+  color: #666666;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.emptyState strong {
+  color: #333333;
+  font-size: 16px;
+}
+
+@media (max-width: 1200px) {
+  .productInner {
+    padding: 0 24px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+  }
+}
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .productSection {
+    padding: 36px 0 42px;
+  }
+
+  .productInner {
+    padding: 0 16px;
+  }
+
+  .title {
+    max-width: 360px;
+    margin: 0 auto;
+    padding: 0 8px;
+    font-size: 18px;
+    line-height: 28px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
