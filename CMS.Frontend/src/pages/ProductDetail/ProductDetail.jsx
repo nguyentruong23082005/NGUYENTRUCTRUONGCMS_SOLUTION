@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import productApi from '../../api/productApi';
+import productService from '../../services/productService';
 import { useCart } from '../../context/CartContext';
 import Loading from '../../components/common/Loading/Loading';
 import EmptyState from '../../components/common/EmptyState/EmptyState';
@@ -43,6 +43,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const { addToCart } = useCart();
   const [product, setProduct] = useState(null);
+  const [productImages, setProductImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState({});
@@ -51,32 +52,32 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        const response = await productApi.getById(id);
+        const [item, images] = await Promise.all([
+          productService.getProductById(id),
+          productService.getProductImages(id)
+        ]);
 
-        if (response.data && response.data.success && response.data.data) {
-          const item = response.data.data;
+        if (item) {
           const optionGroups = normalizeOptionGroups(item.optionGroups || item.OptionGroups || []);
 
           setProduct({
-            id: item.id.toString(),
-            name: item.name,
-            slug: item.slug || '',
+            ...item,
             skuLabel: item.slug || item.id.toString(),
-            price: Number(item.price || item.unitPrice || 0),
-            stockQuantity: item.stockQuantity ?? item.unitsInStock ?? 0,
-            imageUrl: item.imageUrl || '',
-            categoryName: item.productCategoryName || item.categoryName || '',
-            description: item.description || '',
+            price: Number(item.price),
+            stockQuantity: Number(item.stockQuantity),
             optionGroups
           });
+          setProductImages(images || []);
           setSelectedOptions(buildDefaultSelections(optionGroups));
           setQty(1);
         } else {
           setProduct(null);
+          setProductImages([]);
         }
       } catch (error) {
-        console.error(`Lỗi khi tải chi tiết sản phẩm ${id} từ API thật:`, error);
+        console.error(`Lỗi khi tải chi tiết sản phẩm ${id} từ service:`, error);
         setProduct(null);
+        setProductImages([]);
       } finally {
         setLoading(false);
       }
