@@ -205,11 +205,12 @@
 
 .accountDropdown {
   position: absolute;
-  top: calc(100% + 12px);
+  top: 100%;           /* sát ngay dưới trigger, không có gap */
   right: -16px;
   z-index: 180;
   width: 264px;
   padding: 14px 0;
+  padding-top: 24px;   /* khoảng trống được đẩy vào trong, không tạo gap bên ngoài */
   border: 1px solid #e7ece9;
   background-color: #ffffff;
   box-shadow: rgba(0, 0, 0, 0.22) 0 8px 20px;
@@ -218,6 +219,18 @@
   transform: translateY(-4px);
   visibility: hidden;
   transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+}
+
+/* Cầu nối vô hình lấp khoảng trống giữa icon và dropdown
+   Đảm bảo hover không bị mất khi chuột di chuyển từ icon xuống menu */
+.accountDropdown::before {
+  content: '';
+  position: absolute;
+  top: -16px;          /* phủ lên phần trên dropdown 16px */
+  left: 0;
+  right: 0;
+  height: 16px;        /* chiều cao cầu nối = padding-top của dropdown */
+  background: transparent;
 }
 
 .accountMenu:hover .accountDropdown,
