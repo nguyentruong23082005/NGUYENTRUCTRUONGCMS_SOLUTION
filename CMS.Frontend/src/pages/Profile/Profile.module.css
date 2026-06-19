@@ -825,3 +825,132 @@ select.formInput { appearance: auto; }
   .orderCardHeader { flex-direction: column; align-items: flex-start; }
   .orderFooter     { flex-direction: column; align-items: flex-start; }
 }
+
+/* ═══ Membership Card ══════════════════════════════════════ */
+.membershipCard {
+  background: linear-gradient(135deg, #006F3C 0%, #004d2a 100%);
+  border-radius: 12px;
+  padding: 24px;
+  color: #FFFFFF;
+  margin-bottom: 32px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 111, 60, 0.25);
+  font-family: Arimo, sans-serif;
+}
+
+.membershipCard::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 250px;
+  height: 250px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.membershipLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.membershipHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.membershipTitle {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.membershipClass {
+  font-size: 20px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.membershipUser {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.membershipUserName {
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.membershipUserPhone {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.membershipStats {
+  display: flex;
+  gap: 24px;
+}
+
+.membershipStatItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.membershipStatLabel {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.membershipStatValue {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.membershipRight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 16px;
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.membershipBarcode {
+  width: 140px;
+  height: 48px;
+}
+
+.membershipCardNumber {
+  font-family: monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #FFFFFF;
+}
+
+@media (max-width: 640px) {
+  .membershipCard {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .membershipRight {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+

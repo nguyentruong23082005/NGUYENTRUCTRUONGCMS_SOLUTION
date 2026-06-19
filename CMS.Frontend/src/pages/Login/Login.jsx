@@ -68,7 +68,7 @@ const Login = () => {
 
         {error && <div className={styles.errorAlert}>{error}</div>}
 
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form onSubmit={handleSubmit} className={styles.form} autoComplete="off">
           <input
             id="email"
             type="email"
@@ -76,6 +76,7 @@ const Login = () => {
             onChange={(event) => setEmail(event.target.value)}
             placeholder="Email*"
             className={styles.input}
+            autoComplete="new-password"
             required
           />
 
@@ -86,6 +87,7 @@ const Login = () => {
             onChange={(event) => setPassword(event.target.value)}
             placeholder="Mật khẩu*"
             className={styles.input}
+            autoComplete="new-password"
             required
           />
 
