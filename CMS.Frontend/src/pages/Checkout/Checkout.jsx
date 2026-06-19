@@ -3,13 +3,15 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
-import orderApi from '../../api/orderApi';
+import useOrders from '../../hooks/useOrders';
+import { validateCheckoutForm } from '../../utils/validators';
 import styles from './Checkout.module.css';
 
 const Checkout = () => {
   const { cartItems, cartTotalPrice, clearCart, showToast } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { createOrder, loading: isSubmitting } = useOrders();
 
   // Form states
   const [fullName, setFullName] = useState(user?.fullName || '');
@@ -19,7 +21,6 @@ const Checkout = () => {
 
   // Validation errors state (Mã số 29)
   const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   const formatPrice = (price) => {
@@ -30,17 +31,13 @@ const Checkout = () => {
   };
 
   const validateForm = () => {
-    const tempErrors = {};
-    if (!fullName.trim()) tempErrors.fullName = 'Họ tên không được để trống';
-    if (!phone.trim()) {
-      tempErrors.phone = 'Số điện thoại không được để trống';
-    } else if (!/^[0-9]{10,11}$/.test(phone.trim())) {
-      tempErrors.phone = 'Số điện thoại không hợp lệ (yêu cầu 10-11 chữ số)';
-    }
-    if (!address.trim()) tempErrors.address = 'Địa chỉ nhận hàng không được để trống';
-
+    const { isValid, errors: tempErrors } = validateCheckoutForm({
+      fullName,
+      phone,
+      address
+    });
     setErrors(tempErrors);
-    return Object.keys(tempErrors).length === 0;
+    return isValid;
   };
 
   const handleCheckoutSubmit = async (e) => {
@@ -49,8 +46,6 @@ const Checkout = () => {
       showToast('Vui lòng kiểm tra lại thông tin thanh toán!', 'error');
       return;
     }
-
-    setIsSubmitting(true);
 
     const orderItems = cartItems.map(item => ({
       productId: Number(item.id),
@@ -68,8 +63,8 @@ const Checkout = () => {
     };
 
     try {
-      // Gọi API thực tế thông qua orderApi
-      await orderApi.create(orderPayload);
+      // Gọi API thực tế thông qua useOrders hook
+      await createOrder(orderPayload);
       
       // Đặt hàng thành công
       setIsSuccess(true);
@@ -83,8 +78,6 @@ const Checkout = () => {
     } catch (error) {
       console.error('Lỗi khi gửi đơn đặt hàng lên API:', error);
       showToast('Có lỗi xảy ra trong quá trình đặt hàng. Vui lòng thử lại!', 'error');
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

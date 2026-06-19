@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import orderApi from '../api/orderApi';
+import orderService from '../services/orderService';
 
 /**
  * Hook quản lý tạo đơn hàng qua API thật
@@ -13,8 +13,8 @@ export const useOrders = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await orderApi.create(orderPayload);
-      return response.data;
+      const data = await orderService.submitOrder(orderPayload);
+      return data;
     } catch (err) {
       console.error('Lỗi khi tạo đơn hàng:', err);
       setError('Không thể tạo đơn hàng. Vui lòng thử lại sau.');
