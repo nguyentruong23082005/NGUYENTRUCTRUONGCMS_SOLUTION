@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { formatCurrency } from '../../utils/formatCurrency';
+import { CartIcon } from '../common/Icons';
 import styles from './ProductCard.module.css';
 
 const ProductCard = ({ product }) => {
@@ -36,11 +37,7 @@ const ProductCard = ({ product }) => {
         <p className={styles.price}>{formatCurrency(product.price)}</p>
         <button type="button" onClick={handleBuyClick} className={styles.button} disabled={product.stockQuantity <= 0}>
           {product.stockQuantity > 0 && (
-            <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.buttonIcon}>
-              <circle cx="9" cy="20" r="1.4" />
-              <circle cx="17" cy="20" r="1.4" />
-              <path d="M3 4h2.2l2.3 10.5a2 2 0 0 0 2 1.5h7.8a2 2 0 0 0 1.9-1.4L21 8H7" />
-            </svg>
+            <CartIcon className={styles.buttonIcon} />
           )}
           {product.stockQuantity <= 0 ? 'Tạm hết hàng' : 'Đặt mua'}
         </button>

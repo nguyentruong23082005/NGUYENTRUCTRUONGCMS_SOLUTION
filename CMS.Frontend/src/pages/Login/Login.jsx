@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import authApi from '../../api/authApi';
+import { HomeIcon } from '../../components/common/Icons';
 import logo from '../../assets/images/logo.png';
 import styles from './Login.module.css';
 
@@ -55,9 +56,7 @@ const Login = () => {
 
       <section className={styles.panel}>
         <Link to="/" className={styles.homeLink} aria-label="Về trang chủ">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M3 10.8 12 3l9 7.8v9.7a.5.5 0 0 1-.5.5h-5.2v-6.2H8.7V21H3.5a.5.5 0 0 1-.5-.5z" />
-          </svg>
+          <HomeIcon />
         </Link>
 
         <img src={logo} alt="Phúc Long" className={styles.logo} />

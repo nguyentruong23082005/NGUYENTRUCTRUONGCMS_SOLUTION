@@ -23,68 +23,17 @@ const toSentenceCase = (value = '') => {
   return `${normalized.charAt(0).toLocaleUpperCase('vi-VN')}${normalized.slice(1)}`;
 };
 
-const AccountIcon = () => (
-  <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.headerSvgIcon}>
-    <circle cx="12" cy="8" r="3.25" />
-    <path d="M5.25 19.25c.85-3.65 3.3-5.5 6.75-5.5s5.9 1.85 6.75 5.5" />
-    <circle cx="12" cy="12" r="9" />
-  </svg>
-);
-
-const AccountMenuIcon = ({ type }) => {
-  if (type === 'register') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.accountMenuSvg}>
-        <circle cx="10" cy="8" r="3" />
-        <path d="M4 19c.7-3.1 2.8-4.6 6-4.6 1.3 0 2.4.25 3.3.78" />
-        <path d="M18 11v6" />
-        <path d="M15 14h6" />
-      </svg>
-    );
-  }
-  if (type === 'logout') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.accountMenuSvg}>
-        <path d="M10 6H6.5A1.5 1.5 0 0 0 5 7.5v9A1.5 1.5 0 0 0 6.5 18H10" />
-        <path d="M14 8l4 4-4 4" />
-        <path d="M18 12H9" />
-      </svg>
-    );
-  }
-  if (type === 'vouchers') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.accountMenuSvg}>
-        <rect x="2" y="7" width="20" height="10" rx="2" />
-        <path d="M16 7v10" strokeDasharray="2 2" />
-        <circle cx="16" cy="12" r="1.5" />
-      </svg>
-    );
-  }
-  if (type === 'addresses') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.accountMenuSvg}>
-        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-        <circle cx="12" cy="9" r="2.5" />
-      </svg>
-    );
-  }
-  if (type === 'orders') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.accountMenuSvg}>
-        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-        <line x1="3" y1="6" x2="21" y2="6" />
-        <path d="M16 10a4 4 0 01-8 0" />
-      </svg>
-    );
-  }
-  // default: profile
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.accountMenuSvg}>
-      <circle cx="12" cy="8" r="3.25" />
-      <path d="M5.25 19.25c.85-3.65 3.3-5.5 6.75-5.5s5.9 1.85 6.75 5.5" />
-    </svg>
-  );
-};
+import {
+  HeaderAccountIcon,
+  HeaderMailIcon,
+  SearchIcon,
+  ProfileIcon,
+  RegisterIcon,
+  LogoutIcon,
+  VoucherIcon,
+  AddressIcon,
+  OrdersIcon
+} from '../../common/Icons';
 
 // Header chính — thanh điều hướng trên cùng theo thiết kế Phúc Long
 const Header = () => {
@@ -139,7 +88,9 @@ const Header = () => {
           </Link>
 
           <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
-            <span className={styles.searchIcon} aria-hidden="true">⌕</span>
+            <span className={styles.searchIcon} aria-hidden="true">
+              <SearchIcon />
+            </span>
             <input
               type="text"
               placeholder="Bạn muốn mua gì..."
@@ -162,10 +113,7 @@ const Header = () => {
 
           <div className={styles.controls}>
             <Link to="#" className={styles.iconButton} aria-label="Liên hệ">
-              <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.headerSvgIcon}>
-                <path d="M3.75 6.75h16.5v10.5H3.75V6.75Z" />
-                <path d="m4.5 7.5 7.5 5.75 7.5-5.75" />
-              </svg>
+              <HeaderMailIcon className={styles.headerSvgIcon} />
             </Link>
 
             <div className={styles.accountMenu}>
@@ -175,41 +123,41 @@ const Header = () => {
                 aria-label={isAuthenticated ? (user.fullName || user.userName || 'Tài khoản') : 'Đăng nhập'}
                 aria-haspopup="true"
               >
-                <AccountIcon />
+                <HeaderAccountIcon className={styles.headerSvgIcon} />
               </Link>
 
               <div className={styles.accountDropdown}>
                 {isAuthenticated ? (
                   <>
                     <Link to="/customer/account?tab=profile" className={styles.accountDropdownItem}>
-                      <AccountMenuIcon type="profile" />
+                      <ProfileIcon className={styles.accountMenuSvg} />
                       <span>Thông tin cá nhân</span>
                     </Link>
                     <Link to="/customer/account?tab=vouchers" className={styles.accountDropdownItem}>
-                      <AccountMenuIcon type="vouchers" />
+                      <VoucherIcon className={styles.accountMenuSvg} />
                       <span>Ưu đãi của tôi</span>
                     </Link>
                     <Link to="/customer/account?tab=addresses" className={styles.accountDropdownItem}>
-                      <AccountMenuIcon type="addresses" />
+                      <AddressIcon className={styles.accountMenuSvg} />
                       <span>Số địa chỉ</span>
                     </Link>
                     <Link to="/customer/account?tab=orders" className={styles.accountDropdownItem}>
-                      <AccountMenuIcon type="orders" />
+                      <OrdersIcon className={styles.accountMenuSvg} />
                       <span>Đơn hàng</span>
                     </Link>
                     <button type="button" onClick={handleLogout} className={styles.accountDropdownItem}>
-                      <AccountMenuIcon type="logout" />
+                      <LogoutIcon className={styles.accountMenuSvg} />
                       <span>Đăng xuất</span>
                     </button>
                   </>
                 ) : (
                   <>
                     <Link to="/login" className={`${styles.accountDropdownItem} ${styles.accountDropdownItemActive}`}>
-                      <AccountMenuIcon type="profile" />
+                      <ProfileIcon className={styles.accountMenuSvg} />
                       <span>Đăng nhập</span>
                     </Link>
                     <Link to="/register" className={styles.accountDropdownItem}>
-                      <AccountMenuIcon type="register" />
+                      <RegisterIcon className={styles.accountMenuSvg} />
                       <span>Đăng ký</span>
                     </Link>
                   </>

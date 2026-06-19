@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../../context/CartContext';
+import { CartIcon } from '../../common/Icons';
 import styles from './FloatingActions.module.css';
 
 const FloatingActions = () => {
@@ -15,11 +16,7 @@ const FloatingActions = () => {
         className={`${styles.cartButton} ${isCartAnimating ? styles.bounce : ''}`}
         aria-label={`Giỏ hàng có ${cartTotalQuantity} sản phẩm`}
       >
-        <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.cartIcon}>
-          <circle cx="9" cy="20" r="1.4" />
-          <circle cx="17" cy="20" r="1.4" />
-          <path d="M3 4h2.2l2.3 10.5a2 2 0 0 0 2 1.5h7.8a2 2 0 0 0 1.9-1.4L21 8H7" />
-        </svg>
+        <CartIcon className={styles.cartIcon} />
         {cartTotalQuantity > 0 && (
           <span className={styles.cartBadge}>{cartTotalQuantity}</span>
         )}
