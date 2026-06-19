@@ -282,11 +282,7 @@
   flex: 0 0 auto;
   width: 26px;
   height: 26px;
-  fill: none;
-  stroke: #00703c;
-  stroke-width: 1.9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  display: block;
 }
 
 .logoutBtn {

@@ -3,7 +3,8 @@ import useCustomers from '../../hooks/useCustomers';
 import styles from '../../pages/Profile/Profile.module.css';
 
 /**
- * Tab Thông tin cá nhân — form cập nhật họ tên, SĐT và mật khẩu dựa trên các trường có sẵn ở Backend.
+ * Tab Thông tin cá nhân — form cập nhật họ tên, SĐT và mật khẩu.
+ * Dàn trang dạng 2 cột ngang (grid) cực đẹp và đồng bộ với giao diện Phúc Long.
  * @param {{ profile: object|null, onRefresh: Function }} props
  */
 const ProfileInfo = ({ profile, onRefresh }) => {
@@ -63,74 +64,80 @@ const ProfileInfo = ({ profile, onRefresh }) => {
         </div>
       )}
 
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel} htmlFor="pi-email">Email (không thể thay đổi)</label>
-          <input
-            id="pi-email"
-            className={styles.formInput}
-            value={profile?.email || ''}
-            disabled
-            style={{ backgroundColor: '#F5F5F5', color: '#666666', cursor: 'not-allowed' }}
-          />
+      <form className={styles.form} onSubmit={handleSubmit} style={{ maxWidth: '100%' }}>
+        {/* Dàn trang ngang 2 cột cho các thông tin cá nhân */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px 24px', marginBottom: 24 }}>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="pi-fullName">Họ và tên *</label>
+            <input
+              id="pi-fullName"
+              name="fullName"
+              className={styles.formInput}
+              value={form.fullName}
+              onChange={handleChange}
+              maxLength={100}
+              placeholder="Nhập họ và tên"
+              required
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="pi-phone">Số điện thoại</label>
+            <input
+              id="pi-phone"
+              name="phone"
+              className={styles.formInput}
+              value={form.phone}
+              onChange={handleChange}
+              placeholder="Nhập số điện thoại"
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="pi-email">Email (không thể thay đổi)</label>
+            <input
+              id="pi-email"
+              className={styles.formInput}
+              value={profile?.email || ''}
+              disabled
+              style={{ backgroundColor: '#F5F5F5', color: '#666666', cursor: 'not-allowed' }}
+            />
+          </div>
         </div>
 
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel} htmlFor="pi-fullName">Họ và tên *</label>
-          <input
-            id="pi-fullName"
-            name="fullName"
-            className={styles.formInput}
-            value={form.fullName}
-            onChange={handleChange}
-            maxLength={100}
-            placeholder="Nhập họ và tên"
-            required
-          />
+        <p className={styles.formSectionTitle} style={{ marginTop: 28, marginBottom: 12 }}>Đổi mật khẩu (để trống nếu không đổi)</p>
+
+        {/* Dàn trang ngang 2 cột cho các trường mật khẩu */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px 24px' }}>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="pi-currentPassword">Mật khẩu hiện tại</label>
+            <input
+              id="pi-currentPassword"
+              name="currentPassword"
+              type="password"
+              className={styles.formInput}
+              value={form.currentPassword}
+              onChange={handleChange}
+              placeholder="Nhập mật khẩu hiện tại"
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel} htmlFor="pi-newPassword">Mật khẩu mới</label>
+            <input
+              id="pi-newPassword"
+              name="newPassword"
+              type="password"
+              className={styles.formInput}
+              value={form.newPassword}
+              onChange={handleChange}
+              placeholder="Tối thiểu 6 ký tự"
+            />
+          </div>
         </div>
 
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel} htmlFor="pi-phone">Số điện thoại</label>
-          <input
-            id="pi-phone"
-            name="phone"
-            className={styles.formInput}
-            value={form.phone}
-            onChange={handleChange}
-            placeholder="Nhập số điện thoại"
-          />
-        </div>
-
-        <p className={styles.formSectionTitle}>Đổi mật khẩu (để trống nếu không đổi)</p>
-
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel} htmlFor="pi-currentPassword">Mật khẩu hiện tại</label>
-          <input
-            id="pi-currentPassword"
-            name="currentPassword"
-            type="password"
-            className={styles.formInput}
-            value={form.currentPassword}
-            onChange={handleChange}
-            placeholder="Nhập mật khẩu hiện tại"
-          />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel} htmlFor="pi-newPassword">Mật khẩu mới</label>
-          <input
-            id="pi-newPassword"
-            name="newPassword"
-            type="password"
-            className={styles.formInput}
-            value={form.newPassword}
-            onChange={handleChange}
-            placeholder="Tối thiểu 6 ký tự"
-          />
-        </div>
-
-        <div className={styles.formActions}>
-          <button type="submit" className={styles.btnPrimary} disabled={loading}>
+        <div className={styles.formActions} style={{ marginTop: 28 }}>
+          <button type="submit" className={styles.btnPrimary} disabled={loading} style={{ minWidth: 150 }}>
             {loading ? 'Đang lưu...' : 'Lưu thay đổi'}
           </button>
         </div>
