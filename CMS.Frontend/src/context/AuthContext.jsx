@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import storage from '../utils/storage';
+import { STORAGE_KEYS } from '../utils/constants';
 
 // Context quản lý trạng thái xác thực khách hàng (Đăng nhập, Đăng ký, Đăng xuất)
 const AuthContext = createContext(null);
@@ -10,18 +12,16 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Khôi phục trạng thái đăng nhập từ localStorage khi khách hàng tải lại trang (F5)
-    const savedToken = localStorage.getItem('authToken');
-    const savedUser = localStorage.getItem('user');
+    const savedToken = storage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+    const savedUser = storage.getItem(STORAGE_KEYS.USER);
     
     if (savedToken && savedUser) {
       setToken(savedToken);
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (e) {
-        // Xóa sạch dữ liệu lỗi nếu cấu trúc JSON lưu trữ bị hỏng
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('user');
-      }
+      setUser(savedUser);
+    } else {
+      // Dọn dẹp trong trường hợp bị khuyết dữ liệu
+      storage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+      storage.removeItem(STORAGE_KEYS.USER);
     }
     setLoading(false);
   }, []);
@@ -30,16 +30,16 @@ export const AuthProvider = ({ children }) => {
   const login = (authToken, userData) => {
     setToken(authToken);
     setUser(userData);
-    localStorage.setItem('authToken', authToken);
-    localStorage.setItem('user', JSON.stringify(userData));
+    storage.setItem(STORAGE_KEYS.AUTH_TOKEN, authToken);
+    storage.setItem(STORAGE_KEYS.USER, userData);
   };
 
   // Hàm thực hiện đăng xuất, xóa bỏ toàn bộ phiên làm việc khỏi trình duyệt
   const logout = () => {
     setToken(null);
     setUser(null);
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+    storage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+    storage.removeItem(STORAGE_KEYS.USER);
   };
 
   const value = {

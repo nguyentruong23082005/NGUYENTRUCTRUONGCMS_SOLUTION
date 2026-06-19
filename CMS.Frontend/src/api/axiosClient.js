@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { STORAGE_KEYS } from '../utils/constants';
 
 // Khởi tạo Axios client instance (Cấu hình qua file môi trường .env)
 const axiosClient = axios.create({
@@ -11,7 +12,7 @@ const axiosClient = axios.create({
 // Bộ chặn Request: tự động chèn JWT token từ localStorage vào HTTP Header Authorization
 axiosClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -28,8 +29,8 @@ axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('user');
+      localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.USER);
       window.location.href = '/login';
     }
     return Promise.reject(error);

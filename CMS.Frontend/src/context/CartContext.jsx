@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { useAuth } from './AuthContext';
+import storage from '../utils/storage';
+import { STORAGE_KEYS } from '../utils/constants';
 
 // Context quản lý trạng thái giỏ hàng toàn cục (Đồng bộ localStorage và hỗ trợ cơ chế gộp giỏ hàng khách/thành viên)
 const CartContext = createContext(null);
@@ -42,8 +44,7 @@ export const CartProvider = ({ children }) => {
     
     if (!prevUser && user) {
       // SỰ KIỆN ĐĂNG NHẬP: Từ khách vãng lai -> Thành viên
-      const guestCartJson = localStorage.getItem('cart_guest');
-      const guestCart = guestCartJson ? JSON.parse(guestCartJson) : [];
+      const guestCart = storage.getItem(STORAGE_KEYS.CART_GUEST, []);
       
       if (guestCart.length > 0) {
         // Có sản phẩm trong giỏ tạm: hiển thị modal xác nhận gộp giỏ hàng
@@ -51,24 +52,23 @@ export const CartProvider = ({ children }) => {
         setShowMergeModal(true);
       } else {
         // Giỏ tạm trống: tải trực tiếp giỏ hàng cá nhân từ trước của user
-        const userCartJson = localStorage.getItem(`cart_user_${user.id}`);
-        const userCart = userCartJson ? JSON.parse(userCartJson) : [];
+        const userCart = storage.getItem(`${STORAGE_KEYS.CART_USER_PREFIX}${user.id}`, []);
         setCartItems(userCart);
       }
     } else if (prevUser && !user) {
       // SỰ KIỆN ĐĂNG XUẤT: Từ thành viên -> Khách vãng lai
       // Dọn sạch giỏ hàng active và giỏ tạm trên thiết bị để đảm bảo an toàn thông tin
       setCartItems([]);
-      localStorage.removeItem('cart_guest');
+      storage.removeItem(STORAGE_KEYS.CART_GUEST);
       showToast('Đã đăng xuất, giỏ hàng thiết bị đã được dọn sạch.', 'info');
     } else {
       // Khi F5 hoặc khởi tạo trang web ban đầu
       if (user) {
-        const userCartJson = localStorage.getItem(`cart_user_${user.id}`);
-        setCartItems(userCartJson ? JSON.parse(userCartJson) : []);
+        const userCart = storage.getItem(`${STORAGE_KEYS.CART_USER_PREFIX}${user.id}`, []);
+        setCartItems(userCart);
       } else {
-        const guestCartJson = localStorage.getItem('cart_guest');
-        setCartItems(guestCartJson ? JSON.parse(guestCartJson) : []);
+        const guestCart = storage.getItem(STORAGE_KEYS.CART_GUEST, []);
+        setCartItems(guestCart);
       }
     }
     
@@ -78,17 +78,16 @@ export const CartProvider = ({ children }) => {
   // 2. Tự động ghi nhận giỏ hàng xuống localStorage mỗi khi cartItems hoặc user thay đổi
   useEffect(() => {
     if (user) {
-      localStorage.setItem(`cart_user_${user.id}`, JSON.stringify(cartItems));
+      storage.setItem(`${STORAGE_KEYS.CART_USER_PREFIX}${user.id}`, cartItems);
     } else {
-      localStorage.setItem('cart_guest', JSON.stringify(cartItems));
+      storage.setItem(STORAGE_KEYS.CART_GUEST, cartItems);
     }
   }, [cartItems, user]);
 
   // Xử lý logic trộn giỏ hàng (Guest Cart + User Cart) sau khi được người dùng xác nhận
   const handleMergeCart = (agree) => {
-    const userCartKey = `cart_user_${user.id}`;
-    const userCartJson = localStorage.getItem(userCartKey);
-    const userCart = userCartJson ? JSON.parse(userCartJson) : [];
+    const userCartKey = `${STORAGE_KEYS.CART_USER_PREFIX}${user.id}`;
+    const userCart = storage.getItem(userCartKey, []);
 
     if (agree) {
       // Đồng ý: Cộng gộp giỏ tạm vào giỏ thành viên
@@ -120,7 +119,7 @@ export const CartProvider = ({ children }) => {
     }
     
     // Dọn sạch giỏ hàng tạm thời sau khi xử lý xong
-    localStorage.removeItem('cart_guest');
+    storage.removeItem(STORAGE_KEYS.CART_GUEST);
     setGuestCartToMerge([]);
     setShowMergeModal(false);
   };
@@ -203,9 +202,9 @@ export const CartProvider = ({ children }) => {
   const clearCart = () => {
     setCartItems([]);
     if (user) {
-      localStorage.removeItem(`cart_user_${user.id}`);
+      storage.removeItem(`${STORAGE_KEYS.CART_USER_PREFIX}${user.id}`);
     } else {
-      localStorage.removeItem('cart_guest');
+      storage.removeItem(STORAGE_KEYS.CART_GUEST);
     }
   };
 
