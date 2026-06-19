@@ -42,7 +42,6 @@ const AccountMenuIcon = ({ type }) => {
       </svg>
     );
   }
-
   if (type === 'logout') {
     return (
       <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.accountMenuSvg}>
@@ -52,13 +51,37 @@ const AccountMenuIcon = ({ type }) => {
       </svg>
     );
   }
-
+  if (type === 'vouchers') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.accountMenuSvg}>
+        <rect x="2" y="7" width="20" height="10" rx="2" />
+        <path d="M16 7v10" strokeDasharray="2 2" />
+        <circle cx="16" cy="12" r="1.5" />
+      </svg>
+    );
+  }
+  if (type === 'addresses') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.accountMenuSvg}>
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+        <circle cx="12" cy="9" r="2.5" />
+      </svg>
+    );
+  }
+  if (type === 'orders') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.accountMenuSvg}>
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+        <line x1="3" y1="6" x2="21" y2="6" />
+        <path d="M16 10a4 4 0 01-8 0" />
+      </svg>
+    );
+  }
+  // default: profile
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.accountMenuSvg}>
-      <rect x="4" y="5" width="16" height="14" rx="2" />
-      <path d="M8 9h8" />
-      <path d="M8 13h5" />
-      <path d="M8 17h8" />
+      <circle cx="12" cy="8" r="3.25" />
+      <path d="M5.25 19.25c.85-3.65 3.3-5.5 6.75-5.5s5.9 1.85 6.75 5.5" />
     </svg>
   );
 };
@@ -158,9 +181,21 @@ const Header = () => {
               <div className={styles.accountDropdown}>
                 {isAuthenticated ? (
                   <>
-                    <Link to="/customer/account" className={`${styles.accountDropdownItem} ${styles.accountDropdownItemActive}`}>
+                    <Link to="/customer/account?tab=profile" className={styles.accountDropdownItem}>
                       <AccountMenuIcon type="profile" />
                       <span>Thông tin cá nhân</span>
+                    </Link>
+                    <Link to="/customer/account?tab=vouchers" className={styles.accountDropdownItem}>
+                      <AccountMenuIcon type="vouchers" />
+                      <span>Ưu đãi của tôi</span>
+                    </Link>
+                    <Link to="/customer/account?tab=addresses" className={styles.accountDropdownItem}>
+                      <AccountMenuIcon type="addresses" />
+                      <span>Số địa chỉ</span>
+                    </Link>
+                    <Link to="/customer/account?tab=orders" className={styles.accountDropdownItem}>
+                      <AccountMenuIcon type="orders" />
+                      <span>Đơn hàng</span>
                     </Link>
                     <button type="button" onClick={handleLogout} className={styles.accountDropdownItem}>
                       <AccountMenuIcon type="logout" />
