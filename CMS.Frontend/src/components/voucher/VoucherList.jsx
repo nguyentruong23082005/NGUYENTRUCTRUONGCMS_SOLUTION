@@ -52,28 +52,33 @@ const VoucherList = () => {
 
           return (
             <div key={v.id} className={styles.voucherCard}>
-              <div className={styles.voucherCardHeader}>
-                <span className={styles.voucherBadge}>Voucher</span>
+              {/* Phần bên trái */}
+              <div className={styles.voucherLeft}>
+                <div className={styles.voucherBadgeWrapper}>
+                  <span className={styles.voucherBadge}>Ưu Đãi</span>
+                </div>
+                <div className={styles.voucherDiscount}>{discountLabel}</div>
+                <div className={styles.voucherMeta}>
+                  Đơn tối thiểu: {formatCurrency(v.minimumOrderAmount)}
+                </div>
+                <div className={styles.voucherExpiry}>HSD: {formatDate(v.expiryDate)}</div>
               </div>
 
-              <div className={styles.voucherDiscount}>{discountLabel}</div>
+              {/* Vạch đứt cắt vé */}
+              <div className={styles.voucherDivider} />
 
-              <div className={styles.voucherMeta}>
-                Đơn tối thiểu: {formatCurrency(v.minimumOrderAmount)}
-              </div>
-
-              <div className={styles.voucherCode}>
+              {/* Phần bên phải */}
+              <div className={styles.voucherRight}>
+                <span className={styles.voucherCodeLabel}>MÃ GIẢM GIÁ</span>
                 <span className={styles.voucherCodeText}>{v.code}</span>
                 <button
                   type="button"
                   className={styles.voucherCopyBtn}
                   onClick={() => handleCopy(v.code)}
                 >
-                  {copied === v.code ? '✓ Đã copy' : 'Copy'}
+                  {copied === v.code ? '✓ Đã copy' : 'Sao chép'}
                 </button>
               </div>
-
-              <div className={styles.voucherExpiry}>HSD: {formatDate(v.expiryDate)}</div>
             </div>
           );
         })}

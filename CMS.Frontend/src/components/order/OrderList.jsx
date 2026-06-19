@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { Coffee, MapPin, Phone, User } from 'lucide-react';
 import useOrders from '../../hooks/useOrders';
 import styles from '../../pages/Profile/Profile.module.css';
 
@@ -105,33 +106,74 @@ const OrderList = () => {
               {/* ── Body chi tiết ── */}
               {isExpanded && (
                 <div className={styles.orderCardBody}>
-                  <div className={styles.orderProductList}>
-                    {(order.items || []).map((item) => (
-                      <div key={item.id} className={styles.orderProduct}>
-                        <div className={styles.orderProductName}>
-                          {item.productName} × {item.quantity}
-                          {item.options && item.options.length > 0 && (
-                            <div className={styles.orderProductOptions}>
-                              {item.options.map((o) => o.name).join(', ')}
+                  <div className={styles.orderDetailGrid}>
+                    {/* Cột trái: Sản phẩm */}
+                    <div className={styles.orderProductsSection}>
+                      {(order.items || []).map((item) => (
+                        <div key={item.id} className={styles.orderProductItem}>
+                          <div className={styles.orderProductIconWrapper}>
+                            <Coffee size={20} strokeWidth={1.5} />
+                          </div>
+                          <div className={styles.orderProductInfo}>
+                            <div className={styles.orderProductName}>
+                              <strong>{item.productName}</strong> × {item.quantity}
+                            </div>
+                            {item.options && item.options.length > 0 && (
+                              <div className={styles.orderProductOptions}>
+                                {item.options.map((o) => o.name).join(', ')}
+                              </div>
+                            )}
+                          </div>
+                          <span className={styles.orderProductPrice}>
+                            {formatCurrency(item.totalPrice)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Cột phải: Thông tin giao nhận & thanh toán */}
+                    <div className={styles.orderInfoSection}>
+                      <div className={styles.orderInfoCard}>
+                        <div className={styles.orderInfoCardTitle}>Thông Tin Giao Nhận</div>
+                        <div className={styles.orderInfoRow}>
+                          <User size={16} strokeWidth={1.5} />
+                          <span>{order.receiverName || 'Chưa cập nhật người nhận'}</span>
+                        </div>
+                        <div className={styles.orderInfoRow}>
+                          <Phone size={16} strokeWidth={1.5} />
+                          <span>{order.receiverPhone || 'Chưa cập nhật SĐT'}</span>
+                        </div>
+                        <div className={styles.orderInfoRow}>
+                          <MapPin size={16} strokeWidth={1.5} />
+                          <span>{order.shippingAddress || 'Chưa cập nhật địa chỉ'}</span>
+                        </div>
+                      </div>
+
+                      <div className={styles.orderInfoCard}>
+                        <div className={styles.orderInfoCardTitle}>Tóm Tắt Thanh Toán</div>
+                        <div className={styles.orderPaymentSection}>
+                          <div className={styles.paymentRow}>
+                            <span>Tạm tính:</span>
+                            <span>{formatCurrency(order.totalAmount + order.discountAmount)}</span>
+                          </div>
+                          {order.discountAmount > 0 && (
+                            <div className={styles.paymentRow}>
+                              <span>Khuyến mãi (Voucher):</span>
+                              <span style={{ color: '#B71C1C' }}>-{formatCurrency(order.discountAmount)}</span>
                             </div>
                           )}
+                          <div className={styles.paymentTotalRow}>
+                            <span>Tổng cộng:</span>
+                            <span>{formatCurrency(order.totalAmount)}</span>
+                          </div>
                         </div>
-                        <span className={styles.orderProductPrice}>
-                          {formatCurrency(item.totalPrice)}
-                        </span>
                       </div>
-                    ))}
+                    </div>
                   </div>
 
                   <div className={styles.orderFooter}>
                     <div className={styles.orderSummary}>
-                      Giao tới: {order.shippingAddress || '—'}
-                      {order.discountAmount > 0 && (
-                        <div>Giảm giá: -{formatCurrency(order.discountAmount)}</div>
-                      )}
-                      <div className={styles.orderSummaryTotal}>
-                        Tổng cộng: {formatCurrency(order.totalAmount)}
-                      </div>
+                      {order.notes && <div><strong>Ghi chú:</strong> {order.notes}</div>}
                     </div>
 
                     {order.status === 'Pending' && (
@@ -141,7 +183,7 @@ const OrderList = () => {
                         onClick={() => handleCancel(order.id)}
                         disabled={loading}
                       >
-                        Hủy đơn
+                        Hủy đơn hàng
                       </button>
                     )}
                   </div>
