@@ -138,7 +138,7 @@ const Header = () => {
           </button>
 
           <div className={styles.controls}>
-            <Link to="/contact" className={styles.iconButton} aria-label="Liên hệ">
+            <Link to="#" className={styles.iconButton} aria-label="Liên hệ">
               <svg viewBox="0 0 24 24" aria-hidden="true" className={styles.headerSvgIcon}>
                 <path d="M3.75 6.75h16.5v10.5H3.75V6.75Z" />
                 <path d="m4.5 7.5 7.5 5.75 7.5-5.75" />
