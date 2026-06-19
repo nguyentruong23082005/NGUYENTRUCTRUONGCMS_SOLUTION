@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import storeApi from '../api/storeApi';
+import storeService from '../services/storeService';
 
 /**
  * Hook quản lý dữ liệu cửa hàng từ API thật
@@ -13,12 +13,8 @@ export const useStores = () => {
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const response = await storeApi.getAll();
-        if (response.data && response.data.success && response.data.data) {
-          setStores(response.data.data);
-        } else {
-          setStores([]);
-        }
+        const data = await storeService.getAllStores();
+        setStores(data);
       } catch (err) {
         console.error('Lỗi khi tải cửa hàng từ API:', err);
         setError('Không thể tải danh sách cửa hàng.');

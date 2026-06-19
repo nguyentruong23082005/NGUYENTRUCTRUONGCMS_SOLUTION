@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import storeApi from '../../api/storeApi';
-import { getApiErrorMessage, logApiError } from '../../utils/apiError';
+import useStores from '../../hooks/useStores';
 import styles from './StoreLocator.module.css';
 
 const toTime = (hour, minute) => {
@@ -79,34 +78,18 @@ const StoreThumb = ({ store }) => (
 );
 
 const StoreLocator = ({ variant = 'map' }) => {
-  const [stores, setStores] = useState([]);
+  const { stores: rawStores, loading, error: errorMessage } = useStores();
   const [selectedStore, setSelectedStore] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState('');
   const [query, setQuery] = useState('');
   const isListPage = variant === 'list';
 
+  const stores = useMemo(() => normalizeStores(rawStores), [rawStores]);
+
   useEffect(() => {
-    const fetchStores = async () => {
-      try {
-        const response = await storeApi.getAll();
-        const normalized = normalizeStores(response?.data?.data || response?.data);
-
-        setStores(normalized);
-        setSelectedStore(normalized[0] || null);
-        setErrorMessage('');
-      } catch (error) {
-        logApiError('Không tải được danh sách cửa hàng', error);
-        setStores([]);
-        setSelectedStore(null);
-        setErrorMessage(getApiErrorMessage(error, 'Không thể tải danh sách cửa hàng từ hệ thống.'));
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStores();
-  }, []);
+    if (stores.length > 0 && !selectedStore) {
+      setSelectedStore(stores[0]);
+    }
+  }, [stores, selectedStore]);
 
   const visibleStores = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
