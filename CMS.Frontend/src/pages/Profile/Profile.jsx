@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../../context/AuthContext';
+import useCustomers from '../../hooks/useCustomers';
 import styles from './Profile.module.css'; // Keep css import or update if needed
 
 const Profile = () => {
   const { user, isAuthenticated, logout } = useAuth();
+  const { getProfile, getAddresses } = useCustomers();
   const navigate = useNavigate();
+  const [profile, setProfile] = useState(null);
+  const [addresses, setAddresses] = useState([]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      getProfile().then(setProfile).catch(console.error);
+      getAddresses().then(setAddresses).catch(console.error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
+
+  const displayUser = profile || user;
 
   if (!isAuthenticated) {
     return (
@@ -40,29 +54,31 @@ const Profile = () => {
         <div className={styles.card}>
           <div className={styles.avatarSection}>
             <div className={styles.avatar}>👤</div>
-            <h3>{user.fullName || user.userName}</h3>
+            <h3>{displayUser?.fullName || displayUser?.userName || displayUser?.name}</h3>
             <p className={styles.role}>Khách hàng thành viên</p>
           </div>
 
           <div className={styles.infoSection}>
             <div className={styles.infoGroup}>
               <span className={styles.infoLabel}>Tên tài khoản:</span>
-              <span className={styles.infoValue}>{user.userName}</span>
+              <span className={styles.infoValue}>{displayUser?.userName}</span>
             </div>
             
             <div className={styles.infoGroup}>
               <span className={styles.infoLabel}>Địa chỉ Email:</span>
-              <span className={styles.infoValue}>{user.email}</span>
+              <span className={styles.infoValue}>{displayUser?.email}</span>
             </div>
 
             <div className={styles.infoGroup}>
               <span className={styles.infoLabel}>Số điện thoại:</span>
-              <span className={styles.infoValue}>{user.phoneNumber || 'Chưa cập nhật'}</span>
+              <span className={styles.infoValue}>{displayUser?.phoneNumber || displayUser?.phone || 'Chưa cập nhật'}</span>
             </div>
 
             <div className={styles.infoGroup}>
               <span className={styles.infoLabel}>Địa chỉ giao hàng mặc định:</span>
-              <span className={styles.infoValue}>{user.address || 'Chưa cập nhật'}</span>
+              <span className={styles.infoValue}>
+                {addresses.find(a => a.isDefault)?.addressLine || displayUser?.address || 'Chưa cập nhật'}
+              </span>
             </div>
             
             <div className={styles.actions}>

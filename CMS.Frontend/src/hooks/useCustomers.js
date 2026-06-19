@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import customerService from '../services/customerService';
 import customerApi from '../api/customerApi';
 
 /**
  * Hook quản lý thông tin khách hàng từ API thật
- * @returns {{ getProfile: Function, updateProfile: Function, loading: boolean, error: string|null }}
+ * @returns {{ getProfile: Function, getAddresses: Function, updateProfile: Function, loading: boolean, error: string|null }}
  */
 export const useCustomers = () => {
   const [loading, setLoading] = useState(false);
@@ -14,11 +15,27 @@ export const useCustomers = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await customerApi.getProfile();
-      return response.data;
+      const data = await customerService.getCustomerProfile();
+      return data;
     } catch (err) {
       console.error('Lỗi khi tải thông tin khách hàng:', err);
       setError('Không thể tải thông tin khách hàng.');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Lấy danh sách địa chỉ giao hàng
+  const getAddresses = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await customerService.getCustomerAddresses();
+      return data;
+    } catch (err) {
+      console.error('Lỗi khi tải danh sách địa chỉ khách hàng:', err);
+      setError('Không thể tải danh sách địa chỉ.');
       throw err;
     } finally {
       setLoading(false);
@@ -41,7 +58,7 @@ export const useCustomers = () => {
     }
   };
 
-  return { getProfile, updateProfile, loading, error };
+  return { getProfile, getAddresses, updateProfile, loading, error };
 };
 
 export default useCustomers;
