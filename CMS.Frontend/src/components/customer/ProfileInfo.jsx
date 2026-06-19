@@ -93,7 +93,7 @@ const ProfileInfo = ({ profile, onRefresh }) => {
             />
           </div>
 
-          <div className={styles.formGroup}>
+          <div className={styles.formGroup} style={{ gridColumn: 'span 2' }}>
             <label className={styles.formLabel} htmlFor="pi-email">Email (không thể thay đổi)</label>
             <input
               id="pi-email"
