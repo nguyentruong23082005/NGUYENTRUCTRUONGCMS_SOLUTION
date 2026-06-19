@@ -1,169 +1,827 @@
+/*
+  Profile Page — Phúc Long Design System
+  ─────────────────────────────────────────────────────────
+  Fonts   : Arimo (tất cả UI) | Roboto (form labels only)
+  Primary : #006F3C  Hover: #0C713D  Active: #005230
+  Text    : #333333 body | #666666 secondary | #9B9B9B muted
+  Surface : #FFFFFF card | #ECEFF1 accent bg | #171717 deep
+  Border  : #CCCCCC divider | #E0E0E0 input
+  Radius  : 0px input | 4px btn | 8px card | 12px pill | 50% circle
+  Shadow  : elevation-1 rgba(204,204,204,0.3) 0 2px 4px 0
+            elevation-2 rgba(0,0,0,0.12) 0 2px 8px 0
+  Spacing : multiples of 4px
+  ─────────────────────────────────────────────────────────
+*/
+
+/* ═══ Page shell ═══════════════════════════════════════════ */
 .page {
-  padding: 60px 0;
-  background-color: var(--bg-light);
-  font-family: var(--font-secondary);
+  padding: 40px 0 64px;
+  background-color: #ECEFF1;
+  min-height: calc(100vh - 130px);
+  font-family: Arimo, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #333333;
 }
 
-.pageTitle {
-  font-family: var(--font-primary);
-  font-size: 28px;
-  color: var(--primary-color);
-  margin-bottom: 32px;
-  text-transform: uppercase;
-  border-bottom: 2px solid var(--primary-color);
-  padding-bottom: 12px;
-}
-
-.card {
-  background-color: var(--bg-white);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  max-width: 800px;
+.container {
+  max-width: 1280px;
   margin: 0 auto;
+  padding: 0 40px;
 }
 
-.avatarSection {
-  background-color: #f7fafc;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/* ═══ Unauthenticated ══════════════════════════════════════ */
+.unauthCard {
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 56px 48px;
   text-align: center;
-  border-right: 1px solid var(--border-color);
+  max-width: 480px;
+  margin: 60px auto 0;
+  /* spec: no shadow on base surfaces; elevation-2 only for dropdowns */
 }
 
-.avatar {
-  font-size: 64px;
-  margin-bottom: 16px;
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  background-color: #e2e8f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.avatarSection h3 {
-  font-size: 18px;
-  color: var(--text-color);
-  margin-bottom: 4px;
-}
-
-.role {
-  font-size: 12px;
-  color: var(--primary-color);
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.infoSection {
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.infoGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  border-bottom: 1px dashed var(--border-color);
-  padding-bottom: 12px;
-}
-
-.infoGroup:last-of-type {
-  border-bottom: none;
-}
-
-.infoLabel {
-  font-size: 13px;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.infoValue {
-  font-size: 15px;
-  color: var(--text-color);
-  font-weight: 600;
-}
-
-.actions {
-  margin-top: 10px;
-}
-
-.logoutBtn {
-  background-color: var(--danger-color);
-  color: #ffffff;
-  padding: 10px 20px;
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  border: none;
-  transition: background-color var(--transition-fast);
-  min-height: 40px;
-}
-
-.logoutBtn:hover {
-  background-color: #b91c1c;
-}
-
-.unauthenticatedCard {
-  background-color: var(--bg-white);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 48px;
-  text-align: center;
-  max-width: 500px;
-  margin: 0 auto;
-  box-shadow: var(--shadow-sm);
-}
-
-.unauthenticatedCard h3 {
-  font-family: var(--font-primary);
-  font-size: 20px;
-  color: var(--primary-color);
+.unauthCard h2 {
+  font-family: Arimo, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #006F3C;
   margin-bottom: 12px;
+  line-height: 36px;
 }
 
-.unauthenticatedCard p {
-  color: var(--text-muted);
-  font-size: 15px;
-  margin-bottom: 24px;
+.unauthCard p {
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  color: #666666;
+  margin-bottom: 28px;
+  line-height: 21px;
 }
 
 .loginBtn {
-  background-color: var(--primary-color);
-  color: #ffffff;
-  padding: 10px 24px;
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  min-height: 40px;
+  display: inline-block;
+  background: #006F3C;
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
   border: none;
+  cursor: pointer;
+  min-height: 40px;
+  transition: background 0.2s ease;
+}
+.loginBtn:hover  { background: #0C713D; }
+.loginBtn:active { background: #005230; }
+
+/* ═══ 2-column layout ══════════════════════════════════════ */
+.layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 24px;
+  align-items: start;
 }
 
-.loginBtn:hover {
-  background-color: var(--primary-hover);
+/* ═══ Sidebar ══════════════════════════════════════════════ */
+.sidebar {
+  background: #FFFFFF;
+  border-radius: 8px;
+  overflow: hidden;
+  /* spec: no shadow on base card surfaces */
+  position: sticky;
+  top: 20px;
 }
 
-@media (max-width: 768px) {
-  .card {
-    grid-template-columns: 1fr;
+.sidebarUser {
+  background: #006F3C;
+  padding: 24px 20px;
+  text-align: center;
+  color: #FFFFFF;
+}
+
+.sidebarAvatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 28px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.sidebarName {
+  font-family: Arimo, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 22.5px;
+  margin-bottom: 4px;
+}
+
+.sidebarEmail {
+  font-family: Arimo, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  opacity: 0.8;
+  word-break: break-all;
+}
+
+.sidebarNav {
+  padding: 8px 0;
+}
+
+/* Sidebar nav items — shared for both button and Link */
+.sidebarLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 20px;
+  font-family: Arimo, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 19.5px;
+  color: #666666;
+  text-decoration: none;
+  background: none;
+  border: none;
+  border-left: 3px solid transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.sidebarLink:hover {
+  background: #ECEFF1;
+  color: #0C713D;
+}
+
+.sidebarLinkActive {
+  background: #ECEFF1;
+  color: #006F3C;
+  font-weight: 700;
+  border-left-color: #006F3C;
+}
+
+.sidebarDivider {
+  height: 1px;
+  background: #CCCCCC;
+  margin: 8px 0;
+}
+
+.sidebarLinkDanger {
+  color: #B71C1C;
+}
+.sidebarLinkDanger:hover {
+  background: #fff5f5;
+  color: #B71C1C;
+  border-left-color: transparent;
+}
+
+/* SVG icons inside sidebar */
+.sidebarIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ═══ Content area ═════════════════════════════════════════ */
+.content {
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 32px 36px;
+  /* spec: no shadow on base card surfaces */
+  min-height: 480px;
+}
+
+.contentTitle {
+  font-family: Arimo, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 30px;
+  color: #006F3C;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #ECEFF1;
+}
+
+/* ═══ Forms (shared) ═══════════════════════════════════════ */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 520px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Roboto ONLY for labels — per design spec */
+.formLabel {
+  font-family: Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20.125px;        /* spec: Input Label line-height */
+  color: #333333;
+}
+
+.formInput {
+  padding: 7.5px 6px;           /* spec: text input padding = 7.5px 6px */
+  border: 1px solid #E0E0E0;
+  border-radius: 0;               /* spec: 0px for text inputs */
+  font-family: Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.87);
+  background: #FAFAFA;
+  min-height: 40px;              /* spec: 40px minimum touch target */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+.formInput:focus {
+  outline: none;
+  border-color: #006F3C;
+  box-shadow: inset 0 0 0 1px #006F3C;
+}
+.formInput:disabled {
+  color: #9B9B9B;
+  background: #ECEFF1;
+}
+.formInput::placeholder { color: rgba(0, 0, 0, 0.38); }
+
+/* select inherits same styling */
+select.formInput { appearance: auto; }
+
+.formSectionTitle {
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #333333;
+  margin: 8px 0 0;
+}
+
+.formHint {
+  font-family: Arimo, sans-serif;
+  font-size: 12px;
+  color: #9B9B9B;
+  line-height: 18px;
+}
+
+.formActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+/* ─── Primary button ─── */
+.btnPrimary {
+  background: #006F3C;
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: normal;
+  border: none;
+  cursor: pointer;
+  min-height: 40px;
+  transition: background 0.2s ease;
+}
+.btnPrimary:hover   { background: #0C713D; }
+.btnPrimary:active  { background: #005230; }
+.btnPrimary:disabled {
+  background: #CCCCCC;
+  color: #9B9B9B;
+  cursor: default;
+}
+
+/* ─── Secondary button ─── */
+.btnSecondary {
+  background: #ECEFF1;
+  color: #333333;
+  padding: 12px 24px;
+  border-radius: 100px;           /* spec: pill for secondary */
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  min-height: 40px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.btnSecondary:hover  { background: #D6DEE3; color: #171717; }
+.btnSecondary:active { background: #BCCDD5; }
+
+/* ─── Alert messages ─── */
+.successMsg {
+  padding: 12px 16px;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 4px;
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  line-height: 21px;
+  color: #166534;
+  margin-bottom: 20px;
+}
+
+.errorMsg {
+  padding: 12px 16px;
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-radius: 4px;
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  line-height: 21px;
+  color: #B71C1C;
+  margin-bottom: 20px;
+}
+
+/* ═══ Tab: Vouchers ════════════════════════════════════════ */
+.voucherGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(284px, 1fr));
+  gap: 16px;
+}
+
+.voucherCard {
+  background: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: box-shadow 0.2s ease;
+}
+.voucherCard:hover {
+  box-shadow: rgba(204, 204, 204, 0.3) 0 2px 4px 0;
+}
+
+.voucherCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* Voucher badge — spec: 2px radius, uppercase, B71C1C background */
+.voucherBadge {
+  background: #B71C1C;
+  color: #FFFFFF;
+  font-family: Arimo, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  line-height: 18px;
+}
+
+.voucherDiscount {
+  font-family: Arimo, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 36px;
+  color: #006F3C;
+}
+
+.voucherCode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ECEFF1;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.voucherCodeText {
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #333333;
+  letter-spacing: 0;
+  flex: 1;
+}
+
+.voucherCopyBtn {
+  background: #006F3C;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-family: Arimo, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  cursor: pointer;
+  min-height: 28px;
+  transition: background 0.2s ease;
+}
+.voucherCopyBtn:hover { background: #0C713D; }
+
+.voucherMeta {
+  font-family: Arimo, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  color: #666666;
+}
+
+.voucherExpiry {
+  font-family: Arimo, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  color: #9B9B9B;
+}
+
+/* ═══ Tab: Addresses ═══════════════════════════════════════ */
+.addressList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.addressCard {
+  background: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.addressCard:hover {
+  border-color: #006F3C;
+  box-shadow: rgba(204, 204, 204, 0.3) 0 2px 4px 0;
+}
+
+.addressCardDefault {
+  border-color: #006F3C;
+  background: #f0fdf4;
+}
+
+.addressInfo { flex: 1; }
+
+.addressName {
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 21px;
+  color: #333333;
+  margin-bottom: 4px;
+}
+
+.addressDetail {
+  font-family: Arimo, sans-serif;
+  font-size: 13px;
+  line-height: 19.5px;
+  color: #666666;
+}
+
+.addressTags {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+/* Status badge — spec: 12px radius */
+.addressTag {
+  font-family: Arimo, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: #ECEFF1;
+  color: #333333;
+}
+
+.addressTagDefault {
+  background: #006F3C;
+  color: #FFFFFF;
+}
+
+.addressActions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Ghost/tertiary button — spec: transparent bg, 1px solid #9B9B9B, 0px radius */
+.btnIconAction {
+  background: transparent;
+  border: 1px solid #9B9B9B;
+  border-radius: 0;
+  padding: 8px 16px;
+  font-family: Arimo, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #333333;
+  cursor: pointer;
+  white-space: nowrap;
+  min-height: 36px;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.btnIconAction:hover {
+  border-color: #333333;
+  color: #171717;
+}
+
+.btnIconDanger {
+  color: #B71C1C;
+  border-color: #B71C1C;
+}
+.btnIconDanger:hover {
+  border-color: #B71C1C;
+  color: #B71C1C;
+  background: #fef2f2;
+}
+
+.addBtn { margin-top: 16px; }
+
+/* ─ Address form card ─ */
+.addressFormCard {
+  border: 1px solid #006F3C;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 16px;
+  background: #f0fdf4;
+}
+
+.addressFormTitle {
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 21px;
+  color: #006F3C;
+  margin-bottom: 20px;
+}
+
+.addressFormGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.addressFormFull { grid-column: 1 / -1; }
+
+.checkboxGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  line-height: 21px;
+  color: #333333;
+  cursor: pointer;
+}
+.checkboxGroup input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #006F3C;
+  cursor: pointer;
+}
+
+/* ═══ Tab: Orders ══════════════════════════════════════════ */
+.orderList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.orderCard {
+  background: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.orderCard:hover {
+  box-shadow: rgba(204, 204, 204, 0.3) 0 2px 4px 0;
+}
+
+.orderCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #FAFAFA;
+  cursor: pointer;
+  flex-wrap: wrap;
+  gap: 8px;
+  transition: background 0.15s ease;
+}
+.orderCardHeader:hover { background: #ECEFF1; }
+
+.orderMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.orderId {
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 21px;
+  color: #333333;
+}
+
+.orderDate {
+  font-family: Arimo, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  color: #9B9B9B;
+}
+
+.orderCardRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.orderTotal {
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 21px;
+  color: #006F3C;
+}
+
+/* Status badges — spec: 12px radius, Arimo 12px weight 500 */
+.orderStatusBadge {
+  font-family: Arimo, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.statusPending    { background: #fef9c3; color: #854d0e; }
+.statusProcessing { background: #dbeafe; color: #1e40af; }
+.statusShipping   { background: #f3e8ff; color: #7e22ce; }
+.statusDelivered  { background: #dcfce7; color: #166534; }
+.statusCancelled  { background: #fee2e2; color: #B71C1C; }
+
+.orderCardBody {
+  padding: 16px 20px;
+  border-top: 1px solid #CCCCCC;
+}
+
+.orderProductList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.orderProduct {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-family: Arimo, sans-serif;
+  font-size: 13px;
+  line-height: 19.5px;
+  color: #333333;
+  gap: 12px;
+}
+
+.orderProductName { flex: 1; }
+
+.orderProductOptions {
+  font-family: Arimo, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  color: #666666;
+  margin-top: 2px;
+}
+
+.orderProductPrice {
+  font-family: Arimo, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #333333;
+  white-space: nowrap;
+}
+
+.orderFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid #CCCCCC;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.orderSummary {
+  font-family: Arimo, sans-serif;
+  font-size: 13px;
+  line-height: 19.5px;
+  color: #666666;
+}
+
+.orderSummaryTotal {
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 21px;
+  color: #006F3C;
+  margin-top: 4px;
+}
+
+/* Danger outline button for cancel */
+.btnCancel {
+  background: transparent;
+  border: 1px solid #B71C1C;
+  border-radius: 0;
+  color: #B71C1C;
+  padding: 8px 16px;
+  font-family: Arimo, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  min-height: 40px;
+  transition: background 0.2s ease;
+}
+.btnCancel:hover    { background: #fef2f2; }
+.btnCancel:disabled { opacity: 0.5; cursor: default; }
+
+/* ─── Chevron toggle ─── */
+.toggleChevron {
+  font-family: Arimo, sans-serif;
+  font-size: 13px;
+  color: #9B9B9B;
+  transition: transform 0.2s ease;
+}
+
+/* ─── Empty state ─── */
+.emptyState {
+  text-align: center;
+  padding: 48px 0;
+  color: #9B9B9B;
+}
+.emptyState p {
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  line-height: 21px;
+  margin-top: 8px;
+}
+
+/* ═══ Responsive ═══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .container { padding: 0 24px; }
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+
+  /* Horizontal tab bar on mobile */
+  .sidebarNav {
+    display: flex;
+    overflow-x: auto;
+    gap: 0;
+    padding: 0;
+    scrollbar-width: none;
   }
-  
-  .avatarSection {
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-    padding: 30px;
+  .sidebarNav::-webkit-scrollbar { display: none; }
+
+  .sidebarLink {
+    white-space: nowrap;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    padding: 12px 16px;
+    flex-shrink: 0;
   }
-  
-  .infoSection {
-    padding: 30px;
+  .sidebarLinkActive {
+    border-left: none;
+    border-bottom-color: #006F3C;
   }
+
+  .sidebarDivider {
+    width: 1px;
+    height: 40px;
+    align-self: center;
+    margin: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .container { padding: 0 16px; }
+  .content   { padding: 24px 20px; }
+  .addressFormGrid { grid-template-columns: 1fr; }
+  .voucherGrid     { grid-template-columns: 1fr; }
+  .orderCardHeader { flex-direction: column; align-items: flex-start; }
+  .orderFooter     { flex-direction: column; align-items: flex-start; }
 }
