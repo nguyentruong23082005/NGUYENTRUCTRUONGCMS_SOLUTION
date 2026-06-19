@@ -232,8 +232,56 @@ namespace CMS.Backend.Services.Api
             var page = query.Page;
             var pageSize = query.PageSize;
 
-            var orders = await _db.Orders
-                .Where(o => o.CustomerId == customerId && !o.IsDeleted)
+            var dbQuery = _db.Orders
+                .Where(o => o.CustomerId == customerId && !o.IsDeleted);
+
+            if (!string.IsNullOrEmpty(query.Status))
+            {
+                var statusLower = query.Status.ToLower();
+                if (statusLower == "pending")
+                {
+                    dbQuery = dbQuery.Where(o => o.Status == OrderStatus.Pending);
+                }
+                else if (statusLower == "confirmed")
+                {
+                    dbQuery = dbQuery.Where(o => o.Status == OrderStatus.Confirmed);
+                }
+                else if (statusLower == "preparing")
+                {
+                    dbQuery = dbQuery.Where(o => o.Status == OrderStatus.Preparing || o.Status == OrderStatus.Ready);
+                }
+                else if (statusLower == "outfordelivery")
+                {
+                    dbQuery = dbQuery.Where(o => o.Status == OrderStatus.OutForDelivery);
+                }
+                else if (statusLower == "completed")
+                {
+                    dbQuery = dbQuery.Where(o => o.Status == OrderStatus.Delivered || o.Status == OrderStatus.Completed);
+                }
+                else if (statusLower == "cancelled")
+                {
+                    dbQuery = dbQuery.Where(o => o.Status == OrderStatus.Cancelled);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(query.SearchKeyword))
+            {
+                var keyword = query.SearchKeyword.Trim().ToLower().Replace("#", "");
+                if (int.TryParse(keyword, out int orderId))
+                {
+                    dbQuery = dbQuery.Where(o => o.Id == orderId);
+                }
+                else
+                {
+                    dbQuery = dbQuery.Where(o =>
+                        (o.ReceiverName != null && o.ReceiverName.ToLower().Contains(keyword)) ||
+                        (o.ReceiverPhone != null && o.ReceiverPhone.Contains(keyword)) ||
+                        (o.ShippingAddress != null && o.ShippingAddress.ToLower().Contains(keyword))
+                    );
+                }
+            }
+
+            var orders = await dbQuery
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Product)
                 .Include(o => o.OrderDetails)
@@ -353,6 +401,7 @@ namespace CMS.Backend.Services.Api
                     Id = od.Id,
                     ProductId = od.ProductId,
                     ProductName = od.Product != null ? od.Product.Name : "Sản phẩm đã bị xóa",
+                    ProductImageUrl = od.Product != null ? od.Product.ImageUrl : null,
                     BasePrice = od.Product != null ? od.Product.Price : 0,
                     ToppingSurcharge = od.OrderDetailOptions != null ? od.OrderDetailOptions.Sum(odo => odo.Price) : 0,
                     UnitPrice = od.UnitPrice,

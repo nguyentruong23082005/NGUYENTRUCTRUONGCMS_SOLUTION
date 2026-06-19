@@ -85,88 +85,63 @@
 .sidebar {
   background: #FFFFFF;
   border-radius: 8px;
+  border: 1px solid #ECEFF1;
   overflow: hidden;
-  /* spec: no shadow on base card surfaces */
   position: sticky;
   top: 20px;
 }
 
-.sidebarUser {
-  background: #006F3C;
-  padding: 24px 20px;
-  text-align: center;
-  color: #FFFFFF;
-}
-
-.sidebarAvatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 12px;
-  font-size: 28px;
-  border: 2px solid rgba(255, 255, 255, 0.4);
-}
-
-.sidebarName {
-  font-family: Arimo, sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 22.5px;
-  margin-bottom: 4px;
-}
-
-.sidebarEmail {
-  font-family: Arimo, sans-serif;
-  font-size: 12px;
-  line-height: 18px;
-  opacity: 0.8;
-  word-break: break-all;
-}
-
 .sidebarNav {
-  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Sidebar nav items — shared for both button and Link */
 .sidebarLink {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 13px 20px;
+  justify-content: space-between;
+  padding: 14px 20px;
   font-family: Arimo, sans-serif;
   font-size: 13px;
   font-weight: 500;
   line-height: 19.5px;
-  color: #666666;
+  color: #333333;
   text-decoration: none;
-  background: none;
+  background: #FFFFFF;
   border: none;
   border-left: 3px solid transparent;
+  border-bottom: 1px solid #ECEFF1;
   width: 100%;
   text-align: left;
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
-.sidebarLink:hover {
-  background: #ECEFF1;
-  color: #0C713D;
+.sidebarLink:last-child {
+  border-bottom: none;
+}
+
+.sidebarLinkLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebarChevron {
+  color: #CCCCCC;
+  font-size: 12px;
+  font-family: monospace;
 }
 
 .sidebarLinkActive {
-  background: #ECEFF1;
+  background: #FFFFFF;
   color: #006F3C;
-  font-weight: 700;
+  font-weight: 600;
   border-left-color: #006F3C;
 }
 
-.sidebarDivider {
-  height: 1px;
-  background: #CCCCCC;
-  margin: 8px 0;
+.sidebarLink:hover {
+  background: #FAFAFA;
+  color: #0C713D;
 }
 
 .sidebarLinkDanger {
@@ -175,7 +150,6 @@
 .sidebarLinkDanger:hover {
   background: #fff5f5;
   color: #B71C1C;
-  border-left-color: transparent;
 }
 
 /* SVG icons inside sidebar */

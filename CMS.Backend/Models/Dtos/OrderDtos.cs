@@ -46,6 +46,7 @@ namespace CMS.Backend.Models.Dtos
         public int Id { get; set; }
         public int ProductId { get; set; }
         public string ProductName { get; set; } = string.Empty;
+        public string? ProductImageUrl { get; set; }
         public decimal BasePrice { get; set; }
         public decimal ToppingSurcharge { get; set; }
         public decimal UnitPrice { get; set; }
@@ -84,5 +85,8 @@ namespace CMS.Backend.Models.Dtos
             get => _pageSize;
             set => _pageSize = value < 1 ? 10 : (value > 50 ? 50 : value);
         }
+
+        public string? Status { get; set; }
+        public string? SearchKeyword { get; set; }
     }
 }

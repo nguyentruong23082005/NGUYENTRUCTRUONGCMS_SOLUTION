@@ -5,27 +5,39 @@ import { useAuth } from '../../context/AuthContext';
 import useCustomers from '../../hooks/useCustomers';
 
 // ── Tab components (mỗi tab là 1 component riêng, tái sử dụng được) ──
-import ProfileInfo from '../../components/customer/ProfileInfo';
-import AddressList  from '../../components/customer/AddressList';
-import VoucherList  from '../../components/voucher/VoucherList';
-import OrderList    from '../../components/order/OrderList';
+import ProfileInfo          from '../../components/customer/ProfileInfo';
+import MemberCardTab        from '../../components/customer/MemberCardTab';
+import VoucherList          from '../../components/voucher/VoucherList';
+import AddressList          from '../../components/customer/AddressList';
+import OrderList            from '../../components/order/OrderList';
+import FavoriteList         from '../../components/customer/FavoriteList';
+import OrderedProductsList  from '../../components/customer/OrderedProductsList';
+import HelpCenterTab        from '../../components/customer/HelpCenterTab';
 
 import styles from './Profile.module.css';
 
 import {
   ProfileIcon,
+  MemberIcon,
   VoucherIcon,
   AddressIcon,
   OrdersIcon,
+  FavoriteIcon,
+  OrderedProductsIcon,
+  HelpIcon,
   LogoutIcon
 } from '../../components/common/Icons';
 
 // ── Tab definitions ────────────────────────────────────────
 const TABS = [
-  { key: 'profile',   label: 'Thông tin cá nhân', Icon: ProfileIcon },
-  { key: 'vouchers',  label: 'Ưu đãi của tôi',    Icon: VoucherIcon },
-  { key: 'addresses', label: 'Số địa chỉ',         Icon: AddressIcon },
-  { key: 'orders',    label: 'Đơn hàng',           Icon: OrdersIcon },
+  { key: 'profile',          label: 'Thông tin cá nhân',     Icon: ProfileIcon },
+  { key: 'member',           label: 'Khách hàng thành viên',  Icon: MemberIcon },
+  { key: 'vouchers',         label: 'Ưu đãi của tôi',        Icon: VoucherIcon },
+  { key: 'addresses',        label: 'Số địa chỉ',             Icon: AddressIcon },
+  { key: 'orders',           label: 'Đơn hàng',               Icon: OrdersIcon },
+  { key: 'favorites',        label: 'Sản phẩm yêu thích',    Icon: FavoriteIcon },
+  { key: 'ordered-products', label: 'Sản phẩm đã đặt',       Icon: OrderedProductsIcon },
+  { key: 'help',             label: 'Trung tâm trợ giúp',     Icon: HelpIcon },
 ];
 
 // ── Main Profile Page (layout shell + sidebar + tab routing) ──
@@ -82,10 +94,6 @@ const Profile = () => {
     );
   }
 
-  const displayUser = profile || user;
-  const displayName = displayUser?.fullName || displayUser?.userName || 'Khách hàng';
-  const displayEmail = displayUser?.email || '';
-
   return (
     <div className={styles.page}>
       <Helmet>
@@ -93,18 +101,16 @@ const Profile = () => {
       </Helmet>
 
       <div className={styles.container}>
-        <div className={styles.layout}>
+        {/* ── Breadcrumbs ── */}
+        <div className={styles.breadcrumbs}>
+          <span onClick={() => navigate('/')} className={styles.breadcrumbLink}>Trang chủ</span>
+          <span className={styles.breadcrumbSeparator}>/</span>
+          <span className={styles.breadcrumbActive}>Tài khoản</span>
+        </div>
 
+        <div className={styles.layout}>
           {/* ── Sidebar ── */}
           <aside className={styles.sidebar}>
-            <div className={styles.sidebarUser}>
-              <div className={styles.sidebarAvatar}>👤</div>
-              <div className={styles.sidebarName}>{displayName}</div>
-              {displayEmail && (
-                <div className={styles.sidebarEmail}>{displayEmail}</div>
-              )}
-            </div>
-
             <nav className={styles.sidebarNav}>
               {TABS.map(({ key, label, Icon }) => (
                 <button
@@ -113,20 +119,24 @@ const Profile = () => {
                   className={`${styles.sidebarLink} ${activeTab === key ? styles.sidebarLinkActive : ''}`}
                   onClick={() => handleTabChange(key)}
                 >
-                  <Icon className={styles.sidebarIcon} />
-                  {label}
+                  <div className={styles.sidebarLinkLeft}>
+                    <Icon className={styles.sidebarIcon} />
+                    <span>{label}</span>
+                  </div>
+                  <span className={styles.sidebarChevron}>&gt;</span>
                 </button>
               ))}
-
-              <div className={styles.sidebarDivider} />
 
               <button
                 type="button"
                 className={`${styles.sidebarLink} ${styles.sidebarLinkDanger}`}
                 onClick={handleLogout}
               >
-                <LogoutIcon className={styles.sidebarIcon} />
-                Đăng xuất
+                <div className={styles.sidebarLinkLeft}>
+                  <LogoutIcon className={styles.sidebarIcon} />
+                  <span>Đăng xuất</span>
+                </div>
+                <span className={styles.sidebarChevron}>&gt;</span>
               </button>
             </nav>
           </aside>
@@ -136,11 +146,16 @@ const Profile = () => {
             {activeTab === 'profile' && (
               <ProfileInfo profile={profile} onRefresh={loadProfile} />
             )}
+            {activeTab === 'member' && (
+              <MemberCardTab profile={profile} />
+            )}
             {activeTab === 'vouchers' && <VoucherList />}
             {activeTab === 'addresses' && <AddressList />}
             {activeTab === 'orders' && <OrderList />}
+            {activeTab === 'favorites' && <FavoriteList />}
+            {activeTab === 'ordered-products' && <OrderedProductsList />}
+            {activeTab === 'help' && <HelpCenterTab />}
           </main>
-
         </div>
       </div>
     </div>
