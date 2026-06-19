@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axiosClient from '../../api/axiosClient';
 import { getApiErrorMessage, logApiError } from '../../utils/apiError';
+import { formatDate } from '../../utils/formatDate';
 import styles from './PostGrid.module.css';
 
 const stripHtmlToText = (value = '') => {
@@ -40,7 +41,7 @@ const PostGrid = ({
               slug: item.slug || item.id,
               summary: stripHtmlToText(item.summary || item.shortDescription || item.content || ''),
               imageUrl: item.thumbnailUrl || item.imageUrl || '',
-              createdAt: item.createdAt ? new Date(item.createdAt).toLocaleDateString('vi-VN') : '',
+              createdAt: formatDate(item.createdAt),
               views: item.viewerNo || item.viewCount || item.views || 0,
             }))
           : [];
