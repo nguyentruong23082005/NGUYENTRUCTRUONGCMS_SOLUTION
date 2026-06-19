@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import categoryApi from '../../api/categoryApi';
-import productApi from '../../api/productApi';
+import useProducts from '../../hooks/useProducts';
+import usePagination from '../../hooks/usePagination';
 import ProductCard from '../../components/product/ProductCard';
 import ProductCardSkeleton from '../../components/product/ProductCardSkeleton';
 import EmptyState from '../../components/common/EmptyState/EmptyState';
@@ -39,31 +40,20 @@ const toSentenceCase = (value = '') => {
 
 const formatSectionTitle = (name = '') => toSentenceCase(name);
 
-const normalizeProduct = (item) => ({
-  id: String(item.id),
-  name: item.name,
-  price: item.price || item.unitPrice || 0,
-  stockQuantity: item.stockQuantity ?? item.unitsInStock ?? 0,
-  imageUrl: item.imageUrl || '',
-  categorySlug: item.categorySlug || '',
-  productCategoryName: item.productCategoryName || item.categoryName || '',
-  isBestSeller: Boolean(
-    item.isBestSeller
-    || item.isFeatured
-    || item.isHot
-    || /^best seller$/i.test(item.productCategoryName || item.categoryName || '')
-  )
-});
-
 const Menu = () => {
   const { categorySlug } = useParams();
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('q') || '';
   const activeSlug = normalizeRouteSlug(categorySlug || '');
 
-  const [products, setProducts] = useState([]);
   const [categoryTree, setCategoryTree] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+  const { products, loading } = useProducts({
+    pageSize: 1000,
+    ...(searchQuery ? { keyword: searchQuery } : {})
+  });
+
+  const { currentPage, totalPages, paginatedData, goToPage } = usePagination(products, 12);
 
   const categories = useMemo(() => flattenCategories(categoryTree), [categoryTree]);
   const activeCategory = useMemo(
@@ -86,48 +76,6 @@ const Menu = () => {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-
-      try {
-        const params = {
-          page: 1,
-          pageSize: 50,
-          ...(searchQuery ? { keyword: searchQuery } : {})
-        };
-        const firstResponse = await productApi.getAll(params);
-        const firstPayload = firstResponse?.data?.data;
-        const firstItems = firstPayload?.items || firstPayload || [];
-        const totalPages = Number(firstPayload?.totalPages || 1);
-        const remainingRequests = [];
-
-        for (let page = 2; page <= totalPages; page += 1) {
-          remainingRequests.push(productApi.getAll({ ...params, page }));
-        }
-
-        const remainingResponses = await Promise.all(remainingRequests);
-        const remainingItems = remainingResponses.flatMap((response) => {
-          const payload = response?.data?.data;
-          return payload?.items || payload || [];
-        });
-        const items = [
-          ...(Array.isArray(firstItems) ? firstItems : []),
-          ...remainingItems
-        ];
-
-        setProducts(items.map(normalizeProduct));
-      } catch (error) {
-        console.error('Không tải được sản phẩm từ API:', error);
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [searchQuery]);
-
   const productCategoryNames = useMemo(
     () => new Set(products.map((product) => product.productCategoryName).filter(Boolean)),
     [products]
@@ -147,7 +95,7 @@ const Menu = () => {
       return [{
         id: 'search',
         name: `Kết quả tìm kiếm "${searchQuery}"`,
-        products
+        products: paginatedData
       }];
     }
 
@@ -184,7 +132,7 @@ const Menu = () => {
         products: products.filter((product) => product.productCategoryName === category.name)
       }];
     }).filter((section) => section.products.length > 0);
-  }, [activeCategory, products, searchQuery, visibleCategoryTree]);
+  }, [activeCategory, products, paginatedData, searchQuery, visibleCategoryTree]);
 
   const getPageTitle = () => {
     if (searchQuery) return `Kết quả tìm kiếm cho "${searchQuery}"`;
@@ -245,21 +193,51 @@ const Menu = () => {
                 {Array.from({ length: 5 }).map((_, index) => <ProductCardSkeleton key={index} />)}
               </div>
             ) : groupedSections.length > 0 ? (
-              groupedSections.map((section) => (
-                <section key={section.id} className={styles.productSection}>
-                  <h2 className={styles.sectionTitle}>{formatSectionTitle(section.name)}</h2>
-                  <div className={styles.grid}>
-                    {section.products.map((product) => (
-                      <ProductCard
-                        key={product.id}
-                        product={{
-                          ...product
-                        }}
-                      />
-                    ))}
+              <>
+                {groupedSections.map((section) => (
+                  <section key={section.id} className={styles.productSection}>
+                    <h2 className={styles.sectionTitle}>{formatSectionTitle(section.name)}</h2>
+                    <div className={styles.grid}>
+                      {section.products.map((product) => (
+                        <ProductCard
+                          key={product.id}
+                          product={{
+                            ...product
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                ))}
+
+                {searchQuery && totalPages > 1 && (
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', marginTop: '32px' }}>
+                    {Array.from({ length: totalPages }).map((_, i) => {
+                      const pageNum = i + 1;
+                      const active = currentPage === pageNum;
+                      return (
+                        <button
+                          key={pageNum}
+                          type="button"
+                          onClick={() => goToPage(pageNum)}
+                          style={{
+                            padding: '8px 16px',
+                            borderRadius: '20px',
+                            border: '1px solid #0c713d',
+                            background: active ? '#0c713d' : '#fff',
+                            color: active ? '#fff' : '#0c713d',
+                            fontWeight: 'bold',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                          }}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
                   </div>
-                </section>
-              ))
+                )}
+              </>
             ) : (
               <EmptyState
                 title="Không tìm thấy sản phẩm nào"

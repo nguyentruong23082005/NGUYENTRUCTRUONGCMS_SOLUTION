@@ -1,5 +1,6 @@
 import productApi from '../api/productApi';
 import categoryApi from '../api/categoryApi';
+import productImageApi from '../api/productImageApi';
 
 /**
  * Service xử lý logic nghiệp vụ sản phẩm — transform data từ API
@@ -12,10 +13,16 @@ const normalizeProduct = (item) => ({
   name: item.name || '',
   price: item.price || item.unitPrice || 0,
   stockQuantity: item.stockQuantity ?? item.unitsInStock ?? 0,
-  imageUrl: item.imageUrl || '',
+  imageUrl: item.imageUrl || item.thumbnailUrl || item.image || '',
   description: item.description || '',
   categorySlug: item.categorySlug || '',
-  categoryName: item.categoryName || ''
+  productCategoryName: item.productCategoryName || item.categoryName || '',
+  isBestSeller: Boolean(
+    item.isBestSeller
+    || item.isFeatured
+    || item.isHot
+    || /^best seller$/i.test(item.productCategoryName || item.categoryName || '')
+  )
 });
 
 // Lấy danh sách sản phẩm đã chuẩn hoá
@@ -49,4 +56,13 @@ export const getCategoryTree = async () => {
   return [];
 };
 
-export default { getProducts, getProductById, getCategoryTree };
+// Lấy danh sách hình ảnh bổ sung của sản phẩm
+export const getProductImages = async (productId) => {
+  const response = await productImageApi.getByProductId(productId);
+  if (response.data?.success && response.data?.data) {
+    return response.data.data;
+  }
+  return [];
+};
+
+export default { getProducts, getProductById, getCategoryTree, getProductImages };

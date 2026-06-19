@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import productApi from '../api/productApi';
+import productService from '../services/productService';
 
 /**
  * Hook quản lý dữ liệu sản phẩm từ API thật
@@ -15,21 +15,8 @@ export const useProducts = (params = {}) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await productApi.getAll(params);
-      if (response.data && response.data.success && response.data.data && response.data.data.items) {
-        const list = response.data.data.items.map(item => ({
-          id: item.id.toString(),
-          name: item.name,
-          price: item.price || item.unitPrice,
-          stockQuantity: item.stockQuantity ?? item.unitsInStock ?? 0,
-          imageUrl: item.imageUrl || '',
-          description: item.description || '',
-          categorySlug: item.categorySlug || ''
-        }));
-        setProducts(list);
-      } else {
-        setProducts([]);
-      }
+      const list = await productService.getProducts(params);
+      setProducts(list);
     } catch (err) {
       console.error('Lỗi khi tải sản phẩm từ API:', err);
       setError('Không thể tải danh sách sản phẩm. Vui lòng thử lại sau.');
