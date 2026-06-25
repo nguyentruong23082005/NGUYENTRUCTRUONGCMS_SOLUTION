@@ -44,30 +44,37 @@ async function loadWards(districtCode) {
   }
 }
 
-// Ánh xạ các đơn vị hành chính cũ trước sáp nhập sang đơn vị mới sau sáp nhập
+// Bộ từ điển ánh xạ các đơn vị hành chính cũ trước sáp nhập
+const LEGACY_DISTRICT_MAP = {
+  'quận 2': 'Thành phố Thủ Đức',
+  'quận 9': 'Thành phố Thủ Đức',
+  'quận thủ đức': 'Thành phố Thủ Đức'
+};
+
+const LEGACY_WARD_MAP = {
+  'phường bình an': 'Phường An Khánh',
+  'phường bình khánh': 'Phường An Khánh',
+  'phường an khánh': 'Phường Thủ Thiêm' // Phường An Khánh cũ sáp nhập vào Thủ Thiêm mới
+};
+
+/**
+ * Ánh xạ các đơn vị hành chính cũ trước sáp nhập sang đơn vị mới sau sáp nhập
+ */
 function mapOldAdministrativeNames(districtName, wardName) {
   let mappedDistrict = districtName;
   let mappedWard = wardName;
 
   if (districtName) {
-    const distTrimmed = districtName.trim();
-    const distLower = distTrimmed.toLowerCase();
-    
-    // Ánh xạ Quận 2, Quận 9, Quận Thủ Đức -> Thành phố Thủ Đức
-    if (distLower === 'quận 2' || distLower === 'quận 9' || distLower === 'quận thủ đức') {
-      mappedDistrict = 'Thành phố Thủ Đức';
+    const key = districtName.trim().toLowerCase();
+    if (LEGACY_DISTRICT_MAP[key]) {
+      mappedDistrict = LEGACY_DISTRICT_MAP[key];
     }
   }
 
   if (wardName) {
-    const wardTrimmed = wardName.trim();
-    const wardLower = wardTrimmed.toLowerCase();
-
-    // Ánh xạ phường cũ thuộc Quận 2 -> Phường mới thuộc TP. Thủ Đức
-    if (wardLower === 'phường bình an' || wardLower === 'phường bình khánh') {
-      mappedWard = 'Phường An Khánh';
-    } else if (wardLower === 'phường an khánh') {
-      mappedWard = 'Phường Thủ Thiêm';
+    const key = wardName.trim().toLowerCase();
+    if (LEGACY_WARD_MAP[key]) {
+      mappedWard = LEGACY_WARD_MAP[key];
     }
   }
 
