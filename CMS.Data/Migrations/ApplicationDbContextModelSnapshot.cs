@@ -108,6 +108,12 @@ namespace CMS.Data.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ResetPasswordExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ResetPasswordToken")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("TokenVersion")
                         .HasColumnType("int");
 
@@ -548,6 +554,9 @@ namespace CMS.Data.Migrations
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int");
 
+                    b.Property<int>("TotalSold")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -761,6 +770,9 @@ namespace CMS.Data.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Ward")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
