@@ -51,25 +51,33 @@
     const hidDistrict = document.getElementById('hid-district');
     const hidWard     = document.getElementById('hid-ward');
 
+    const LEGACY_DISTRICT_MAP = {
+        'quận 2': 'Thành phố Thủ Đức',
+        'quận 9': 'Thành phố Thủ Đức',
+        'quận thủ đức': 'Thành phố Thủ Đức'
+    };
+
+    const LEGACY_WARD_MAP = {
+        'phường bình an': 'Phường An Khánh',
+        'phường bình khánh': 'Phường An Khánh',
+        'phường an khánh': 'Phường Thủ Thiêm'
+    };
+
     const initialProvinceName = '@Html.Raw(Model.Province)';
     let initialDistrictName   = '@Html.Raw(Model.District)';
     let initialWardName       = '@Html.Raw(Model.Ward)';
 
     // Ánh xạ các đơn vị hành chính cũ trước sáp nhập sang đơn vị mới sau sáp nhập
     if (initialDistrictName) {
-        const distTrim = initialDistrictName.trim();
-        const distLower = distTrim.toLowerCase();
-        if (distLower === 'quận 2' || distLower === 'quận 9' || distLower === 'quận thủ đức') {
-            initialDistrictName = 'Thành phố Thủ Đức';
+        const key = initialDistrictName.trim().toLowerCase();
+        if (LEGACY_DISTRICT_MAP[key]) {
+            initialDistrictName = LEGACY_DISTRICT_MAP[key];
         }
     }
     if (initialWardName) {
-        const wardTrim = initialWardName.trim();
-        const wardLower = wardTrim.toLowerCase();
-        if (wardLower === 'phường bình an' || wardLower === 'phường bình khánh') {
-            initialWardName = 'Phường An Khánh';
-        } else if (wardLower === 'phường an khánh') {
-            initialWardName = 'Phường Thủ Thiêm';
+        const key = initialWardName.trim().toLowerCase();
+        if (LEGACY_WARD_MAP[key]) {
+            initialWardName = LEGACY_WARD_MAP[key];
         }
     }
 
