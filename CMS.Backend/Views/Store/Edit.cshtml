@@ -52,8 +52,26 @@
     const hidWard     = document.getElementById('hid-ward');
 
     const initialProvinceName = '@Html.Raw(Model.Province)';
-    const initialDistrictName = '@Html.Raw(Model.District)';
-    const initialWardName     = '@Html.Raw(Model.Ward)';
+    let initialDistrictName   = '@Html.Raw(Model.District)';
+    let initialWardName       = '@Html.Raw(Model.Ward)';
+
+    // Ánh xạ các đơn vị hành chính cũ trước sáp nhập sang đơn vị mới sau sáp nhập
+    if (initialDistrictName) {
+        const distTrim = initialDistrictName.trim();
+        const distLower = distTrim.toLowerCase();
+        if (distLower === 'quận 2' || distLower === 'quận 9' || distLower === 'quận thủ đức') {
+            initialDistrictName = 'Thành phố Thủ Đức';
+        }
+    }
+    if (initialWardName) {
+        const wardTrim = initialWardName.trim();
+        const wardLower = wardTrim.toLowerCase();
+        if (wardLower === 'phường bình an' || wardLower === 'phường bình khánh') {
+            initialWardName = 'Phường An Khánh';
+        } else if (wardLower === 'phường an khánh') {
+            initialWardName = 'Phường Thủ Thiêm';
+        }
+    }
 
     async function populate(sel, items, placeholder) {
         sel.innerHTML = `<option value="">${placeholder}</option>`;
