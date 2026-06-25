@@ -1,14 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import useCustomers from '../../hooks/useCustomers';
+import useProvinces from '../../hooks/useProvinces';
 import styles from '../../pages/Profile/Profile.module.css';
 
 const ADDRESS_EMPTY = {
   receiverName: '',
   receiverPhone: '',
   addressLine: '',
-  province: '',
-  district: '',
-  ward: '',
   addressType: 'Home',
   isDefault: false,
 };
@@ -25,6 +23,14 @@ const AddressList = () => {
     setDefaultAddress,
     loading,
   } = useCustomers();
+
+  const {
+    provinces, districts, wards,
+    province, district, ward,
+    setProvince, setDistrict, setWard,
+    initFromNames,
+    loadingDistricts, loadingWards,
+  } = useProvinces();
 
   const [addresses, setAddresses] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -44,6 +50,7 @@ const AddressList = () => {
   const openAddForm = () => {
     setEditId(null);
     setForm(ADDRESS_EMPTY);
+    setProvince(null); // reset cascading dropdown
     setShowForm(true);
     setMsg(null);
   };
@@ -54,12 +61,11 @@ const AddressList = () => {
       receiverName: addr.receiverName,
       receiverPhone: addr.receiverPhone,
       addressLine: addr.addressLine,
-      province: addr.province,
-      district: addr.district,
-      ward: addr.ward,
       addressType: addr.addressType,
       isDefault: addr.isDefault,
     });
+    // Khởi tạo dropdown từ tên đã lưu trong DB
+    initFromNames(addr.province, addr.district, addr.ward);
     setShowForm(true);
     setMsg(null);
   };
@@ -72,12 +78,23 @@ const AddressList = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMsg(null);
+    if (!province || !district || !ward) {
+      setMsg({ type: 'error', text: 'Vui lòng chọn đầy đủ Tỉnh/Quận/Phường.' });
+      return;
+    }
+    // Gộp tên tỉnh/quận/phường từ hook vào form payload
+    const payload = {
+      ...form,
+      province: province.name,
+      district: district.name,
+      ward: ward.name,
+    };
     try {
       if (editId) {
-        await updateAddress(editId, form);
+        await updateAddress(editId, payload);
         setMsg({ type: 'success', text: 'Cập nhật địa chỉ thành công!' });
       } else {
-        await createAddress(form);
+        await createAddress(payload);
         setMsg({ type: 'success', text: 'Thêm địa chỉ thành công!' });
       }
       setShowForm(false);
@@ -159,42 +176,75 @@ const AddressList = () => {
                 <label className={styles.formLabel} htmlFor="al-province">
                   Tỉnh/Thành phố *
                 </label>
-                <input
+                <select
                   id="al-province"
-                  name="province"
                   className={styles.formInput}
-                  value={form.province}
-                  onChange={handleChange}
+                  value={province?.code ?? ''}
+                  onChange={(e) => {
+                    const found = e.target.value
+                      ? provinces.find(p => String(p.code) === e.target.value)
+                      : null;
+                    setProvince(found ?? null);
+                  }}
                   required
-                />
+                >
+                  <option value="">Chọn Tỉnh/Thành phố</option>
+                  {provinces.map(p => (
+                    <option key={p.code} value={p.code}>{p.name}</option>
+                  ))}
+                </select>
               </div>
 
               <div className={styles.formGroup}>
                 <label className={styles.formLabel} htmlFor="al-district">
                   Quận/Huyện *
                 </label>
-                <input
+                <select
                   id="al-district"
-                  name="district"
                   className={styles.formInput}
-                  value={form.district}
-                  onChange={handleChange}
+                  value={district?.code ?? ''}
+                  onChange={(e) => {
+                    const found = e.target.value
+                      ? districts.find(d => String(d.code) === e.target.value)
+                      : null;
+                    setDistrict(found ?? null);
+                  }}
+                  disabled={!province || loadingDistricts}
                   required
-                />
+                >
+                  <option value="">
+                    {loadingDistricts ? 'Đang tải...' : 'Chọn Quận/Huyện'}
+                  </option>
+                  {districts.map(d => (
+                    <option key={d.code} value={d.code}>{d.name}</option>
+                  ))}
+                </select>
               </div>
 
               <div className={styles.formGroup}>
                 <label className={styles.formLabel} htmlFor="al-ward">
                   Phường/Xã *
                 </label>
-                <input
+                <select
                   id="al-ward"
-                  name="ward"
                   className={styles.formInput}
-                  value={form.ward}
-                  onChange={handleChange}
+                  value={ward?.code ?? ''}
+                  onChange={(e) => {
+                    const found = e.target.value
+                      ? wards.find(w => String(w.code) === e.target.value)
+                      : null;
+                    setWard(found ?? null);
+                  }}
+                  disabled={!district || loadingWards}
                   required
-                />
+                >
+                  <option value="">
+                    {loadingWards ? 'Đang tải...' : 'Chọn Phường/Xã'}
+                  </option>
+                  {wards.map(w => (
+                    <option key={w.code} value={w.code}>{w.name}</option>
+                  ))}
+                </select>
               </div>
 
               <div className={styles.formGroup}>

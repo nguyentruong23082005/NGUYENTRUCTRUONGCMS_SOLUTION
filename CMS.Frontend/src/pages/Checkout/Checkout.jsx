@@ -1,83 +1,108 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import useOrders from '../../hooks/useOrders';
+import useCustomers from '../../hooks/useCustomers';
+import useProvinces from '../../hooks/useProvinces';
 import { validateCheckoutForm } from '../../utils/validators';
 import styles from './Checkout.module.css';
 
 const Checkout = () => {
   const { cartItems, cartTotalPrice, clearCart, showToast } = useCart();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { createOrder, loading: isSubmitting } = useOrders();
+  const { getAddresses } = useCustomers();
 
   // Form states
   const [fullName, setFullName] = useState(user?.fullName || '');
   const [phone, setPhone] = useState(user?.phoneNumber || '');
-  const [address, setAddress] = useState(user?.address || '');
+  const [addressLine, setAddressLine] = useState(''); // sá»‘ nhÃ , tÃªn Ä‘Æ°á»ng
   const [notes, setNotes] = useState('');
 
-  // Validation errors state (Mã số 29)
+  // Äá»‹a chá»‰ Ä‘Ã£ lÆ°u
+  const [savedAddresses, setSavedAddresses] = useState([]);
+
+  // Cascading dropdown tá»‰nh/quáº­n/phÆ°á»ng
+  const {
+    provinces, districts, wards,
+    province, district, ward,
+    setProvince, setDistrict, setWard,
+    initFromNames,
+    loadingDistricts, loadingWards,
+  } = useProvinces();
+
   const [errors, setErrors] = useState({});
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
-    }).format(price);
-  };
+  // Load danh sÃ¡ch Ä‘á»‹a chá»‰ Ä‘Ã£ lÆ°u (chá»‰ khi Ä‘Äƒng nháº­p)
+  useEffect(() => {
+    if (isAuthenticated) {
+      getAddresses().then(setSavedAddresses).catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
+
+  // Äiá»n form tá»« Ä‘á»‹a chá»‰ Ä‘Ã£ lÆ°u
+  const handlePickSavedAddress = useCallback((addr) => {
+    setFullName(addr.receiverName || '');
+    setPhone(addr.receiverPhone || '');
+    setAddressLine(addr.addressLine || '');
+    initFromNames(addr.province, addr.district, addr.ward);
+  }, [initFromNames]);
+
+  const formatPrice = (price) =>
+    new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
 
   const validateForm = () => {
-    const { isValid, errors: tempErrors } = validateCheckoutForm({
-      fullName,
-      phone,
-      address
-    });
+    const { isValid, errors: tempErrors } = validateCheckoutForm({ fullName, phone, address: addressLine });
+    // Kiá»ƒm tra thÃªm tá»‰nh/quáº­n/phÆ°á»ng
+    if (!province) tempErrors.province = 'Vui lÃ²ng chá»n Tá»‰nh/ThÃ nh phá»‘';
+    if (!district) tempErrors.district = 'Vui lÃ²ng chá»n Quáº­n/Huyá»‡n';
+    if (!ward)     tempErrors.ward     = 'Vui lÃ²ng chá»n PhÆ°á»ng/XÃ£';
+    const hasError = Object.keys(tempErrors).length > 0;
     setErrors(tempErrors);
-    return isValid;
+    return !hasError && isValid;
   };
 
   const handleCheckoutSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
-      showToast('Vui lòng kiểm tra lại thông tin thanh toán!', 'error');
+      showToast('Vui lÃ²ng kiá»ƒm tra láº¡i thÃ´ng tin thanh toÃ¡n!', 'error');
       return;
     }
+
+    // GhÃ©p Ä‘á»‹a chá»‰ Ä‘áº§y Ä‘á»§: chi tiáº¿t + phÆ°á»ng + quáº­n + tá»‰nh
+    const shippingAddress = [addressLine, ward?.name, district?.name, province?.name]
+      .filter(Boolean)
+      .join(', ');
 
     const orderItems = cartItems.map(item => ({
       productId: Number(item.id),
       quantity: item.quantity,
-      optionValueIds: item.optionValueIds || []
+      optionValueIds: item.optionValueIds || [],
     }));
 
     const orderPayload = {
       customerAddressId: null,
       receiverName: fullName,
       receiverPhone: phone,
-      shippingAddress: address,
+      shippingAddress,
       notes,
-      items: orderItems
+      items: orderItems,
     };
 
     try {
-      // Gọi API thực tế thông qua useOrders hook
       await createOrder(orderPayload);
-      
-      // Đặt hàng thành công
       setIsSuccess(true);
       clearCart();
-      showToast('Đặt hàng thành công! Phúc Long sẽ liên hệ giao hàng sớm nhất.');
-      
-      // Tự động chuyển hướng về trang chủ sau 4 giây
-      setTimeout(() => {
-        navigate('/');
-      }, 4000);
+      showToast('Äáº·t hÃ ng thÃ nh cÃ´ng! PhÃºc Long sáº½ liÃªn há»‡ giao hÃ ng sá»›m nháº¥t.');
+      setTimeout(() => navigate('/'), 4000);
     } catch (error) {
-      console.error('Lỗi khi gửi đơn đặt hàng lên API:', error);
-      showToast('Có lỗi xảy ra trong quá trình đặt hàng. Vui lòng thử lại!', 'error');
+      console.error('Lá»—i khi gá»­i Ä‘Æ¡n Ä‘áº·t hÃ ng lÃªn API:', error);
+      showToast('CÃ³ lá»—i xáº£y ra trong quÃ¡ trÃ¬nh Ä‘áº·t hÃ ng. Vui lÃ²ng thá»­ láº¡i!', 'error');
     }
   };
 
@@ -85,13 +110,11 @@ const Checkout = () => {
     return (
       <div className={styles.page}>
         <div className="container">
-          <Helmet>
-            <title>Thanh toán - Giỏ hàng trống</title>
-          </Helmet>
+          <Helmet><title>Thanh toÃ¡n - Giá» hÃ ng trá»‘ng</title></Helmet>
           <div className={styles.emptyContainer}>
-            <h3>Giỏ hàng trống</h3>
-            <p>Vui lòng thêm sản phẩm vào giỏ hàng trước khi tiến hành thanh toán.</p>
-            <Link to="/menu" className={styles.backBtn}>Quay lại chọn món</Link>
+            <h3>Giá» hÃ ng trá»‘ng</h3>
+            <p>Vui lÃ²ng thÃªm sáº£n pháº©m vÃ o giá» hÃ ng trÆ°á»›c khi tiáº¿n hÃ nh thanh toÃ¡n.</p>
+            <Link to="/menu" className={styles.backBtn}>Quay láº¡i chá»n mÃ³n</Link>
           </div>
         </div>
       </div>
@@ -101,20 +124,16 @@ const Checkout = () => {
   if (isSuccess) {
     return (
       <div className={styles.successPage}>
-        <Helmet>
-          <title>Đặt hàng thành công - Cảm ơn quý khách</title>
-        </Helmet>
+        <Helmet><title>Äáº·t hÃ ng thÃ nh cÃ´ng - Cáº£m Æ¡n quÃ½ khÃ¡ch</title></Helmet>
         <div className={styles.successCard}>
-          <div className={styles.successIcon}>🎉</div>
-          <h2>Đặt Hàng Thành Công!</h2>
+          <div className={styles.successIcon}>ðŸŽ‰</div>
+          <h2>Äáº·t HÃ ng ThÃ nh CÃ´ng!</h2>
           <p className={styles.successText}>
-            Cảm ơn quý khách <strong>{fullName}</strong> đã tin dùng sản phẩm của Phúc Long Heritage.
-            Chúng tôi sẽ liên hệ xác nhận đơn hàng qua số điện thoại <strong>{phone}</strong> trong giây lát.
+            Cáº£m Æ¡n quÃ½ khÃ¡ch <strong>{fullName}</strong> Ä‘Ã£ tin dÃ¹ng sáº£n pháº©m cá»§a PhÃºc Long Heritage.
+            ChÃºng tÃ´i sáº½ liÃªn há»‡ xÃ¡c nháº­n Ä‘Æ¡n hÃ ng qua sá»‘ Ä‘iá»‡n thoáº¡i <strong>{phone}</strong> trong giÃ¢y lÃ¡t.
           </p>
-          <p className={styles.redirectText}>
-            Hệ thống đang tự động điều hướng về Trang chủ sau ít giây...
-          </p>
-          <Link to="/" className={styles.homeBtn}>Quay lại Trang chủ ngay</Link>
+          <p className={styles.redirectText}>Há»‡ thá»‘ng Ä‘ang tá»± Ä‘á»™ng Ä‘iá»u hÆ°á»›ng vá» Trang chá»§ sau Ã­t giÃ¢y...</p>
+          <Link to="/" className={styles.homeBtn}>Quay láº¡i Trang chá»§ ngay</Link>
         </div>
       </div>
     );
@@ -122,22 +141,47 @@ const Checkout = () => {
 
   return (
     <div className={styles.page}>
-      <Helmet>
-        <title>Thanh toán đơn hàng - Phúc Long Coffee & Tea</title>
-      </Helmet>
+      <Helmet><title>Thanh toÃ¡n Ä‘Æ¡n hÃ ng - PhÃºc Long Coffee &amp; Tea</title></Helmet>
 
       <div className="container">
-        <h1 className={styles.pageTitle}>Thanh Toán Đơn Hàng</h1>
+        <h1 className={styles.pageTitle}>Thanh ToÃ¡n ÄÆ¡n HÃ ng</h1>
 
         <div className={styles.layout}>
-          {/* Form Checkout */}
+          {/* â”€â”€ Form Checkout â”€â”€ */}
           <form onSubmit={handleCheckoutSubmit} className={styles.formCard} noValidate>
-            <h3 className={styles.sectionTitle}>Thông Tin Giao Hàng</h3>
+            <h3 className={styles.sectionTitle}>ThÃ´ng Tin Giao HÃ ng</h3>
 
-            {/* Họ tên (Mã số 29) */}
+            {/* â”€â”€ Äá»‹a chá»‰ Ä‘Ã£ lÆ°u (chá»‰ hiá»‡n khi Ä‘Äƒng nháº­p vÃ  cÃ³ Ä‘á»‹a chá»‰) â”€â”€ */}
+            {isAuthenticated && savedAddresses.length > 0 && (
+              <>
+                <div className={styles.savedAddressBox}>
+                  <span className={styles.savedAddressLabel}>ðŸ“ Chá»n tá»« Ä‘á»‹a chá»‰ Ä‘Ã£ lÆ°u</span>
+                  <select
+                    className={styles.select}
+                    defaultValue=""
+                    onChange={(e) => {
+                      const addr = savedAddresses.find(a => String(a.id) === e.target.value);
+                      if (addr) handlePickSavedAddress(addr);
+                    }}
+                    aria-label="Chá» n Ä‘á»‹a chá»‰ Ä‘Ã£ lÆ°u"
+                  >
+                    <option value="">Chá» n Ä‘á»‹a chá»‰ Ä‘Ã£ lÆ°u</option>
+                    {savedAddresses.map(a => (
+                      <option key={a.id} value={a.id}>
+                        {a.receiverName} â€” {a.addressLine}, {a.ward}, {a.district}, {a.province}
+                      </option>
+                    ))}
+                  </select>
+                  <span className={styles.savedAddressHint}>Chá» n Ä‘á»ƒ tá»± Ä‘á»™ng Ä‘iá» n thÃ´ng tin giao hÃ ng</span>
+                </div>
+                <div className={styles.addressDivider}>hoáº·c nháº­p thá»§ cÃ´ng</div>
+              </>
+            )}
+
+            {/* Há»  tÃªn */}
             <div className={styles.formGroup}>
               <label htmlFor="fullName" className={styles.label}>
-                Họ và tên người nhận <span className={styles.required}>*</span>
+                Há»  vÃ  tÃªn ngÆ°á» i nháº­n <span className={styles.required}>*</span>
               </label>
               <input
                 id="fullName"
@@ -145,17 +189,15 @@ const Checkout = () => {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 className={`${styles.input} ${errors.fullName ? styles.inputError : ''}`}
-                placeholder="Nhập đầy đủ họ tên"
+                placeholder="Nháº­p Ä‘áº§y Ä‘á»§ há»  tÃªn"
               />
-              {errors.fullName && (
-                <span className={styles.errorText} id="fullname-error">{errors.fullName}</span>
-              )}
+              {errors.fullName && <span className={styles.errorText}>{errors.fullName}</span>}
             </div>
 
-            {/* Điện thoại (Mã số 29) */}
+            {/* Ä iá»‡n thoáº¡i */}
             <div className={styles.formGroup}>
               <label htmlFor="phone" className={styles.label}>
-                Số điện thoại liên lạc <span className={styles.required}>*</span>
+                Sá»‘ Ä‘iá»‡n thoáº¡i liÃªn láº¡c <span className={styles.required}>*</span>
               </label>
               <input
                 id="phone"
@@ -163,56 +205,118 @@ const Checkout = () => {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 className={`${styles.input} ${errors.phone ? styles.inputError : ''}`}
-                placeholder="Nhập số điện thoại di động"
+                placeholder="Nháº­p sá»‘ Ä‘iá»‡n thoáº¡i di Ä‘á»™ng"
               />
-              {errors.phone && (
-                <span className={styles.errorText} id="phone-error">{errors.phone}</span>
-              )}
+              {errors.phone && <span className={styles.errorText}>{errors.phone}</span>}
             </div>
 
-            {/* Địa chỉ (Mã số 29) */}
+            {/* â”€â”€ Ä á»‹a chá»‰: 3 dropdown cascading â”€â”€ */}
             <div className={styles.formGroup}>
-              <label htmlFor="address" className={styles.label}>
-                Địa chỉ giao hàng <span className={styles.required}>*</span>
+              <label className={styles.label}>
+                Tá»‰nh / Quáº­n / PhÆ°á» ng <span className={styles.required}>*</span>
               </label>
-              <textarea
-                id="address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className={`${styles.textarea} ${errors.address ? styles.inputError : ''}`}
-                placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh thành..."
-                rows="3"
-              />
-              {errors.address && (
-                <span className={styles.errorText} id="address-error">{errors.address}</span>
+              <div className={styles.addressRow}>
+                <select
+                  className={`${styles.select} ${errors.province ? styles.inputError : ''}`}
+                  value={province?.code ?? ''}
+                  onChange={(e) => {
+                    const found = e.target.value
+                      ? provinces.find(p => String(p.code) === e.target.value)
+                      : null;
+                    setProvince(found ?? null);
+                  }}
+                  aria-label="Chá» n Tá»‰nh/ThÃ nh phá»‘"
+                >
+                  <option value="">Tá»‰nh/ThÃ nh phá»‘</option>
+                  {provinces.map(p => (
+                    <option key={p.code} value={p.code}>{p.name}</option>
+                  ))}
+                </select>
+
+                <select
+                  className={`${styles.select} ${errors.district ? styles.inputError : ''}`}
+                  value={district?.code ?? ''}
+                  onChange={(e) => {
+                    const found = e.target.value
+                      ? districts.find(d => String(d.code) === e.target.value)
+                      : null;
+                    setDistrict(found ?? null);
+                  }}
+                  disabled={!province || loadingDistricts}
+                  aria-label="Chá» n Quáº­n/Huyá»‡n"
+                >
+                  <option value="">
+                    {loadingDistricts ? 'Ä ang táº£i...' : 'Quáº­n/Huyá»‡n'}
+                  </option>
+                  {districts.map(d => (
+                    <option key={d.code} value={d.code}>{d.name}</option>
+                  ))}
+                </select>
+
+                <select
+                  className={`${styles.select} ${errors.ward ? styles.inputError : ''}`}
+                  value={ward?.code ?? ''}
+                  onChange={(e) => {
+                    const found = e.target.value
+                      ? wards.find(w => String(w.code) === e.target.value)
+                      : null;
+                    setWard(found ?? null);
+                  }}
+                  disabled={!district || loadingWards}
+                  aria-label="Chá» n PhÆ°á» ng/XÃ£"
+                >
+                  <option value="">
+                    {loadingWards ? 'Ä ang táº£i...' : 'PhÆ°á» ng/XÃ£'}
+                  </option>
+                  {wards.map(w => (
+                    <option key={w.code} value={w.code}>{w.name}</option>
+                  ))}
+                </select>
+              </div>
+              {(errors.province || errors.district || errors.ward) && (
+                <span className={styles.errorText}>
+                  {errors.province || errors.district || errors.ward}
+                </span>
               )}
             </div>
 
-            {/* Ghi chú */}
+            {/* Äá»‹a chá»‰ chi tiáº¿t */}
             <div className={styles.formGroup}>
-              <label htmlFor="notes" className={styles.label}>Ghi chú đơn hàng</label>
+              <label htmlFor="addressLine" className={styles.label}>
+                Äá»‹a chá»‰ chi tiáº¿t <span className={styles.required}>*</span>
+              </label>
+              <input
+                id="addressLine"
+                type="text"
+                value={addressLine}
+                onChange={(e) => setAddressLine(e.target.value)}
+                className={`${styles.input} ${errors.address ? styles.inputError : ''}`}
+                placeholder="Sá»‘ nhÃ , tÃªn Ä‘Æ°á»ng..."
+              />
+              {errors.address && <span className={styles.errorText} id="address-error">{errors.address}</span>}
+            </div>
+
+            {/* Ghi chÃº */}
+            <div className={styles.formGroup}>
+              <label htmlFor="notes" className={styles.label}>Ghi chÃº Ä‘Æ¡n hÃ ng</label>
               <textarea
                 id="notes"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 className={styles.textarea}
-                placeholder="Yêu cầu thêm (ví dụ: ít đá, ngọt vừa, giao giờ hành chính...)"
+                placeholder="YÃªu cáº§u thÃªm (vÃ­ dá»¥: Ã­t Ä‘Ã¡, ngá»t vá»«a, giao giá» hÃ nh chÃ­nh...)"
                 rows="2"
               />
             </div>
 
-            <button
-              type="submit"
-              className={styles.submitBtn}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Đang gửi đơn hàng...' : 'Xác nhận đặt hàng'}
+            <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
+              {isSubmitting ? 'Äang gá»­i Ä‘Æ¡n hÃ ng...' : 'XÃ¡c nháº­n Ä‘áº·t hÃ ng'}
             </button>
           </form>
 
-          {/* Cart Review */}
+          {/* â”€â”€ Cart Review â”€â”€ */}
           <aside className={styles.orderSummary}>
-            <h3 className={styles.sectionTitle}>Tóm Tắt Đơn Hàng</h3>
+            <h3 className={styles.sectionTitle}>TÃ³m Táº¯t ÄÆ¡n HÃ ng</h3>
             <div className={styles.summaryList}>
               {cartItems.map((item) => (
                 <div key={item.cartKey || item.id} className={styles.summaryItem}>
@@ -240,24 +344,24 @@ const Checkout = () => {
             <div className={styles.divider} />
 
             <div className={styles.summaryRow}>
-              <span>Tạm tính:</span>
+              <span>Táº¡m tÃ­nh:</span>
               <span>{formatPrice(cartTotalPrice)}</span>
             </div>
             <div className={styles.summaryRow}>
-              <span>Phí giao hàng:</span>
-              <span className={styles.freeText}>Miễn phí</span>
+              <span>PhÃ­ giao hÃ ng:</span>
+              <span className={styles.freeText}>Miá»…n phÃ­</span>
             </div>
-            
+
             <div className={styles.divider} />
 
             <div className={`${styles.summaryRow} ${styles.totalRow}`}>
-              <span>Tổng thanh toán:</span>
+              <span>Tá»•ng thanh toÃ¡n:</span>
               <span className={styles.totalPrice}>{formatPrice(cartTotalPrice)}</span>
             </div>
 
             <div className={styles.paymentMethod}>
-              <p>💵 <strong>Phương thức thanh toán:</strong></p>
-              <p className={styles.cod}>Thanh toán tiền mặt khi nhận hàng (COD)</p>
+              <p>ðŸ’µ <strong>PhÆ°Æ¡ng thá»©c thanh toÃ¡n:</strong></p>
+              <p className={styles.cod}>Thanh toÃ¡n tiá»n máº·t khi nháº­n hÃ ng (COD)</p>
             </div>
           </aside>
         </div>
@@ -267,3 +371,4 @@ const Checkout = () => {
 };
 
 export default Checkout;
+
