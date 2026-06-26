@@ -7,7 +7,7 @@ import { useCart } from '../../context/CartContext';
 import Loading from '../../components/common/Loading/Loading';
 import EmptyState from '../../components/common/EmptyState/EmptyState';
 import styles from './ProductDetail.module.css';
-import { PRODUCT_BADGE_LABELS } from '../../utils/constants';
+import { PRODUCT_BADGE_LABELS, SPECIAL_CATEGORY_SLUGS } from '../../utils/constants';
 
 const findCategoryNameBySlug = (categories = [], slug) => {
   for (const cat of categories) {
@@ -100,7 +100,7 @@ const ProductDetail = () => {
 
           // Lấy nhãn Best Seller động từ tên danh mục trong database
           const categoriesList = categoriesResponse?.data?.data || [];
-          const dynamicName = findCategoryNameBySlug(categoriesList, 'best-seller');
+          const dynamicName = findCategoryNameBySlug(categoriesList, SPECIAL_CATEGORY_SLUGS.BEST_SELLER);
           if (dynamicName) {
             setBestSellerLabel(dynamicName);
           }

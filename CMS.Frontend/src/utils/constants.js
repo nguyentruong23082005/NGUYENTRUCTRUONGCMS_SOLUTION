@@ -42,3 +42,8 @@ export const PRODUCT_BADGE_LABELS = {
   BEST_SELLER: 'Best Seller',
   NEWEST: 'Mới nhất'
 };
+
+// Slugs của các danh mục đặc biệt trong cơ sở dữ liệu
+export const SPECIAL_CATEGORY_SLUGS = {
+  BEST_SELLER: 'best-seller'
+};

@@ -9,7 +9,7 @@ import PriceFilter from '../../components/product/PriceFilter';
 import EmptyState from '../../components/common/EmptyState/EmptyState';
 import styles from './Menu.module.css';
 import productService from '../../services/productService';
-import { PRODUCT_BADGE_LABELS } from '../../utils/constants';
+import { PRODUCT_BADGE_LABELS, SPECIAL_CATEGORY_SLUGS } from '../../utils/constants';
 import { getFullImageUrl } from '../../utils/imageHelper';
 
 const normalizeRouteSlug = (slug = '') => decodeURIComponent(slug).replace(/--c\d+$/i, '');
@@ -134,7 +134,7 @@ const Menu = () => {
 
         // Lấy nhãn Best Seller động từ tên danh mục trong database
         const flatCats = flattenCategories(normalized);
-        const bsCat = flatCats.find(c => c.slug === 'best-seller');
+        const bsCat = flatCats.find(c => c.slug === SPECIAL_CATEGORY_SLUGS.BEST_SELLER);
         if (bsCat && bsCat.name) {
           setBestSellerLabel(bsCat.name);
         }
