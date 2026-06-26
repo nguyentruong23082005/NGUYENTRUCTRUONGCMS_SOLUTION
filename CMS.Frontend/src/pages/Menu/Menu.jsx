@@ -10,18 +10,9 @@ import EmptyState from '../../components/common/EmptyState/EmptyState';
 import styles from './Menu.module.css';
 import productService from '../../services/productService';
 import { PRODUCT_BADGE_LABELS } from '../../utils/constants';
+import { getFullImageUrl } from '../../utils/imageHelper';
 
 const normalizeRouteSlug = (slug = '') => decodeURIComponent(slug).replace(/--c\d+$/i, '');
-
-const getFullImageUrl = (path) => {
-  if (!path) return '';
-  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
-    return path;
-  }
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5188';
-  const cleanPath = path.startsWith('/') ? path : `/${path}`;
-  return `${baseUrl}${cleanPath}`;
-};
 
 const normalizeCategory = (item, level = 0) => {
   const children = item.children || item.Children || [];

@@ -1,21 +1,7 @@
 import productApi from '../api/productApi';
 import categoryApi from '../api/categoryApi';
 import productImageApi from '../api/productImageApi';
-
-/**
- * Service xử lý logic nghiệp vụ sản phẩm — transform data từ API
- * Tách logic chuyển đổi dữ liệu ra khỏi component để dễ bảo trì và test
- */
-
-const getFullImageUrl = (path) => {
-  if (!path) return '';
-  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
-    return path;
-  }
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5188';
-  const cleanPath = path.startsWith('/') ? path : `/${path}`;
-  return `${baseUrl}${cleanPath}`;
-};
+import { getFullImageUrl } from '../utils/imageHelper';
 
 const normalizeProduct = (item) => ({
   id: item.id.toString(),
