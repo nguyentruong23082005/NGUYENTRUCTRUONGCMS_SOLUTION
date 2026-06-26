@@ -17,19 +17,25 @@ const getFullImageUrl = (path) => {
   return `${baseUrl}${cleanPath}`;
 };
 
-const normalizeProduct = (item) => ({
-  id: item.id.toString(),
-  name: item.name || '',
-  price: item.price || item.unitPrice || 0,
-  stockQuantity: item.stockQuantity ?? item.unitsInStock ?? 0,
-  totalSold: item.totalSold || 0,
-  imageUrl: (item.imageUrl || item.thumbnailUrl || item.image) ? getFullImageUrl(item.imageUrl || item.thumbnailUrl || item.image) : '',
-  description: item.description || '',
-  categorySlug: item.categorySlug || '',
-  productCategoryName: item.productCategoryName || item.categoryName || '',
-  productCategoryImageUrl: item.productCategoryImageUrl ? getFullImageUrl(item.productCategoryImageUrl) : '',
-  optionGroups: item.optionGroups || item.OptionGroups || []
-});
+const normalizeProduct = (item) => {
+  const isBestSeller = Boolean(item.totalSold && item.totalSold >= 100);
+
+  return {
+    id: item.id.toString(),
+    name: item.name || '',
+    price: item.price || item.unitPrice || 0,
+    stockQuantity: item.stockQuantity ?? item.unitsInStock ?? 0,
+    totalSold: item.totalSold || 0,
+    imageUrl: (item.imageUrl || item.thumbnailUrl || item.image) ? getFullImageUrl(item.imageUrl || item.thumbnailUrl || item.image) : '',
+    description: item.description || '',
+    categorySlug: item.categorySlug || '',
+    productCategoryName: item.productCategoryName || item.categoryName || '',
+    productCategoryImageUrl: item.productCategoryImageUrl ? getFullImageUrl(item.productCategoryImageUrl) : '',
+    isBestSeller,
+    badgeLabel: item.badgeLabel || (isBestSeller ? 'Best Seller' : ''),
+    optionGroups: item.optionGroups || item.OptionGroups || []
+  };
+};
 
 // Lấy danh sách sản phẩm đã chuẩn hoá
 export const getProducts = async (params = {}) => {
