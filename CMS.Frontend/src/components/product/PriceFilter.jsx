@@ -4,6 +4,8 @@ import styles from './PriceFilter.module.css';
 const PriceFilter = ({ onFilterChange }) => {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
+  const [isMinFocused, setIsMinFocused] = useState(false);
+  const [isMaxFocused, setIsMaxFocused] = useState(false);
   const debounceRef = useRef(null);
 
   const emitChange = useCallback((min, max) => {
@@ -41,6 +43,12 @@ const PriceFilter = ({ onFilterChange }) => {
     onFilterChange({ minPrice: null, maxPrice: null });
   };
 
+  const formatDisplay = (value, isFocused) => {
+    if (!value) return '';
+    if (isFocused) return value; // Đang gõ thì giữ số thuần túy cho mượt, không lỗi con trỏ
+    return Number(value).toLocaleString('vi-VN'); // Ra ngoài thì định dạng dấu chấm đẹp mắt
+  };
+
   return (
     <div className={styles.container}>
       <h3 className={styles.title}>Lọc theo giá</h3>
@@ -52,8 +60,10 @@ const PriceFilter = ({ onFilterChange }) => {
               type="text"
               inputMode="numeric"
               placeholder="0"
-              value={minPrice}
+              value={formatDisplay(minPrice, isMinFocused)}
               onChange={handleMinChange}
+              onFocus={() => setIsMinFocused(true)}
+              onBlur={() => setIsMinFocused(false)}
               className={styles.input}
             />
             <span className={styles.unit}>₫</span>
@@ -65,9 +75,11 @@ const PriceFilter = ({ onFilterChange }) => {
             <input
               type="text"
               inputMode="numeric"
-              placeholder="999000"
-              value={maxPrice}
+              placeholder="999.000"
+              value={formatDisplay(maxPrice, isMaxFocused)}
               onChange={handleMaxChange}
+              onFocus={() => setIsMaxFocused(true)}
+              onBlur={() => setIsMaxFocused(false)}
               className={styles.input}
             />
             <span className={styles.unit}>₫</span>
