@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useDelivery } from '../../context/DeliveryContext';
+import useCustomers from '../../hooks/useCustomers';
 import { getFullImageUrl } from '../../utils/imageHelper';
 import orderApi from '../../api/orderApi';
 import styles from './Checkout.module.css';
@@ -11,19 +12,43 @@ import styles from './Checkout.module.css';
 const Checkout = () => {
   const { cartItems, cartTotalPrice, clearCart, updateCartQuantity, removeFromCart, showToast } = useCart();
   const { user, isAuthenticated } = useAuth();
-  const { deliveryType, deliveryAddress, structuredAddress, openModal } = useDelivery();
+  const { deliveryType, deliveryAddress, structuredAddress, openModal, setDelivery } = useDelivery();
+  const { getProfile, getAddresses } = useCustomers();
   const navigate = useNavigate();
 
-  // Thông tin người nhận — tự động lấy từ tài khoản đã đăng nhập
+  // Thông tin người nhận — lấy từ API hồ sơ thật
   const [fullName, setFullName] = useState('');
   const [phone, setPhone]       = useState('');
 
+  // Các state cho sổ địa chỉ và form sửa thông tin
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [showAddressPicker, setShowAddressPicker] = useState(false);
+  const [showReceiverForm, setShowReceiverForm] = useState(false);
+
   useEffect(() => {
-    if (user) {
+    if (isAuthenticated) {
+      getProfile()
+        .then(profile => {
+          if (profile) {
+            setFullName(profile.fullName || user?.fullName || '');
+            setPhone(profile.phone || user?.phoneNumber || '');
+          }
+        })
+        .catch(console.error);
+
+      getAddresses()
+        .then(addresses => {
+          if (addresses && Array.isArray(addresses)) {
+            setSavedAddresses(addresses);
+          }
+        })
+        .catch(console.error);
+    } else if (user) {
       setFullName(user.fullName || '');
       setPhone(user.phoneNumber || '');
     }
-  }, [user]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, user]);
 
   // Ghi chú, mã voucher, phương thức thanh toán, điều khoản
   const [notes,         setNotes]         = useState('');
@@ -161,45 +186,110 @@ const Checkout = () => {
             </div>
 
             {/* ── Địa chỉ ── */}
-            <button type="button" className={styles.row} onClick={openModal}>
+            <button 
+              type="button" 
+              className={styles.row} 
+              onClick={() => {
+                if (isAuthenticated && savedAddresses.length > 0) {
+                  setShowAddressPicker(!showAddressPicker);
+                } else {
+                  openModal();
+                }
+              }}
+            >
               <div className={styles.rowBody}>
-                <span className={styles.rowLabel}>ĐỊA CHỈ</span>
+                <div className={styles.rowLabelWrapper}>
+                  <svg className={styles.mapPinIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  <span className={styles.rowLabel}>Địa chỉ</span>
+                </div>
                 <span className={styles.rowValue}>
                   {deliveryAddress || 'Chưa chọn địa chỉ giao hàng'}
                 </span>
               </div>
-              <span className={styles.chevron}>›</span>
+              <svg className={styles.chevronSvg} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
             </button>
+            {showAddressPicker && (
+              <div className={styles.addressPickerPanel}>
+                <div className={styles.addressList}>
+                  {savedAddresses.map((addr) => {
+                    const fullAddr = [addr.addressLine, addr.ward, addr.district, addr.province].filter(Boolean).join(', ');
+                    return (
+                      <button
+                        key={addr.id}
+                        type="button"
+                        className={`${styles.addressCard} ${deliveryAddress === fullAddr ? styles.addressCardActive : ''}`}
+                        onClick={() => {
+                          setDelivery(fullAddr, null, {
+                            street: addr.addressLine || '',
+                            ward: addr.ward || '',
+                            district: addr.district || '',
+                            province: addr.province || ''
+                          }, null);
+                          setFullName(addr.receiverName || '');
+                          setPhone(addr.receiverPhone || '');
+                          setShowAddressPicker(false);
+                        }}
+                      >
+                        <div className={styles.addressHeader}>
+                          <span className={styles.addressName}>{addr.receiverName} - {addr.receiverPhone}</span>
+                          {addr.isDefault && <span className={styles.defaultBadge}>Mặc định</span>}
+                        </div>
+                        <span className={styles.addressText}>{fullAddr}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <button
+                  type="button"
+                  className={styles.gpsAlternativeBtn}
+                  onClick={() => {
+                    setShowAddressPicker(false);
+                    openModal();
+                  }}
+                >
+                  Dùng vị trí khác / Tìm địa chỉ mới
+                </button>
+              </div>
+            )}
 
             {/* ── Người nhận ── */}
-            <div className={styles.row} style={{ cursor: 'default' }}>
+            <button type="button" className={styles.row} onClick={() => setShowReceiverForm(!showReceiverForm)}>
               <div className={styles.rowBody}>
-                <span className={styles.rowLabel} style={{ color: '#006F3C', fontWeight: 700 }}>
-                  {fullName ? fullName.toUpperCase() : 'THÔNG TIN NGƯỜI NHẬN'}
+                <span className={styles.rowLabel} style={{ color: '#006F3C', fontWeight: 400, textTransform: 'uppercase' }}>
+                  {fullName || 'HỌ TÊN NGƯỜI NHẬN'}
                 </span>
-                <span className={styles.rowValue}>
-                  Số điện thoại:{' '}
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className={styles.inlineInput}
-                    placeholder="Nhập số điện thoại"
-                  />
+                <span className={styles.rowValue} style={{ color: '#4a4a4a' }}>
+                  Số điện thoại: {phone || 'Chưa nhập'}
                 </span>
-                {!fullName && (
-                  <input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className={styles.inlineInput}
-                    placeholder="Họ và tên người nhận"
-                    style={{ marginTop: 6 }}
-                  />
-                )}
               </div>
-              <span className={styles.chevron} style={{ visibility: 'hidden' }}>›</span>
-            </div>
+              <svg className={styles.chevronSvg} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+            {showReceiverForm && (
+              <div className={styles.receiverFormPanel}>
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className={styles.flatInput}
+                  placeholder="Họ và tên người nhận"
+                  autoFocus
+                />
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className={styles.flatInput}
+                  placeholder="Nhập số điện thoại"
+                />
+              </div>
+            )}
 
             {/* ── Ghi chú ── */}
             <button
@@ -208,12 +298,14 @@ const Checkout = () => {
               onClick={() => setNotesExpanded(v => !v)}
             >
               <div className={styles.rowBody}>
-                <span className={styles.rowLabel}>GHI CHÚ CHO CỬA HÀNG</span>
-                <span className={styles.rowValue} style={{ color: notes ? '#333' : '#9B9B9B' }}>
-                  {notes || 'Ghi chú:'}
+                <span className={styles.rowLabel}>Ghi chú cho cửa hàng</span>
+                <span className={styles.rowValue} style={{ color: notes ? '#333' : '#4a4a4a' }}>
+                  Ghi chú: {notes || ''}
                 </span>
               </div>
-              <span className={styles.chevron}>›</span>
+              <svg className={styles.chevronSvg} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
             </button>
 
             {notesExpanded && (
@@ -233,7 +325,7 @@ const Checkout = () => {
             <div className={styles.vatSection}>
               <p className={styles.vatTitle}>Thông tin xuất hóa đơn VAT</p>
               <p>- Vui lòng xem hướng dẫn xuất phiếu GTGT (VAT) từ hóa đơn giấy đi kèm món nước.</p>
-              <p>- Trường hợp không nhận được hóa đơn giấy, vui lòng liên hệ Hotline CSKH: 1900234518 (nhấn phím 1) hoặc Fanpage Phúc Long Coffee &amp; Tea từ 8h00 - 17h45 để được hỗ trợ trực tiếp.</p>
+              <p>- Trường hợp không nhận được hóa đơn giấy, vui lòng liên hệ Hotline CSKH: 1900234518 (nhấn phím 1) hoặc Fanpage Phúc Long Coffee &amp; Tea từ 8h00 - 17h45 để được hỗ trợ nhé.</p>
             </div>
           </form>
 
