@@ -45,7 +45,8 @@ const NewestProducts = () => {
             : products.map((product) => (
                 <ProductCard
                   key={product.id}
-                  product={{ ...product, badgeLabel: 'Mới' }}
+                  product={product}
+                  badgeLabel="Mới nhất"
                 />
               ))}
         </div>

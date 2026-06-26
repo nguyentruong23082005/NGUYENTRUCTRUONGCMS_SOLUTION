@@ -4,7 +4,7 @@ import { useCart } from '../../context/CartContext';
 import { formatCurrency } from '../../utils/formatCurrency';
 import styles from './ProductCard.module.css';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, badgeLabel }) => {
   const { addToCart } = useCart();
   const [imgFailed, setImgFailed] = React.useState(false);
 
@@ -15,7 +15,7 @@ const ProductCard = ({ product }) => {
 
   const hasImage = Boolean((product.imageUrl || product.image) && !imgFailed);
   const imgUrl = product.imageUrl || product.image;
-  const ribbonLabel = product.badgeLabel || (product.isBestSeller ? 'Best Seller' : '');
+  const ribbonLabel = badgeLabel || product.badgeLabel || '';
 
   const displayImgUrl = hasImage ? imgUrl : product.productCategoryImageUrl;
 

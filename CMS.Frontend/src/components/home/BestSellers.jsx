@@ -60,7 +60,8 @@ const BestSellers = () => {
           {products.map((product) => (
             <ProductCard
               key={product.id}
-              product={{ ...product }}
+              product={product}
+              badgeLabel="Best Seller"
             />
           ))}
         </div>
