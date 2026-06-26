@@ -1,25 +1,14 @@
 import React from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import FloatingActions from './FloatingActions';
 
 const ClientLayout = () => {
-  const { pathname } = useLocation();
-  const isAuthPage = ['/login', '/register', '/forgot-password'].includes(pathname);
-
-  if (isAuthPage) {
-    return (
-      <main>
-        <Outlet />
-      </main>
-    );
-  }
-
   return (
     <>
       <Header />
-      <main style={{ flex: 1, minHeight: 'calc(100vh - 180px)' }}>
+      <main style={{ flex: 1, minHeight: 'calc(100vh - 180px)', display: 'flex', flexDirection: 'column' }}>
         <Outlet />
       </main>
       <FloatingActions />

@@ -1,7 +1,7 @@
 .authPage {
   display: flex;
   justify-content: center;
-  min-height: 100vh;
+  min-height: calc(100vh - 180px);
   background-color: #edf7ff;
   font-family: var(--font-secondary);
 }
@@ -9,26 +9,11 @@
 .panel {
   position: relative;
   width: min(100%, 430px);
-  min-height: 100vh;
-  padding: 26px 30px 48px;
+  min-height: 100%;
+  padding: 30px 40px 48px;
   background-color: #ffffff;
-}
-
-.homeLink {
-  position: absolute;
-  top: 34px;
-  right: 34px;
-  display: grid;
-  width: 24px;
-  height: 24px;
-  place-items: center;
-  color: #8a8a8a;
-}
-
-.homeLink svg {
-  width: 22px;
-  height: 22px;
-  fill: currentColor;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  border-top: 5px solid var(--primary-color);
 }
 
 .logo {

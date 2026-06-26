@@ -556,12 +556,13 @@
 }
 
 .dropdownCategoryIcon {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  object-fit: cover;
-  background-color: #f2f4f3;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-base);
+  object-fit: contain;
+  background-color: #ffffff;
   border: 1px solid #e7ece9;
+  padding: 2px;
 }
 
 .dropdownList {

@@ -10,7 +10,7 @@ const NewestProducts = () => {
   useEffect(() => {
     const fetchNewest = async () => {
       try {
-        const data = await getNewestProducts(3);
+        const data = await getNewestProducts(5);
         setProducts(data);
       } catch (error) {
         console.error('Lỗi tải sản phẩm mới nhất:', error);
@@ -28,7 +28,6 @@ const NewestProducts = () => {
       <div className={styles.container}>
         <div className={styles.header}>
           <h2 className={styles.title}>
-            <span className={styles.icon}>🆕</span>
             SẢN PHẨM MỚI NHẤT
           </h2>
           <p className={styles.subtitle}>Vừa ra mắt tại Phúc Long Heritage</p>
@@ -36,7 +35,7 @@ const NewestProducts = () => {
 
         <div className={styles.grid}>
           {loading
-            ? Array.from({ length: 3 }).map((_, i) => (
+            ? Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className={styles.skeleton}>
                   <div className={styles.skeletonImage} />
                   <div className={styles.skeletonText} />
@@ -46,7 +45,7 @@ const NewestProducts = () => {
             : products.map((product) => (
                 <ProductCard
                   key={product.id}
-                  product={{ ...product, badgeLabel: '🆕 Mới' }}
+                  product={{ ...product, badgeLabel: 'Mới' }}
                 />
               ))}
         </div>

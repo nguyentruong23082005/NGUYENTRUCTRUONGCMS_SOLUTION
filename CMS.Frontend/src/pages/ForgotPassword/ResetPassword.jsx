@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, Navigate, useSearchParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import authApi from '../../api/authApi';
+import logo from '../../assets/images/logo.png';
 import styles from './ResetPassword.module.css';
 
 const ResetPassword = () => {
@@ -53,10 +54,11 @@ const ResetPassword = () => {
         <title>Đặt lại mật khẩu - Phúc Long Coffee &amp; Tea</title>
       </Helmet>
 
-      <div className={styles.card}>
+      <section className={styles.panel}>
+        <img src={logo} alt="Phúc Long" className={styles.logo} />
         <div className={styles.header}>
-          <h2>ĐẶT LẠI MẬT KHẨU</h2>
-          <p>Nhập mật khẩu mới cho tài khoản của bạn</p>
+          <h1>Phúc Long Xin Chào</h1>
+          <p>Đặt lại mật khẩu mới</p>
         </div>
 
         {error && <div className={styles.errorAlert}>{error}</div>}
@@ -104,10 +106,10 @@ const ResetPassword = () => {
           </form>
         )}
 
-        <div className={styles.footerLink} style={{ marginTop: '20px' }}>
+        <div className={styles.footerLink}>
           <Link to="/login">← Quay lại đăng nhập</Link>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

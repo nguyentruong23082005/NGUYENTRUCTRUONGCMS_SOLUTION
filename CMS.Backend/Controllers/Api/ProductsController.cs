@@ -102,7 +102,7 @@ namespace CMS.Backend.Controllers.Api
         /// </summary>
         [HttpGet("newest")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
-        public async Task<IActionResult> GetNewest([FromQuery] int count = 3)
+        public async Task<IActionResult> GetNewest([FromQuery] int count = 5)
         {
             var result = await _productService.GetPagedAsync(new ProductQuery
             {

@@ -4,7 +4,6 @@ import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import authApi from '../../api/authApi';
-import { HomeIcon } from '../../components/common/Icons';
 import logo from '../../assets/images/logo.png';
 import styles from './Login.module.css';
 
@@ -55,10 +54,6 @@ const Login = () => {
       </Helmet>
 
       <section className={styles.panel}>
-        <Link to="/" className={styles.homeLink} aria-label="Về trang chủ">
-          <HomeIcon />
-        </Link>
-
         <img src={logo} alt="Phúc Long" className={styles.logo} />
         <div className={styles.header}>
           <h1>Phúc Long Xin Chào</h1>

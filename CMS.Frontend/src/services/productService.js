@@ -99,7 +99,7 @@ export const getProductImages = async (productId) => {
 };
 
 // Lấy 3 sản phẩm mới nhất (TC36)
-export const getNewestProducts = async (count = 3) => {
+export const getNewestProducts = async (count = 5) => {
   const response = await productApi.getNewest(count);
   if (response.data?.success && response.data?.data?.items) {
     return response.data.data.items.map(normalizeProduct);

@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '../../context/CartContext';
 import authApi from '../../api/authApi';
+import logo from '../../assets/images/logo.png';
 import styles from './Register.module.css';
 
 // Trang đăng ký tài khoản khách hàng mới
@@ -62,10 +63,11 @@ const Register = () => {
         <title>Đăng ký tài khoản - Phúc Long Coffee & Tea</title>
       </Helmet>
 
-      <div className={styles.card}>
+      <section className={styles.panel}>
+        <img src={logo} alt="Phúc Long" className={styles.logo} />
         <div className={styles.header}>
-          <h2>ĐĂNG KÝ</h2>
-          <p>Tạo tài khoản mới để nhận nhiều ưu đãi từ Phúc Long</p>
+          <h1>Phúc Long Xin Chào</h1>
+          <p>Tạo tài khoản mới</p>
         </div>
 
         {error && <div className={styles.errorAlert}>{error}</div>}
@@ -143,7 +145,7 @@ const Register = () => {
         <div className={styles.footerLink}>
           Đã có tài khoản? <Link to="/login">Đăng nhập</Link>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

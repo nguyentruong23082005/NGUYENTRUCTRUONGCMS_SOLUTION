@@ -9,12 +9,12 @@
 
 .sectionTitle {
   margin: 0;
-  color: #006f3c;
+  color: var(--color-primary);
   font-family: var(--font-primary);
   font-size: 24px;
   font-weight: 700;
   text-align: center;
-  text-transform: none;
+  text-transform: uppercase;
 }
 
 .sectionSubtitle {

@@ -56,13 +56,14 @@
 }
 
 .categoryIcon {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  object-fit: cover;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-base);
+  object-fit: contain;
   margin-right: 10px;
-  background-color: #f2f4f3;
+  background-color: #ffffff;
   border: 1px solid #e3e7e6;
+  padding: 2px;
   flex-shrink: 0;
 }
 
