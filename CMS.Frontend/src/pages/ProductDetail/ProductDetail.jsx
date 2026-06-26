@@ -53,20 +53,23 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        const [item, images] = await Promise.all([
+        const [item, images, bestSellers] = await Promise.all([
           productService.getProductById(id),
-          productService.getProductImages(id)
+          productService.getProductImages(id),
+          productService.getBestSellers(10)
         ]);
 
         if (item) {
           const optionGroups = normalizeOptionGroups(item.optionGroups || item.OptionGroups || []);
+          const isBestSeller = bestSellers.some((bp) => bp.id.toString() === item.id.toString());
 
           setProduct({
             ...item,
             skuLabel: item.slug || item.id.toString(),
             price: Number(item.price),
             stockQuantity: Number(item.stockQuantity),
-            optionGroups
+            optionGroups,
+            isBestSeller
           });
           setProductImages(images || []);
           setSelectedOptions(buildDefaultSelections(optionGroups));
