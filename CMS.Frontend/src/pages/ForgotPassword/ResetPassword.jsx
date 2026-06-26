@@ -72,13 +72,12 @@ const ResetPassword = () => {
         {!success && (
           <form onSubmit={handleSubmit} className={styles.form} autoComplete="off">
             <div className={styles.formGroup}>
-              <label htmlFor="new-password" className={styles.label}>Mật khẩu mới</label>
               <input
                 id="new-password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Tối thiểu 6 ký tự"
+                placeholder="Mật khẩu mới* (tối thiểu 6 ký tự)"
                 className={styles.input}
                 autoComplete="new-password"
                 required
@@ -88,13 +87,12 @@ const ResetPassword = () => {
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="confirm-password" className={styles.label}>Xác nhận mật khẩu</label>
               <input
                 id="confirm-password"
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Nhập lại mật khẩu"
+                placeholder="Xác nhận mật khẩu mới*"
                 className={styles.input}
                 autoComplete="new-password"
                 required

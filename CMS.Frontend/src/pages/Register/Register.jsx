@@ -74,13 +74,12 @@ const Register = () => {
 
         <form onSubmit={handleSubmit} className={styles.form} autoComplete="off">
           <div className={styles.formGroup}>
-            <label htmlFor="reg-fullname" className={styles.label}>Họ và tên</label>
             <input
               id="reg-fullname"
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Nhập họ và tên"
+              placeholder="Họ và tên*"
               className={styles.input}
               autoComplete="new-password"
               required
@@ -88,13 +87,12 @@ const Register = () => {
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="reg-email" className={styles.label}>Địa chỉ Email</label>
             <input
               id="reg-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@mail.com"
+              placeholder="Địa chỉ Email*"
               className={styles.input}
               autoComplete="new-password"
               required
@@ -102,26 +100,24 @@ const Register = () => {
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="reg-phone" className={styles.label}>Số điện thoại</label>
             <input
               id="reg-phone"
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="Nhập số điện thoại (tùy chọn)"
+              placeholder="Số điện thoại (tùy chọn)"
               className={styles.input}
               autoComplete="new-password"
             />
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="reg-password" className={styles.label}>Mật khẩu (tối thiểu 6 ký tự)</label>
             <input
               id="reg-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Nhập mật khẩu"
+              placeholder="Mật khẩu* (tối thiểu 6 ký tự)"
               className={styles.input}
               autoComplete="new-password"
               required
@@ -129,13 +125,12 @@ const Register = () => {
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="reg-confirm" className={styles.label}>Xác nhận mật khẩu</label>
             <input
               id="reg-confirm"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Nhập lại mật khẩu"
+              placeholder="Xác nhận mật khẩu*"
               className={styles.input}
               autoComplete="new-password"
               required

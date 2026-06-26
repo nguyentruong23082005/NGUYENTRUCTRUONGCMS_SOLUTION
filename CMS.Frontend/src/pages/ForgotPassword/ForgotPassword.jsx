@@ -50,13 +50,12 @@ const ForgotPassword = () => {
 
         <form onSubmit={handleSubmit} className={styles.form} autoComplete="off">
           <div className={styles.formGroup}>
-            <label htmlFor="forgot-email" className={styles.label}>Địa chỉ Email đăng ký</label>
             <input
               id="forgot-email"
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              placeholder="Nhập email của bạn"
+              placeholder="Địa chỉ Email đăng ký*"
               className={styles.input}
               autoComplete="new-password"
               required
