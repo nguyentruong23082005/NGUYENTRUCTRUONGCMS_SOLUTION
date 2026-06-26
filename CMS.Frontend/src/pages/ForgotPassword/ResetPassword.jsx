@@ -70,7 +70,7 @@ const ResetPassword = () => {
         )}
 
         {!success && (
-          <form onSubmit={handleSubmit} className={styles.form}>
+          <form onSubmit={handleSubmit} className={styles.form} autoComplete="off">
             <div className={styles.formGroup}>
               <label htmlFor="new-password" className={styles.label}>Mật khẩu mới</label>
               <input
@@ -80,6 +80,7 @@ const ResetPassword = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Tối thiểu 6 ký tự"
                 className={styles.input}
+                autoComplete="new-password"
                 required
                 minLength={6}
                 disabled={loading}
@@ -95,6 +96,7 @@ const ResetPassword = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Nhập lại mật khẩu"
                 className={styles.input}
+                autoComplete="new-password"
                 required
                 disabled={loading}
               />

@@ -48,7 +48,7 @@ const ForgotPassword = () => {
         {error && <div className={styles.errorAlert}>{error}</div>}
         {success && <div className={styles.successAlert}>{success}</div>}
 
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form onSubmit={handleSubmit} className={styles.form} autoComplete="off">
           <div className={styles.formGroup}>
             <label htmlFor="forgot-email" className={styles.label}>Địa chỉ Email đăng ký</label>
             <input
@@ -58,6 +58,7 @@ const ForgotPassword = () => {
               onChange={(event) => setEmail(event.target.value)}
               placeholder="Nhập email của bạn"
               className={styles.input}
+              autoComplete="new-password"
               required
               disabled={loading}
             />

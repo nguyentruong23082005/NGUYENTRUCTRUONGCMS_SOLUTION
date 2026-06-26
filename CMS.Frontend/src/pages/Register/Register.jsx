@@ -72,7 +72,7 @@ const Register = () => {
 
         {error && <div className={styles.errorAlert}>{error}</div>}
 
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form onSubmit={handleSubmit} className={styles.form} autoComplete="off">
           <div className={styles.formGroup}>
             <label htmlFor="reg-fullname" className={styles.label}>Họ và tên</label>
             <input
@@ -82,6 +82,7 @@ const Register = () => {
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Nhập họ và tên"
               className={styles.input}
+              autoComplete="new-password"
               required
             />
           </div>
@@ -95,6 +96,7 @@ const Register = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="example@mail.com"
               className={styles.input}
+              autoComplete="new-password"
               required
             />
           </div>
@@ -108,6 +110,7 @@ const Register = () => {
               onChange={(e) => setPhone(e.target.value)}
               placeholder="Nhập số điện thoại (tùy chọn)"
               className={styles.input}
+              autoComplete="new-password"
             />
           </div>
 
@@ -120,6 +123,7 @@ const Register = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Nhập mật khẩu"
               className={styles.input}
+              autoComplete="new-password"
               required
             />
           </div>
@@ -133,6 +137,7 @@ const Register = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Nhập lại mật khẩu"
               className={styles.input}
+              autoComplete="new-password"
               required
             />
           </div>
