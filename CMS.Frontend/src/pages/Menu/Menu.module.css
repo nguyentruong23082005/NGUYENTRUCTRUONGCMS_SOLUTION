@@ -47,10 +47,23 @@
 }
 
 .parentLink {
-  display: block;
+  display: inline-flex;
+  align-items: center;
   color: #3b4441;
   font-size: 17px;
   line-height: 24px;
+  text-decoration: none;
+}
+
+.categoryIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+  background-color: #f2f4f3;
+  border: 1px solid #e3e7e6;
+  flex-shrink: 0;
 }
 
 .parentActive,

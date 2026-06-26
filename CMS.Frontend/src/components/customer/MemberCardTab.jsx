@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from '../../pages/Profile/Profile.module.css';
+import localStyles from './MemberCardTab.module.css';
 
 /**
  * Tab Khách hàng thành viên — hiển thị thẻ thành viên Phúc Long và thông tin tích điểm
@@ -80,15 +81,15 @@ const MemberCardTab = ({ profile }) => {
       </div>
 
       {/* ── Tiến trình nâng hạng ── */}
-      <div style={{ background: '#FAFAFA', padding: 24, border: '1px solid #ECEFF1', borderRadius: 8, marginBottom: 32 }}>
-        <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 12, color: '#333333' }}>Tiến trình nâng hạng thẻ tiếp theo</h3>
-        <p style={{ fontSize: 14, color: '#666666', marginBottom: 16 }}>
+      <div className={localStyles.progressCard}>
+        <h3 className={localStyles.progressTitle}>Tiến trình nâng hạng thẻ tiếp theo</h3>
+        <p className={localStyles.progressDesc}>
           Bạn cần tích lũy thêm <strong>{nextTierPoints - points} điểm</strong> để nâng lên hạng thẻ <strong>Gold Member</strong>.
         </p>
-        <div style={{ height: 10, background: '#ECEFF1', borderRadius: 5, overflow: 'hidden', marginBottom: 8 }}>
-          <div style={{ height: '100%', width: `${progressPercent}%`, background: '#006F3C', transition: 'width 0.5s ease' }} />
+        <div className={localStyles.progressBar}>
+          <div className={localStyles.progressFill} style={{ width: `${progressPercent}%` }} />
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#9B9B9B' }}>
+        <div className={localStyles.progressLabels}>
           <span>Green Member ({points} điểm)</span>
           <span>Gold Member ({nextTierPoints} điểm)</span>
         </div>
@@ -96,8 +97,8 @@ const MemberCardTab = ({ profile }) => {
 
       {/* ── Đặc quyền hạng thẻ ── */}
       <div>
-        <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, color: '#006F3C' }}>Đặc quyền hạng thẻ Green Member</h3>
-        <ul style={{ listStyleType: 'disc', paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14, color: '#333333' }}>
+        <h3 className={localStyles.benefitsTitle}>Đặc quyền hạng thẻ Green Member</h3>
+        <ul className={localStyles.benefitsList}>
           <li>Tích lũy điểm khi mua hàng tại hệ thống Phúc Long Coffee & Tea toàn quốc.</li>
           <li>Ưu đãi giảm giá 1% trên tổng hóa đơn mua hàng.</li>
           <li>Quà tặng sinh nhật đặc biệt dành cho thành viên (Voucher ưu đãi).</li>

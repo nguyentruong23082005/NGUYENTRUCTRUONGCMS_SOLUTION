@@ -5,6 +5,7 @@ using CMS.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,12 +17,17 @@ namespace CMS.Backend.Services.Api
         private readonly ApplicationDbContext _db;
         private readonly IConfiguration _config;
         private readonly IMemoryCache _cache;
+        private readonly IEmailService _emailService;
+        private readonly ILogger<CustomerApiService> _logger;
 
-        public CustomerApiService(ApplicationDbContext db, IConfiguration config, IMemoryCache cache)
+        public CustomerApiService(ApplicationDbContext db, IConfiguration config, IMemoryCache cache,
+            IEmailService emailService, ILogger<CustomerApiService> logger)
         {
             _db = db;
             _config = config;
             _cache = cache;
+            _emailService = emailService;
+            _logger = logger;
         }
 
         public async Task<CustomerDto> RegisterAsync(RegisterDto dto)
@@ -44,6 +50,12 @@ namespace CMS.Backend.Services.Api
 
             _db.Customers.Add(customer);
             await _db.SaveChangesAsync();
+
+            // Gửi email chúc mừng đăng ký thành công (fire-and-forget, an toàn)
+            _ = _emailService.SendWelcomeEmailAsync(customer.Email, customer.FullName)
+                .ContinueWith(t => _logger.LogError(t.Exception,
+                    "Lỗi gửi email chào mừng cho {Email}", customer.Email),
+                    TaskContinuationOptions.OnlyOnFaulted);
 
             return new CustomerDto
             {
@@ -124,7 +136,7 @@ namespace CMS.Backend.Services.Api
                 }
 
                 customer.Password = PasswordHasher.Hash(customer, dto.NewPassword);
-                
+
                 customer.TokenVersion++;
                 InvalidateTokenCache(customerId);
             }
@@ -154,6 +166,40 @@ namespace CMS.Backend.Services.Api
         public void InvalidateTokenCache(int customerId)
         {
             _cache.Remove($"token-version-{customerId}");
+        }
+
+        public async Task ForgotPasswordAsync(string email)
+        {
+            var customer = await _db.Customers
+                .FirstOrDefaultAsync(c => c.Email.ToLower() == email.Trim().ToLower());
+            if (customer == null) return; // Không leak thông tin user có tồn tại hay không
+
+            customer.ResetPasswordToken = Guid.NewGuid().ToString("N");
+            customer.ResetPasswordExpiry = DateTime.UtcNow.AddHours(1);
+            await _db.SaveChangesAsync();
+
+            var frontendBaseUrl = (_config["Frontend:BaseUrl"] ?? "http://localhost:5173").TrimEnd('/');
+            var resetLink = $"{frontendBaseUrl}/reset-password?token={Uri.EscapeDataString(customer.ResetPasswordToken)}";
+            _ = _emailService.SendResetPasswordEmailAsync(customer.Email, customer.FullName, resetLink)
+                .ContinueWith(t => _logger.LogError(t.Exception,
+                    "Lỗi gửi email reset password cho {Email}", customer.Email),
+                    TaskContinuationOptions.OnlyOnFaulted);
+        }
+
+        public async Task ResetPasswordAsync(string token, string newPassword)
+        {
+            var customer = await _db.Customers
+                .FirstOrDefaultAsync(c => c.ResetPasswordToken == token
+                    && c.ResetPasswordExpiry > DateTime.UtcNow);
+            if (customer == null)
+                throw new InvalidOperationException("Token không hợp lệ hoặc đã hết hạn.");
+
+            customer.Password = PasswordHasher.Hash(customer, newPassword);
+            customer.ResetPasswordToken = null;
+            customer.ResetPasswordExpiry = null;
+            customer.TokenVersion++;
+            InvalidateTokenCache(customer.Id);
+            await _db.SaveChangesAsync();
         }
     }
 }

@@ -7,6 +7,12 @@ export const authApi = {
   },
   register: (customerData) => {
     return axiosClient.post('/api/Customers/register', customerData);
+  },
+  forgotPassword: (email) => {
+    return axiosClient.post('/api/Customers/forgot-password', { email });
+  },
+  resetPassword: (token, newPassword) => {
+    return axiosClient.post('/api/Customers/reset-password', { token, newPassword });
   }
 };
 

@@ -12,6 +12,7 @@ import Checkout from '../pages/Checkout/Checkout';
 import Login from '../pages/Login/Login';
 import Register from '../pages/Register/Register';
 import ForgotPassword from '../pages/ForgotPassword/ForgotPassword';
+import ResetPassword from '../pages/ForgotPassword/ResetPassword';
 import Profile from '../pages/Profile/Profile';
 import StoresPage from '../pages/Stores/StoresPage';
 import NotFound from '../pages/NotFound/NotFound';
@@ -33,6 +34,7 @@ const AppRoutes = () => {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="reset-password" element={<ResetPassword />} />
         <Route path="profile" element={<Profile />} />
         <Route path="customer/account" element={<Profile />} />
         <Route path="stores" element={<StoresPage />} />

@@ -8,8 +8,10 @@ namespace CMS.Backend.Models.Dtos
         public decimal Price { get; init; }
         public string? ImageUrl { get; init; }
         public string? ProductCategoryName { get; init; }
+        public string? ProductCategoryImageUrl { get; init; }
         public string? Description { get; init; }
         public int StockQuantity { get; init; }
+        public int TotalSold { get; init; }
         public System.Collections.Generic.ICollection<OptionGroupDto>? OptionGroups { get; set; }
     }
 }

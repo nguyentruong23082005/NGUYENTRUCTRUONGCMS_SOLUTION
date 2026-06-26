@@ -20,14 +20,20 @@ namespace CMS.Backend.Models.Dtos
     {
         public int? CustomerAddressId { get; set; }
 
+        [StringLength(100, ErrorMessage = "Tên người nhận không được vượt quá 100 ký tự")]
         public string? ReceiverName { get; set; }
 
+        [Phone(ErrorMessage = "Số điện thoại người nhận không đúng định dạng")]
+        [StringLength(20, ErrorMessage = "Số điện thoại người nhận không được vượt quá 20 ký tự")]
         public string? ReceiverPhone { get; set; }
 
+        [StringLength(300, ErrorMessage = "Địa chỉ giao hàng không được vượt quá 300 ký tự")]
         public string? ShippingAddress { get; set; }
 
+        [StringLength(500, ErrorMessage = "Ghi chú không được vượt quá 500 ký tự")]
         public string? Notes { get; set; }
 
+        [StringLength(50, ErrorMessage = "Mã voucher không được vượt quá 50 ký tự")]
         public string? VoucherCode { get; set; }
 
         [Required(ErrorMessage = "Danh sách sản phẩm không được trống")]

@@ -1,3 +1,4 @@
+using CMS.Backend.Helpers;
 using CMS.Backend.Models;
 using CMS.Data;
 using CMS.Data.Entities;
@@ -75,18 +76,15 @@ namespace CMS.Backend.Controllers
             {
                 if (uploadImage != null && uploadImage.Length > 0)
                 {
-                    string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                    if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadImage.FileName);
-                    string filePath = Path.Combine(folder, fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    var uploadResult = ImageUploadHelper.SaveImage(uploadImage, filePrefix: "product");
+                    if (!uploadResult.Succeeded)
                     {
-                        uploadImage.CopyTo(stream);
+                        ModelState.AddModelError(nameof(Product.ImageUrl), uploadResult.ErrorMessage ?? "Ảnh tải lên không hợp lệ.");
+                        PopulateProductFormData(model.ProductCategoryId);
+                        return View(model);
                     }
 
-                    model.ImageUrl = "/uploads/" + fileName;
+                    model.ImageUrl = uploadResult.Url;
                 }
 
                 _context.Products.Add(model);
@@ -123,18 +121,15 @@ namespace CMS.Backend.Controllers
             {
                 if (uploadImage != null && uploadImage.Length > 0)
                 {
-                    string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                    if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadImage.FileName);
-                    string filePath = Path.Combine(folder, fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    var uploadResult = ImageUploadHelper.SaveImage(uploadImage, filePrefix: "product");
+                    if (!uploadResult.Succeeded)
                     {
-                        uploadImage.CopyTo(stream);
+                        ModelState.AddModelError(nameof(Product.ImageUrl), uploadResult.ErrorMessage ?? "Ảnh tải lên không hợp lệ.");
+                        PopulateProductFormData(model.ProductCategoryId, model.Id);
+                        return View(model);
                     }
 
-                    model.ImageUrl = "/uploads/" + fileName;
+                    model.ImageUrl = uploadResult.Url;
                 }
                 else
                 {
@@ -166,22 +161,23 @@ namespace CMS.Backend.Controllers
 
             if (uploadGalleryImage != null && uploadGalleryImage.Length > 0)
             {
-                string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadGalleryImage.FileName);
-                string filePath = Path.Combine(folder, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                var uploadResult = ImageUploadHelper.SaveImage(uploadGalleryImage, filePrefix: "product-gallery");
+                if (!uploadResult.Succeeded)
                 {
-                    uploadGalleryImage.CopyTo(stream);
+                    TempData["ErrorMessage"] = uploadResult.ErrorMessage ?? "Ảnh tải lên không hợp lệ.";
+                    return RedirectToAction(nameof(Edit), new { id = productId });
                 }
 
-                finalImageUrl = "/uploads/" + fileName;
+                finalImageUrl = uploadResult.Url ?? string.Empty;
             }
             else if (!string.IsNullOrWhiteSpace(imageUrl))
             {
                 finalImageUrl = imageUrl.Trim();
+                if (!ImageUploadHelper.IsSafeImageUrl(finalImageUrl))
+                {
+                    TempData["ErrorMessage"] = "URL ảnh phải là đường dẫn /uploads/ hoặc bắt đầu bằng http/https.";
+                    return RedirectToAction(nameof(Edit), new { id = productId });
+                }
             }
             else
             {

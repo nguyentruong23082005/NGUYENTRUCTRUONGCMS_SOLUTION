@@ -1,27 +1,40 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import authApi from '../../api/authApi';
 import styles from './ForgotPassword.module.css';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setError('');
+    setSuccess('');
 
     if (!email.trim()) {
       setError('Vui lòng nhập địa chỉ Email.');
       return;
     }
 
-    setError('Backend hiện chưa có API khôi phục mật khẩu, nên hệ thống chưa thể gửi email.');
+    setLoading(true);
+    try {
+      const response = await authApi.forgotPassword(email.trim());
+      setSuccess(response.data?.message || 'Nếu email tồn tại, hệ thống đã gửi hướng dẫn khôi phục.');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Có lỗi xảy ra, vui lòng thử lại sau.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className={styles.authPage}>
       <Helmet>
-        <title>Quên mật khẩu - Phúc Long Coffee & Tea</title>
+        <title>Quên mật khẩu - Phúc Long Coffee &amp; Tea</title>
       </Helmet>
 
       <div className={styles.card}>
@@ -31,6 +44,7 @@ const ForgotPassword = () => {
         </div>
 
         {error && <div className={styles.errorAlert}>{error}</div>}
+        {success && <div className={styles.successAlert}>{success}</div>}
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
@@ -43,11 +57,12 @@ const ForgotPassword = () => {
               placeholder="Nhập email của bạn"
               className={styles.input}
               required
+              disabled={loading}
             />
           </div>
 
-          <button type="submit" className={styles.submitBtn}>
-            GỬI YÊU CẦU KHÔI PHỤC
+          <button type="submit" className={styles.submitBtn} disabled={loading}>
+            {loading ? 'ĐANG GỬI...' : 'GỬI YÊU CẦU KHÔI PHỤC'}
           </button>
         </form>
 

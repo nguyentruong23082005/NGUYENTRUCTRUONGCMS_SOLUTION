@@ -15,7 +15,9 @@ export const useProducts = (params = {}) => {
     setLoading(true);
     setError(null);
     try {
-      const list = await productService.getProducts(params);
+      const list = params.searchMode
+        ? await productService.searchProducts(params)
+        : await productService.getProducts(params);
       setProducts(list);
     } catch (err) {
       console.error('Lỗi khi tải sản phẩm từ API:', err);

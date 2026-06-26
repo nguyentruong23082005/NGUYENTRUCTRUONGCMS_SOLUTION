@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useOrders from '../../hooks/useOrders';
 import styles from '../../pages/Profile/Profile.module.css';
+import localStyles from './OrderedProductsList.module.css';
 
 const OrderedProductsList = () => {
   const { getOrderHistory, loading } = useOrders();
@@ -43,11 +44,11 @@ const OrderedProductsList = () => {
       {loading && <p className={styles.emptyState}>Đang tải sản phẩm...</p>}
 
       {!loading && products.length === 0 && (
-        <div className={styles.emptyState} style={{ padding: '48px 0', textAlign: 'center' }}>
-          <span style={{ fontSize: 48, display: 'block', marginBottom: 16 }}>📦</span>
-          <p style={{ fontSize: 15, color: '#666666', marginBottom: 20 }}>Bạn chưa từng đặt món nào.</p>
-          <button 
-            type="button" 
+        <div className={localStyles.emptyStateContainer}>
+          <span className={localStyles.emptyEmoji}>📦</span>
+          <p className={localStyles.emptyText}>Bạn chưa từng đặt món nào.</p>
+          <button
+            type="button"
             className={styles.btnPrimary}
             onClick={() => navigate('/menu')}
           >
@@ -57,31 +58,25 @@ const OrderedProductsList = () => {
       )}
 
       {!loading && products.length > 0 && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20 }}>
+        <div className={localStyles.prodGrid}>
           {products.map((product) => (
-            <div 
-              key={product.id} 
-              style={{
-                border: '1px solid #ECEFF1',
-                borderRadius: 8,
-                overflow: 'hidden',
-                background: '#FFFFFF',
-                cursor: 'pointer'
-              }}
+            <div
+              key={product.id}
+              className={localStyles.prodCard}
               onClick={() => navigate(`/product/${product.id}`)}
             >
-              <div style={{ height: 160, background: '#ECEFF1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: 44 }}>🍵</span>
+              <div className={localStyles.imgContainer}>
+                <span className={localStyles.fallbackEmoji}>🍵</span>
               </div>
-              <div style={{ padding: 16 }}>
-                <h4 style={{ fontSize: 14, fontWeight: 700, color: '#333333', marginBottom: 8, height: 40, overflow: 'hidden' }}>
+              <div className={localStyles.infoContainer}>
+                <h4 className={localStyles.title}>
                   {product.name}
                 </h4>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#006F3C' }}>
+                <div className={localStyles.bottomRow}>
+                  <div className={localStyles.price}>
                     {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price || 0)}
                   </div>
-                  <span style={{ fontSize: 11, background: '#ECEFF1', color: '#666666', padding: '2px 8px', borderRadius: 10 }}>
+                  <span className={localStyles.badge}>
                     Đã đặt {product.orderedTimes} lần
                   </span>
                 </div>

@@ -6,10 +6,21 @@ import useProducts from '../../hooks/useProducts';
 import usePagination from '../../hooks/usePagination';
 import ProductCard from '../../components/product/ProductCard';
 import ProductCardSkeleton from '../../components/product/ProductCardSkeleton';
+import PriceFilter from '../../components/product/PriceFilter';
 import EmptyState from '../../components/common/EmptyState/EmptyState';
 import styles from './Menu.module.css';
 
 const normalizeRouteSlug = (slug = '') => decodeURIComponent(slug).replace(/--c\d+$/i, '');
+
+const getFullImageUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+    return path;
+  }
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5188';
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${baseUrl}${cleanPath}`;
+};
 
 const normalizeCategory = (item, level = 0) => {
   const children = item.children || item.Children || [];
@@ -19,6 +30,7 @@ const normalizeCategory = (item, level = 0) => {
     name: item.name,
     slug: item.slug || '',
     level,
+    imageUrl: item.imageUrl ? getFullImageUrl(item.imageUrl) : '',
     children: children.map((child) => normalizeCategory(child, level + 1))
   };
 };
@@ -47,10 +59,22 @@ const Menu = () => {
   const activeSlug = normalizeRouteSlug(categorySlug || '');
 
   const [categoryTree, setCategoryTree] = useState([]);
+  const [priceFilter, setPriceFilter] = useState({ minPrice: null, maxPrice: null });
+
+  // Điều khiển đóng/mở danh mục cha độc lập
+  const [expandedCategorySlugs, setExpandedCategorySlugs] = useState({});
+
+  const toggleCategory = (slug) => {
+    setExpandedCategorySlugs((prev) => ({
+      ...prev,
+      [slug]: !prev[slug]
+    }));
+  };
 
   const { products, loading } = useProducts({
-    pageSize: 1000,
-    ...(searchQuery ? { keyword: searchQuery } : {})
+    pageSize: 500,
+    ...(searchQuery ? { q: searchQuery, searchMode: true } : {}),
+    ...priceFilter
   });
 
   const { currentPage, totalPages, paginatedData, goToPage } = usePagination(products, 12);
@@ -60,6 +84,31 @@ const Menu = () => {
     () => categories.find((category) => category.slug === activeSlug) || null,
     [activeSlug, categories]
   );
+
+  const visibleCategoryTree = useMemo(() => categoryTree
+    .filter((category) => {
+      const productCategoryNames = new Set(products.map((product) => product.productCategoryName).filter(Boolean));
+      const hasOwnProducts = productCategoryNames.has(category.name);
+      const hasChildProducts = (category.children || [])
+        .some((child) => productCategoryNames.has(child.name));
+
+      return hasOwnProducts || hasChildProducts;
+    }), [categoryTree, products]);
+
+  // Tự động mở rộng danh mục cha khi có slug hoạt động (lần đầu tải trang)
+  useEffect(() => {
+    if (activeSlug && categories.length > 0) {
+      const parent = visibleCategoryTree.find(p =>
+        p.slug === activeSlug || p.children.some(c => c.slug === activeSlug)
+      );
+      if (parent) {
+        setExpandedCategorySlugs(prev => ({
+          ...prev,
+          [parent.slug]: true
+        }));
+      }
+    }
+  }, [activeSlug, categories, visibleCategoryTree]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -76,19 +125,6 @@ const Menu = () => {
     fetchCategories();
   }, []);
 
-  const productCategoryNames = useMemo(
-    () => new Set(products.map((product) => product.productCategoryName).filter(Boolean)),
-    [products]
-  );
-
-  const visibleCategoryTree = useMemo(() => categoryTree
-    .filter((category) => {
-      const hasOwnProducts = productCategoryNames.has(category.name);
-      const hasChildProducts = (category.children || [])
-        .some((child) => productCategoryNames.has(child.name));
-
-      return hasOwnProducts || hasChildProducts;
-    }), [categoryTree, productCategoryNames]);
 
   const groupedSections = useMemo(() => {
     if (searchQuery) {
@@ -158,16 +194,27 @@ const Menu = () => {
                 const isParentActive = activeSlug === category.slug
                   || category.children.some((child) => child.slug === activeSlug);
 
+                const isExpanded = expandedCategorySlugs[category.slug] ?? false;
+
                 return (
                   <div key={category.id} className={styles.categoryGroup}>
                     <Link
                       to={getMenuPath(category)}
                       className={`${styles.parentLink} ${isParentActive ? styles.parentActive : ''}`}
+                      onClick={() => toggleCategory(category.slug)}
                     >
-                      {category.name}
+                      {category.imageUrl && (
+                        <img
+                          src={category.imageUrl}
+                          alt={category.name}
+                          className={styles.categoryIcon}
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                      )}
+                      <span>{category.name}</span>
                     </Link>
 
-                    {isParentActive && category.children.length > 0 && (
+                    {isExpanded && category.children.length > 0 && (
                       <ul className={styles.childList}>
                         {category.children.map((child) => (
                           <li key={child.id}>
@@ -185,6 +232,7 @@ const Menu = () => {
                 );
               })}
             </nav>
+            <PriceFilter onFilterChange={setPriceFilter} />
           </aside>
 
           <section className={styles.content}>
@@ -240,7 +288,11 @@ const Menu = () => {
               </>
             ) : (
               <EmptyState
-                title="Không tìm thấy sản phẩm nào"
+                title={
+                  searchQuery || priceFilter.minPrice || priceFilter.maxPrice
+                    ? 'Không tìm thấy sản phẩm nào phù hợp với tiêu chí của bạn'
+                    : 'Không tìm thấy sản phẩm nào'
+                }
                 description={
                   searchQuery
                     ? `Không tìm thấy sản phẩm nào khớp với từ khóa "${searchQuery}".`

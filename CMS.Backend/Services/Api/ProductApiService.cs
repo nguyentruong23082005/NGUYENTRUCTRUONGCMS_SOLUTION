@@ -22,6 +22,7 @@ namespace CMS.Backend.Services.Api
         {
             var dbQuery = _db.Products
                 .Include(p => p.ProductCategory)
+                    .ThenInclude(c => c!.Parent)
                 .AsNoTracking();
 
             // Lọc theo Category
@@ -37,9 +38,18 @@ namespace CMS.Backend.Services.Api
             // Tìm kiếm theo từ khóa
             if (!string.IsNullOrWhiteSpace(query.Keyword))
             {
-                string keyword = query.Keyword.Trim();
-                dbQuery = dbQuery.Where(p => p.Name.Contains(keyword) || (p.Description != null && p.Description.Contains(keyword)));
+                string keyword = query.Keyword.Trim().ToLower();
+                dbQuery = dbQuery.Where(p =>
+                    p.Name.ToLower().Contains(keyword)
+                    || (p.Description != null && p.Description.ToLower().Contains(keyword))
+                    || (p.ProductCategory != null && p.ProductCategory.Name.ToLower().Contains(keyword)));
             }
+
+            // Lọc theo khoảng giá (TC39)
+            if (query.MinPrice.HasValue)
+                dbQuery = dbQuery.Where(p => p.Price >= query.MinPrice.Value);
+            if (query.MaxPrice.HasValue)
+                dbQuery = dbQuery.Where(p => p.Price <= query.MaxPrice.Value);
 
             // Sắp xếp
             dbQuery = query.SortBy.ToLower() switch
@@ -47,6 +57,7 @@ namespace CMS.Backend.Services.Api
                 "name" => query.SortOrder.ToLower() == "asc" ? dbQuery.OrderBy(p => p.Name) : dbQuery.OrderByDescending(p => p.Name),
                 "price" => query.SortOrder.ToLower() == "asc" ? dbQuery.OrderBy(p => p.Price) : dbQuery.OrderByDescending(p => p.Price),
                 "createdat" => query.SortOrder.ToLower() == "asc" ? dbQuery.OrderBy(p => p.CreatedAt) : dbQuery.OrderByDescending(p => p.CreatedAt),
+                "totalsold" => query.SortOrder.ToLower() == "asc" ? dbQuery.OrderBy(p => p.TotalSold) : dbQuery.OrderByDescending(p => p.TotalSold),
                 _ => dbQuery.OrderByDescending(p => p.CreatedAt)
             };
 
@@ -63,8 +74,12 @@ namespace CMS.Backend.Services.Api
                     Price = p.Price,
                     ImageUrl = p.ImageUrl,
                     ProductCategoryName = p.ProductCategory != null ? p.ProductCategory.Name : null,
+                    ProductCategoryImageUrl = p.ProductCategory != null
+                        ? (p.ProductCategory.ImageUrl ?? (p.ProductCategory.Parent != null ? p.ProductCategory.Parent.ImageUrl : null))
+                        : null,
                     Description = p.Description,
-                    StockQuantity = p.StockQuantity
+                    StockQuantity = p.StockQuantity,
+                    TotalSold = p.TotalSold
                 })
                 .ToListAsync();
 
@@ -75,6 +90,7 @@ namespace CMS.Backend.Services.Api
         {
             return await _db.Products
                 .Include(p => p.ProductCategory)
+                    .ThenInclude(c => c!.Parent)
                 .AsNoTracking()
                 .Select(p => new ProductDto
                 {
@@ -84,8 +100,12 @@ namespace CMS.Backend.Services.Api
                     Price = p.Price,
                     ImageUrl = p.ImageUrl,
                     ProductCategoryName = p.ProductCategory != null ? p.ProductCategory.Name : null,
+                    ProductCategoryImageUrl = p.ProductCategory != null
+                        ? (p.ProductCategory.ImageUrl ?? (p.ProductCategory.Parent != null ? p.ProductCategory.Parent.ImageUrl : null))
+                        : null,
                     Description = p.Description,
                     StockQuantity = p.StockQuantity,
+                    TotalSold = p.TotalSold,
                     OptionGroups = p.ProductOptionGroups != null
                         ? p.ProductOptionGroups
                             .Select(pog => pog.OptionGroup)
@@ -121,6 +141,7 @@ namespace CMS.Backend.Services.Api
 
             return await _db.Products
                 .Include(p => p.ProductCategory)
+                    .ThenInclude(c => c!.Parent)
                 .AsNoTracking()
                 .Select(p => new ProductDto
                 {
@@ -130,8 +151,12 @@ namespace CMS.Backend.Services.Api
                     Price = p.Price,
                     ImageUrl = p.ImageUrl,
                     ProductCategoryName = p.ProductCategory != null ? p.ProductCategory.Name : null,
+                    ProductCategoryImageUrl = p.ProductCategory != null
+                        ? (p.ProductCategory.ImageUrl ?? (p.ProductCategory.Parent != null ? p.ProductCategory.Parent.ImageUrl : null))
+                        : null,
                     Description = p.Description,
                     StockQuantity = p.StockQuantity,
+                    TotalSold = p.TotalSold,
                     OptionGroups = p.ProductOptionGroups != null
                         ? p.ProductOptionGroups
                             .Select(pog => pog.OptionGroup)

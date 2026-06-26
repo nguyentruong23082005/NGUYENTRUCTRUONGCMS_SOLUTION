@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import { AuthProvider } from './context/AuthContext';
+import { DeliveryProvider } from './context/DeliveryContext';
 import { CartProvider, useCart } from './context/CartContext';
 import AppRoutes from './routes';
 import MergeCartModal from './components/cart/MergeCartModal';
@@ -26,9 +27,11 @@ function App() {
       <HelmetProvider>
         <BrowserRouter>
           <AuthProvider>
-            <CartProvider>
-              <AppContent />
-            </CartProvider>
+            <DeliveryProvider>
+              <CartProvider>
+                <AppContent />
+              </CartProvider>
+            </DeliveryProvider>
           </AuthProvider>
         </BrowserRouter>
       </HelmetProvider>

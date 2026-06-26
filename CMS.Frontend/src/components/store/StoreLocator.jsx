@@ -1,74 +1,57 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import useStores from '../../hooks/useStores';
+import useProvinces from '../../hooks/useProvinces';
+import useGeolocation from '../../hooks/useGeolocation';
+import useRouting from '../../hooks/useRouting';
 import styles from './StoreLocator.module.css';
 
-const toTime = (hour, minute) => {
-  if (!hour && !minute) return '';
-  return `${String(hour || '00').padStart(2, '0')}:${String(minute || '00').padStart(2, '0')}`;
+// Lazy-load LeafletMap để tránh SSR issue
+const LeafletMap = React.lazy(() => import('./LeafletMap'));
+
+/* ─── helpers ─── */
+const toTime = (h, m) => (h || m ? `${String(h || 0).padStart(2, '0')}:${String(m || 0).padStart(2, '0')}` : '');
+
+const hasValidCoord = (s) => {
+  const lat = Number(s.latitude);
+  const lng = Number(s.longitude);
+  return Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180;
 };
 
-const normalizeStore = (store) => ({
-  id: String(store.id || store.storeCode || store.name || store.storeName),
-  name: store.name || store.storeName || 'Phuc Long Coffee & Tea',
-  address: store.address || store.officeAddress || '',
-  phone: store.phone || store.officeNumber || store.contactMobile || '',
-  imageUrl: store.imageUrl || '',
-  openingTime: store.openingTime || toTime(store.storeOpenHourFrom, store.storeOpenMinuteFrom),
-  closingTime: store.closingTime || toTime(store.storeOpenHourTo, store.storeOpenMinuteTo),
-  status: store.status || store.activeStatus || 'Đang cập nhật',
-  latitude: store.latitude,
-  longitude: store.longitude,
-  googleMapUrl: store.googleMapUrl,
+const normalizeStore = (s) => ({
+  id: String(s.id ?? s.storeCode ?? s.name ?? ''),
+  name: s.name || s.storeName || 'Phuc Long Coffee & Tea',
+  address: s.address || s.officeAddress || '',
+  phone: s.phone || s.officeNumber || s.contactMobile || '',
+  imageUrl: s.imageUrl || '',
+  openingTime: s.openingTime || toTime(s.storeOpenHourFrom, s.storeOpenMinuteFrom),
+  closingTime: s.closingTime || toTime(s.storeOpenHourTo, s.storeOpenMinuteTo),
+  status: s.status || s.activeStatus || 'Đang cập nhật',
+  latitude: s.latitude,
+  longitude: s.longitude,
+  googleMapUrl: s.googleMapUrl,
+  // Thêm province/district/ward để bộ lọc hoạt động
+  province: s.province || '',
+  district: s.district || '',
+  ward: s.ward || '',
 });
 
 const normalizeStores = (payload) => {
-  const items = Array.isArray(payload)
-    ? payload
-    : payload?.items || payload?.data || [];
-
+  const items = Array.isArray(payload) ? payload : payload?.items || payload?.data || [];
   return Array.isArray(items) ? items.map(normalizeStore) : [];
 };
 
-const hasValidCoordinate = (store) => {
-  const latitude = Number(store.latitude);
-  const longitude = Number(store.longitude);
-
-  return Number.isFinite(latitude)
-    && Number.isFinite(longitude)
-    && Math.abs(latitude) <= 90
-    && Math.abs(longitude) <= 180;
-};
-
-const getMapUrl = (store) => {
-  if (hasValidCoordinate(store)) {
-    const latitude = Number(store.latitude);
-    const longitude = Number(store.longitude);
-    const spread = 0.01;
-    const bbox = [
-      longitude - spread,
-      latitude - spread,
-      longitude + spread,
-      latitude + spread,
-    ].join('%2C');
-
-    return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${latitude}%2C${longitude}`;
-  }
-
-  const query = store.googleMapUrl || `${store.name} ${store.address}`;
-
-  return `https://maps.google.com/maps?q=${encodeURIComponent(query)}&z=14&output=embed`;
-};
-
-const getDirectionUrl = (store) => {
+const getDirectionUrl = (store, userLoc) => {
   if (store.googleMapUrl) return store.googleMapUrl;
-
-  const query = hasValidCoordinate(store)
-    ? `${store.latitude},${store.longitude}`
-    : `${store.name} ${store.address}`;
-
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+  const dest = hasValidCoord(store) ? `${store.latitude},${store.longitude}` : `${store.name} ${store.address}`;
+  if (userLoc) {
+    return `https://www.google.com/maps/dir/${userLoc.latitude},${userLoc.longitude}/${encodeURIComponent(dest)}`;
+  }
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dest)}`;
 };
 
+const fmtDist = (km) => (km < 1 ? `${Math.round(km * 1000)} m` : `${km.toFixed(1)} km`);
+
+/* ─── StoreThumb ─── */
 const StoreThumb = ({ store }) => (
   <span
     className={styles.storeThumb}
@@ -77,85 +60,206 @@ const StoreThumb = ({ store }) => (
   />
 );
 
+/* ─── Main component ─── */
 const StoreLocator = ({ variant = 'map' }) => {
   const { stores: rawStores, loading, error: errorMessage } = useStores();
   const [selectedStore, setSelectedStore] = useState(null);
   const [query, setQuery] = useState('');
+  const [activeRoute, setActiveRoute] = useState(null); // storeId đang hiện route
   const isListPage = variant === 'list';
+
+  // Trạng thái dịch ngược địa chỉ chữ cho định vị GPS trên trang
+  const [resolvedAddress, setResolvedAddress] = useState('');
+  const [addressLoading, setAddressLoading] = useState(false);
+
+  /* Cascading filter: Tỉnh → Quận → Phường */
+  const {
+    provinces, districts, wards,
+    province: filterProvince, district: filterDistrict, ward: filterWard,
+    setProvince: setFilterProvince, setDistrict: setFilterDistrict, setWard: setFilterWard,
+    loadingDistricts, loadingWards,
+  } = useProvinces();
+
+  /* Geolocation */
+  const {
+    userLocation, loading: geoLoading, error: geoError, granted: geoGranted,
+    requestLocation, getDistance, sortByDistance,
+  } = useGeolocation();
+
+  // Tự động dịch ngược tọa độ GPS thành địa chỉ chữ khi định vị thành công
+  useEffect(() => {
+    if (geoGranted && userLocation && !resolvedAddress && !addressLoading) {
+      const fetchAddress = async () => {
+        setAddressLoading(true);
+        try {
+          const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLocation.latitude}&lon=${userLocation.longitude}&addressdetails=1&email=nguyentruong23082005@gmail.com`;
+          const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.display_name) {
+              setResolvedAddress(data.display_name);
+            }
+          }
+        } catch (err) {
+          console.error('Lỗi lấy địa chỉ từ tọa độ trên StoreLocator:', err);
+        } finally {
+          setAddressLoading(false);
+        }
+      };
+      fetchAddress();
+    }
+  }, [geoGranted, userLocation, resolvedAddress, addressLoading]);
+
+  /* Routing OSRM */
+  const { routeCoords, routeInfo, loading: routeLoading, getRoute, clearRoute } = useRouting();
 
   const stores = useMemo(() => normalizeStores(rawStores), [rawStores]);
 
   useEffect(() => {
-    if (stores.length > 0 && !selectedStore) {
-      setSelectedStore(stores[0]);
-    }
+    if (stores.length > 0 && !selectedStore) setSelectedStore(stores[0]);
   }, [stores, selectedStore]);
 
+  /* Filter theo khu vực + text search */
   const visibleStores = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) return stores;
+    let result = stores;
+    if (filterProvince) {
+      result = result.filter((s) => s.province && s.province.toLowerCase().includes(filterProvince.name.toLowerCase()));
+    }
+    if (filterDistrict) {
+      result = result.filter((s) => s.district && s.district.toLowerCase().includes(filterDistrict.name.toLowerCase()));
+    }
+    if (filterWard) {
+      result = result.filter((s) => s.ward && s.ward.toLowerCase().includes(filterWard.name.toLowerCase()));
+    }
+    const q = query.trim().toLowerCase();
+    if (q) {
+      result = result.filter((s) => [s.name, s.address, s.phone].some((v) => String(v || '').toLowerCase().includes(q)));
+    }
+    return result;
+  }, [stores, filterProvince, filterDistrict, filterWard, query]);
 
-    return stores.filter((store) => [
-      store.name,
-      store.address,
-      store.phone,
-    ].some((value) => String(value || '').toLowerCase().includes(normalizedQuery)));
-  }, [query, stores]);
-
-  const renderStoreInfo = (store, withDirectionLink = true) => (
-    <span className={styles.storeCopy}>
-      <span className={styles.storeStatus}>{store.status}</span>
-      <strong className={styles.storeName}>{store.name}</strong>
-      <span className={styles.storeLine}><b>Địa chỉ:</b> {store.address}</span>
-      {store.phone && <span className={styles.storeLine}><b>Số điện thoại:</b> {store.phone}</span>}
-      {(store.openingTime || store.closingTime) && (
-        <span className={styles.storeLine}><b>Giờ hoạt động:</b> {store.openingTime} - {store.closingTime}</span>
-      )}
-      {withDirectionLink ? (
-        <a
-          className={styles.directionLink}
-          href={getDirectionUrl(store)}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Chỉ đường
-        </a>
-      ) : (
-        <span className={styles.directionLink}>Chỉ đường</span>
-      )}
-    </span>
+  /* Sắp xếp theo khoảng cách nếu đã có vị trí */
+  const sortedStores = useMemo(
+    () => (geoGranted ? sortByDistance(visibleStores) : visibleStores),
+    [geoGranted, sortByDistance, visibleStores],
   );
 
+  /* Chỉ đường thật: nếu có geolocation → vẽ route; nếu không → mở Google Maps */
+  const handleDirection = useCallback(
+    async (store) => {
+      if (geoGranted && userLocation && hasValidCoord(store)) {
+        setActiveRoute(store.id);
+        setSelectedStore(store);
+        await getRoute(userLocation.latitude, userLocation.longitude, Number(store.latitude), Number(store.longitude));
+      } else {
+        window.open(getDirectionUrl(store, userLocation), '_blank', 'noreferrer');
+      }
+    },
+    [geoGranted, userLocation, getRoute],
+  );
+
+  const handleClearRoute = useCallback(() => {
+    clearRoute();
+    setActiveRoute(null);
+  }, [clearRoute]);
+
+  /* ─── render store info ─── */
+  const renderStoreInfo = (store, withDirection = true) => {
+    const dist = getDistance(store);
+    return (
+      <span className={styles.storeCopy}>
+        <span className={styles.storeStatus}>{store.status}</span>
+        <strong className={styles.storeName}>{store.name}</strong>
+        <span className={styles.storeLine}><b>Địa chỉ:</b> {store.address}</span>
+        {store.phone && <span className={styles.storeLine}><b>Số điện thoại:</b> {store.phone}</span>}
+        {(store.openingTime || store.closingTime) && (
+          <span className={styles.storeLine}><b>Giờ hoạt động:</b> {store.openingTime} – {store.closingTime}</span>
+        )}
+        {dist !== null && (
+          <span className={styles.distanceBadge}>
+            <svg className={styles.badgePinIconSvg} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            {fmtDist(dist)}
+          </span>
+        )}
+        {withDirection && (
+          <button
+            type="button"
+            className={`${styles.directionBtn} ${activeRoute === store.id && routeLoading ? styles.loading : ''}`}
+            onClick={() => handleDirection(store)}
+            disabled={routeLoading && activeRoute === store.id}
+          >
+            {routeLoading && activeRoute === store.id ? (
+              'Đang tải...'
+            ) : (
+              <>
+                <svg className={styles.directionIconSvg} focusable="false" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="m21.41 10.59-7.99-8c-.78-.78-2.05-.78-2.83 0l-8.01 8c-.78.78-.78 2.05 0 2.83l8.01 8c.78.78 2.05.78 2.83 0l7.99-8c.79-.79.79-2.05 0-2.83zM13.5 14.5V12H10v3H8v-4c0-.55.45-1 1-1h4.5V7.5L17 11l-3.5 3.5z"></path>
+                </svg>
+                Chỉ đường
+              </>
+            )}
+          </button>
+        )}
+      </span>
+    );
+  };
+
+  /* ─── JSX ─── */
   return (
     <section className={`${styles.section} ${isListPage ? styles.listSection : ''}`}>
       <div className="container">
         {!isListPage && (
           <>
             <h2 className={styles.sectionTitle}>Danh sách cửa hàng</h2>
-            <p className={styles.sectionSubtitle}>Danh sách cửa hàng Phúc Long</p>
+            <p className={styles.sectionSubtitle}>Tìm cửa hàng Phúc Long gần bạn nhất</p>
           </>
         )}
 
         {loading ? (
-          <div className={styles.emptyState}>Đang tải danh sách cửa hàng từ hệ thống...</div>
-        ) : stores.length > 0 && selectedStore ? (
+          <div className={styles.emptyState}>Đang tải danh sách cửa hàng...</div>
+        ) : stores.length > 0 ? (
           isListPage ? (
+            /* ── List page variant ── */
             <div className={styles.listPage}>
-              <input
-                className={styles.searchInput}
-                type="search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Tìm kiếm cửa hàng Phúc Long"
-                aria-label="Tìm cửa hàng"
-              />
+              <div className={styles.searchRow}>
+                <input
+                  className={styles.searchInput}
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Tìm kiếm cửa hàng Phúc Long"
+                  aria-label="Tìm cửa hàng"
+                />
+              </div>
+              <button
+                type="button"
+                className={`${styles.geoBtn} ${geoLoading || addressLoading ? styles.geoLoading : ''}`}
+                onClick={requestLocation}
+                disabled={geoLoading || addressLoading}
+              >
+                <svg className={`${styles.myLocationIcon} ${geoLoading || addressLoading ? styles.gpsLoadingIcon : ''}`} focusable="false" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"></path>
+                </svg>
+                {geoLoading || addressLoading ? 'Đang xác định vị trí...' : 'Vị trí hiện tại của quý khách'}
+              </button>
+              {geoError && <p className={styles.geoError}>{geoError}</p>}
 
-              <div className={styles.currentLocation}>Vị trí hiện tại của quý khách</div>
-              <button type="button" className={styles.regionToggle}>Tìm kiếm theo khu vực</button>
-              <div className={styles.resultCount}>Có {visibleStores.length} kết quả tìm kiếm</div>
-
+              {/* Hiển thị địa chỉ chữ đã dịch ngược */}
+              {resolvedAddress && (
+                <div className={styles.resolvedAddressCard}>
+                  <svg className={styles.pinIconSvg} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  <span className={styles.resolvedAddressText}>{resolvedAddress}</span>
+                </div>
+              )}
+              <div className={styles.resultCount}>Có {sortedStores.length} kết quả tìm kiếm</div>
               <div className={styles.fullList}>
-                {visibleStores.map((store) => (
+                {sortedStores.map((store) => (
                   <article key={store.id} className={styles.listStoreItem}>
                     <StoreThumb store={store} />
                     {renderStoreInfo(store)}
@@ -164,53 +268,122 @@ const StoreLocator = ({ variant = 'map' }) => {
               </div>
             </div>
           ) : (
+            /* ── Map page variant ── */
             <div className={styles.grid}>
+              {/* Bản đồ Leaflet */}
               <div className={styles.mapPanel}>
-                <iframe
-                  title={`Bản đồ ${selectedStore.name}`}
-                  src={getMapUrl(selectedStore)}
-                  loading="eager"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className={styles.mapFrame}
-                />
+                <React.Suspense fallback={<div className={styles.mapLoading}>Đang tải bản đồ...</div>}>
+                  <LeafletMap
+                    stores={stores}
+                    selectedStore={selectedStore}
+                    onSelectStore={setSelectedStore}
+                    userLocation={userLocation}
+                    routeCoords={routeCoords}
+                    routeInfo={routeInfo}
+                    onClearRoute={handleClearRoute}
+                    getDirectionUrl={(s) => getDirectionUrl(s, userLocation)}
+                  />
+                </React.Suspense>
               </div>
 
+              {/* Sidebar */}
               <div className={styles.sidePanel}>
                 <input
                   className={styles.searchInput}
                   type="search"
                   value={query}
-                  onChange={(event) => setQuery(event.target.value)}
+                  onChange={(e) => setQuery(e.target.value)}
                   placeholder="Tìm kiếm cửa hàng Phúc Long"
                   aria-label="Tìm cửa hàng"
                 />
 
+                {/* Geolocation button */}
+                <button
+                  type="button"
+                  className={`${styles.geoBtn} ${geoLoading || addressLoading ? styles.geoLoading : ''}`}
+                  onClick={requestLocation}
+                  disabled={geoLoading || addressLoading}
+                >
+                  <svg className={`${styles.myLocationIcon} ${geoLoading || addressLoading ? styles.gpsLoadingIcon : ''}`} focusable="false" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"></path>
+                  </svg>
+                  {geoLoading || addressLoading ? 'Đang xác định vị trí...' : 'Vị trí hiện tại của quý khách'}
+                </button>
+                {geoError && <p className={styles.geoError}>{geoError}</p>}
+
+                {/* Hiển thị địa chỉ chữ đã dịch ngược */}
+                {resolvedAddress && (
+                  <div className={styles.resolvedAddressCard}>
+                    <svg className={styles.pinIconSvg} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span className={styles.resolvedAddressText}>{resolvedAddress}</span>
+                  </div>
+                )}
+
+                {/* Filter theo khu vực */}
                 <div className={styles.filterTitle}>Tìm kiếm theo khu vực</div>
                 <div className={styles.filters}>
-                  <select className={styles.select} aria-label="Chọn tỉnh thành">
-                    <option>Tỉnh thành</option>
+                  {/* Tỉnh thành */}
+                  <select
+                    className={styles.select}
+                    aria-label="Chọn tỉnh thành"
+                    value={filterProvince?.code ?? ''}
+                    onChange={(e) => {
+                      const found = e.target.value ? provinces.find((p) => String(p.code) === e.target.value) : null;
+                      setFilterProvince(found ?? null);
+                    }}
+                  >
+                    <option value="">Tỉnh thành</option>
+                    {provinces.map((p) => <option key={p.code} value={p.code}>{p.name}</option>)}
                   </select>
-                  <select className={styles.select} aria-label="Chọn quận huyện">
-                    <option>Quận/Huyện</option>
+
+                  {/* Quận huyện */}
+                  <select
+                    className={styles.select}
+                    aria-label="Chọn quận huyện"
+                    value={filterDistrict?.code ?? ''}
+                    onChange={(e) => {
+                      const found = e.target.value ? districts.find((d) => String(d.code) === e.target.value) : null;
+                      setFilterDistrict(found ?? null);
+                    }}
+                    disabled={!filterProvince || loadingDistricts}
+                  >
+                    <option value="">{loadingDistricts ? 'Đang tải...' : 'Quận/Huyện'}</option>
+                    {districts.map((d) => <option key={d.code} value={d.code}>{d.name}</option>)}
                   </select>
-                  <select className={styles.select} aria-label="Chọn phường xã">
-                    <option>Phường xã</option>
+
+                  {/* Phường xã — THÊM MỚI */}
+                  <select
+                    className={styles.select}
+                    aria-label="Chọn phường xã"
+                    value={filterWard?.code ?? ''}
+                    onChange={(e) => {
+                      const found = e.target.value ? wards.find((w) => String(w.code) === e.target.value) : null;
+                      setFilterWard(found ?? null);
+                    }}
+                    disabled={!filterDistrict || loadingWards}
+                  >
+                    <option value="">{loadingWards ? 'Đang tải...' : 'Phường/Xã'}</option>
+                    {wards.map((w) => <option key={w.code} value={w.code}>{w.name}</option>)}
                   </select>
                 </div>
 
-                <div className={styles.currentLocation}>Vị trí hiện tại của quý khách</div>
-                <h3 className={styles.listTitle}>Danh sách cửa hàng</h3>
+                <h3 className={styles.listTitle}>
+                  Danh sách cửa hàng <span className={styles.resultBadge}>{sortedStores.length}</span>
+                </h3>
 
                 <div className={styles.list}>
-                  {visibleStores.map((store) => (
+                  {sortedStores.map((store) => (
                     <button
                       key={store.id}
                       type="button"
-                      onClick={() => setSelectedStore(store)}
-                      className={`${styles.storeItemBtn} ${selectedStore.id === store.id ? styles.activeStore : ''}`}
+                      onClick={() => { setSelectedStore(store); handleClearRoute(); }}
+                      className={`${styles.storeItemBtn} ${selectedStore?.id === store.id ? styles.activeStore : ''}`}
                     >
                       <StoreThumb store={store} />
-                      {renderStoreInfo(store, false)}
+                      {renderStoreInfo(store)}
                     </button>
                   ))}
                 </div>

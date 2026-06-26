@@ -3,14 +3,17 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
+import { useDelivery } from '../../context/DeliveryContext';
 import orderApi from '../../api/orderApi';
 import useCustomers from '../../hooks/useCustomers';
 import useProvinces from '../../hooks/useProvinces';
+import { mapOldAdministrativeNames } from '../../utils/addressMapper';
 import styles from './Checkout.module.css';
 
 const Checkout = () => {
   const { cartItems, cartTotalPrice, clearCart, showToast } = useCart();
   const { user, isAuthenticated } = useAuth();
+  const { deliveryType, structuredAddress } = useDelivery();
   const navigate = useNavigate();
   const { getAddresses } = useCustomers();
 
@@ -31,6 +34,19 @@ const Checkout = () => {
     initFromNames,
     loadingDistricts, loadingWards,
   } = useProvinces();
+
+  // Tự động điền địa chỉ từ định vị Header khi vào trang Checkout
+  useEffect(() => {
+    if (deliveryType === 'delivery' && structuredAddress) {
+      setAddressLine(structuredAddress.street || '');
+      initFromNames(
+        structuredAddress.province,
+        structuredAddress.district,
+        structuredAddress.ward
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deliveryType, structuredAddress]);
 
   // Validation errors state
   const [errors, setErrors] = useState({});
@@ -195,11 +211,14 @@ const Checkout = () => {
                     aria-label="Chọn địa chỉ đã lưu"
                   >
                     <option value="">Chọn địa chỉ đã lưu</option>
-                    {savedAddresses.map(a => (
-                      <option key={a.id} value={a.id}>
-                        {a.receiverName} — {a.addressLine}, {a.ward}, {a.district}, {a.province}
-                      </option>
-                    ))}
+                    {savedAddresses.map(a => {
+                      const { districtName, wardName } = mapOldAdministrativeNames(a.district, a.ward);
+                      return (
+                        <option key={a.id} value={a.id}>
+                          {a.receiverName} — {a.addressLine}, {wardName}, {districtName}, {a.province}
+                        </option>
+                      );
+                    })}
                   </select>
                   <span className={styles.savedAddressHint}>Chọn để tự động điền thông tin giao hàng</span>
                 </div>

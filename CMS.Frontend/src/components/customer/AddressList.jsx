@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import useCustomers from '../../hooks/useCustomers';
 import useProvinces from '../../hooks/useProvinces';
+import { mapOldAdministrativeNames } from '../../utils/addressMapper';
 import styles from '../../pages/Profile/Profile.module.css';
 
 const ADDRESS_EMPTY = {
@@ -327,6 +328,8 @@ const AddressList = () => {
               ? 'Văn phòng'
               : addr.addressType;
 
+          const { districtName, wardName } = mapOldAdministrativeNames(addr.district, addr.ward);
+
           return (
             <div
               key={addr.id}
@@ -337,7 +340,7 @@ const AddressList = () => {
                   {addr.receiverName} — {addr.receiverPhone}
                 </div>
                 <div className={styles.addressDetail}>
-                  {addr.addressLine}, {addr.ward}, {addr.district}, {addr.province}
+                  {addr.addressLine}, {wardName}, {districtName}, {addr.province}
                 </div>
                 <div className={styles.addressTags}>
                   <span className={styles.addressTag}>{typeLabel}</span>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../../context/CartContext';
-import { CartIcon } from '../../common/Icons';
 import styles from './FloatingActions.module.css';
 
 const FloatingActions = () => {
@@ -16,7 +15,7 @@ const FloatingActions = () => {
         className={`${styles.cartButton} ${isCartAnimating ? styles.bounce : ''}`}
         aria-label={`Giỏ hàng có ${cartTotalQuantity} sản phẩm`}
       >
-        <CartIcon className={styles.cartIcon} />
+        <span className="material-symbols-outlined" style={{ fontSize: '28px' }}>add_shopping_cart</span>
         {cartTotalQuantity > 0 && (
           <span className={styles.cartBadge}>{cartTotalQuantity}</span>
         )}

@@ -64,7 +64,10 @@ export const HeaderAccountIcon = ({ className }) => (
 );
 
 export const HeaderMailIcon = ({ className }) => (
-  <img src={lienHeImg} alt="Liên hệ" className={className} style={{ objectFit: 'contain' }} />
+  <svg viewBox="0 0 24 24" className={className} width="22" height="22" fill="none" stroke="#006F3C" strokeWidth="1.5">
+    <rect x="3" y="5" width="18" height="14" rx="2" />
+    <path d="M3 7l9 6 9-6" />
+  </svg>
 );
 
 export const SearchIcon = ({ className }) => (

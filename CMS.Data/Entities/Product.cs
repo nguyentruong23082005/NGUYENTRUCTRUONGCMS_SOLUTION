@@ -24,6 +24,7 @@ namespace CMS.Data.Entities
         public decimal Price { get; set; }
 
         public int StockQuantity { get; set; } // Số lượng tồn kho
+        public int TotalSold { get; set; }     // Tổng số đã bán (dùng cho sản phẩm bán chạy)
 
         public string? ImageUrl { get; set; }
 

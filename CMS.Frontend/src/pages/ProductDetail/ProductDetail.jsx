@@ -47,6 +47,7 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState({});
+  const [mainImgFailed, setMainImgFailed] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -70,6 +71,7 @@ const ProductDetail = () => {
           setProductImages(images || []);
           setSelectedOptions(buildDefaultSelections(optionGroups));
           setQty(1);
+          setMainImgFailed(false); // Reset on product change
         } else {
           setProduct(null);
           setProductImages([]);
@@ -155,6 +157,8 @@ const ProductDetail = () => {
     }, qty);
   };
 
+  const displayImgUrl = product?.imageUrl && !mainImgFailed ? product.imageUrl : product?.productCategoryImageUrl;
+
   if (loading) return <Loading fullPage />;
   if (!product) return <EmptyState title="Sản phẩm không tồn tại" description="Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị gỡ bỏ trong hệ thống." />;
 
@@ -169,17 +173,16 @@ const ProductDetail = () => {
           <Link to="/">Trang chủ</Link>
           <span>/</span>
           <Link to="/menu">Sản phẩm</Link>
-          <span>/</span>
-          <strong>{product.name}</strong>
         </nav>
 
         <section className={styles.layout}>
           <div className={styles.imageArea}>
-            {product.imageUrl ? (
-              <img src={product.imageUrl} alt={product.name} className={styles.image} />
-            ) : (
-              <div className={styles.imagePlaceholder}>🍵</div>
-            )}
+            <img
+              src={displayImgUrl}
+              alt={product.name}
+              className={styles.image}
+              onError={() => setMainImgFailed(true)}
+            />
             {isOutOfStock && <div className={styles.outOfStockOverlay}>Tạm hết hàng</div>}
           </div>
 
@@ -187,12 +190,19 @@ const ProductDetail = () => {
             {product.categoryName && <p className={styles.category}>{product.categoryName}</p>}
             <h1 className={styles.title}>{product.name}</h1>
             <p className={styles.sku}>SKU: {product.skuLabel}</p>
-            <p className={styles.price}>{formatPrice(product.price)}</p>
-
-            <div className={styles.qtyRow}>
-              <span className={styles.qtyLabel}>Số lượng</span>
+            
+            <div className={styles.priceQtyRow}>
+              <p className={styles.price}>{formatPrice(product.price)}</p>
               <div className={styles.qtySelector}>
-                <button type="button" onClick={() => handleQtyChange(qty - 1)} className={styles.qtyBtn} aria-label="Giảm số lượng">−</button>
+                <button 
+                  type="button" 
+                  onClick={() => handleQtyChange(qty - 1)} 
+                  className={styles.qtyBtn} 
+                  aria-label="Giảm số lượng"
+                  disabled={isOutOfStock || qty <= 1}
+                >
+                  −
+                </button>
                 <input
                   type="number"
                   value={qty}
@@ -203,48 +213,129 @@ const ProductDetail = () => {
                   aria-label="Số lượng sản phẩm"
                   disabled={isOutOfStock}
                 />
-                <button type="button" onClick={() => handleQtyChange(qty + 1)} className={styles.qtyBtn} aria-label="Tăng số lượng" disabled={qty >= product.stockQuantity}>+</button>
+                <button 
+                  type="button" 
+                  onClick={() => handleQtyChange(qty + 1)} 
+                  className={styles.qtyBtn} 
+                  aria-label="Tăng số lượng" 
+                  disabled={isOutOfStock || qty >= product.stockQuantity}
+                >
+                  +
+                </button>
               </div>
-              <span className={isOutOfStock ? styles.outOfStock : styles.inStock}>
-                {isOutOfStock ? 'Hết hàng' : `Còn ${product.stockQuantity} sản phẩm`}
-              </span>
             </div>
 
-            {product.optionGroups.map((group) => (
-              <section key={group.id} className={styles.optionGroup}>
-                <div className={styles.optionHeader}>
-                  <h2>{group.name}</h2>
-                  {group.isRequired && <span>Bắt buộc</span>}
-                </div>
-                <div className={styles.optionGrid}>
-                  {group.optionValues.map((optionValue) => {
-                    const isSelected = (selectedOptions[group.id] || []).includes(optionValue.id);
-                    const isDisabled = optionValue.stockQuantity === 0;
+            {product.optionGroups.map((group) => {
+              const isSizeGroup = group.name.toLowerCase().includes('kích cỡ') || group.name.toLowerCase().includes('size');
+              const isToppingGroup = group.name.toLowerCase().includes('topping');
 
-                    return (
-                      <button
-                        key={optionValue.id}
-                        type="button"
-                        className={`${styles.optionButton} ${isSelected ? styles.optionSelected : ''}`}
-                        onClick={() => handleOptionToggle(group, optionValue)}
-                        disabled={isDisabled}
-                      >
-                        <span>{optionValue.name}</span>
-                        {optionValue.priceSurcharge > 0 && <small>+ {formatPrice(optionValue.priceSurcharge)}</small>}
-                        {isDisabled && <em>Hết</em>}
-                      </button>
-                    );
-                  })}
-                </div>
-              </section>
-            ))}
+              return (
+                <section key={group.id} className={styles.optionGroup}>
+                  <div className={styles.optionHeader}>
+                    <h2>{group.name}</h2>
+                    {group.isRequired && <span>Bắt buộc</span>}
+                  </div>
+
+                  {isToppingGroup ? (
+                    <div className={styles.toppingList}>
+                      {group.optionValues.map((optionValue) => {
+                        const isSelected = (selectedOptions[group.id] || []).includes(optionValue.id);
+                        const isDisabled = optionValue.stockQuantity === 0;
+
+                        return (
+                          <div key={optionValue.id} className={styles.toppingRow}>
+                            <div className={styles.toppingInfo}>
+                              <span className={styles.toppingName}>{optionValue.name}</span>
+                              <span className={styles.toppingPrice}>{formatPrice(optionValue.priceSurcharge)}</span>
+                            </div>
+                            <div className={styles.toppingSelector}>
+                              <button 
+                                type="button" 
+                                onClick={() => {
+                                  if (isSelected) {
+                                    setSelectedOptions(current => ({
+                                      ...current,
+                                      [group.id]: (current[group.id] || []).filter(id => id !== optionValue.id)
+                                    }));
+                                  }
+                                }} 
+                                className={styles.toppingBtn}
+                                disabled={!isSelected}
+                              >
+                                −
+                              </button>
+                              <span className={styles.toppingQty}>{isSelected ? 1 : 0}</span>
+                              <button 
+                                type="button" 
+                                onClick={() => {
+                                  if (!isSelected) {
+                                    setSelectedOptions(current => ({
+                                      ...current,
+                                      [group.id]: [...(current[group.id] || []), optionValue.id]
+                                    }));
+                                  }
+                                }} 
+                                className={styles.toppingBtn}
+                                disabled={isDisabled}
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className={styles.optionGrid}>
+                      {group.optionValues.map((optionValue) => {
+                        const isSelected = (selectedOptions[group.id] || []).includes(optionValue.id);
+                        const isDisabled = optionValue.stockQuantity === 0;
+
+                        if (isSizeGroup) {
+                          return (
+                            <button
+                              key={optionValue.id}
+                              type="button"
+                              className={`${styles.sizeButton} ${isSelected ? styles.sizeSelected : ''}`}
+                              onClick={() => handleOptionToggle(group, optionValue)}
+                              disabled={isDisabled}
+                            >
+                              <div className={styles.sizeName}>{optionValue.name}</div>
+                              <div className={styles.sizePrice}>
+                                {optionValue.priceSurcharge > 0 
+                                  ? `+ ${formatPrice(optionValue.priceSurcharge)}` 
+                                  : optionValue.priceSurcharge < 0 
+                                  ? `- ${formatPrice(Math.abs(optionValue.priceSurcharge))}`
+                                  : '0 đ'}
+                              </div>
+                            </button>
+                          );
+                        }
+
+                        return (
+                          <button
+                            key={optionValue.id}
+                            type="button"
+                            className={`${styles.pillButton} ${isSelected ? styles.pillSelected : ''}`}
+                            onClick={() => handleOptionToggle(group, optionValue)}
+                            disabled={isDisabled}
+                          >
+                            {optionValue.name}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </section>
+              );
+            })}
 
             <button type="button" onClick={handleAddToCart} className={styles.buyBtn} disabled={isOutOfStock}>
               {isOutOfStock ? (
                 'Tạm hết hàng'
               ) : (
                 <>
-                  <span className={styles.cartIcon} aria-hidden="true">🛒</span>
+                  <span className="material-symbols-outlined" style={{ fontSize: '20px', marginRight: '8px', verticalAlign: 'middle' }}>add_shopping_cart</span>
                   <span>Thêm vào giỏ hàng : {formatPrice(totalPrice)}</span>
                 </>
               )}

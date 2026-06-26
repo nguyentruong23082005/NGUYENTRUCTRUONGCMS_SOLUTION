@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import useCustomers from '../../hooks/useCustomers';
 import styles from '../../pages/Profile/Profile.module.css';
+import localStyles from './ProfileInfo.module.css';
 
 /**
  * Tab Thông tin cá nhân — form cập nhật họ tên, SĐT và mật khẩu.
- * Dàn trang dạng 2 cột ngang (grid) cực đẹp và đồng bộ với giao diện Phúc Long.
  * @param {{ profile: object|null, onRefresh: Function }} props
  */
 const ProfileInfo = ({ profile, onRefresh }) => {
@@ -65,8 +65,7 @@ const ProfileInfo = ({ profile, onRefresh }) => {
       )}
 
       <form className={styles.form} onSubmit={handleSubmit} style={{ maxWidth: '100%' }}>
-        {/* Dàn trang ngang 2 cột cho các thông tin cá nhân */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px 24px', marginBottom: 24 }}>
+        <div className={localStyles.formGrid}>
           <div className={styles.formGroup}>
             <label className={styles.formLabel} htmlFor="pi-fullName">Họ và tên *</label>
             <input
@@ -93,7 +92,7 @@ const ProfileInfo = ({ profile, onRefresh }) => {
             />
           </div>
 
-          <div className={styles.formGroup} style={{ gridColumn: 'span 2' }}>
+          <div className={`${styles.formGroup} ${localStyles.emailGroup}`}>
             <label className={styles.formLabel} htmlFor="pi-email">Email (không thể thay đổi)</label>
             <input
               id="pi-email"
@@ -107,8 +106,7 @@ const ProfileInfo = ({ profile, onRefresh }) => {
 
         <p className={styles.formSectionTitle} style={{ marginTop: 28, marginBottom: 12 }}>Đổi mật khẩu (để trống nếu không đổi)</p>
 
-        {/* Dàn trang ngang 2 cột cho các trường mật khẩu */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px 24px' }}>
+        <div className={localStyles.passwordGrid}>
           <div className={styles.formGroup}>
             <label className={styles.formLabel} htmlFor="pi-currentPassword">Mật khẩu hiện tại</label>
             <input
@@ -136,8 +134,8 @@ const ProfileInfo = ({ profile, onRefresh }) => {
           </div>
         </div>
 
-        <div className={styles.formActions} style={{ marginTop: 28 }}>
-          <button type="submit" className={styles.btnPrimary} disabled={loading} style={{ minWidth: 150 }}>
+        <div className={localStyles.formActions}>
+          <button type="submit" className={`${styles.btnPrimary} ${localStyles.btnSubmit}`} disabled={loading}>
             {loading ? 'Đang lưu...' : 'Lưu thay đổi'}
           </button>
         </div>

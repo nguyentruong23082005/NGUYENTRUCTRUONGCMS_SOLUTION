@@ -1,3 +1,4 @@
+using CMS.Backend.Helpers;
 using CMS.Backend.Models;
 using CMS.Data;
 using CMS.Data.Entities;
@@ -71,39 +72,19 @@ namespace CMS.Backend.Controllers
                 // Xử lý upload ảnh
                 if (uploadImage != null && uploadImage.Length > 0)
                 {
-                    // 1. Kiểm tra kích thước (max 2MB)
-                    if (uploadImage.Length > 2 * 1024 * 1024)
-                    {
-                        ModelState.AddModelError("ImageUrl", "Kích thước ảnh đại diện không được vượt quá 2MB.");
-                        ViewBag.ParentCategoryList = new SelectList(_context.ProductCategories.Where(c => !c.IsDeleted).ToList(), "Id", "Name", model.ParentId);
-                        return View(model);
-                    }
-
-                    // 2. Kiểm tra định dạng (jpg, jpeg, png, webp)
-                    var extension = Path.GetExtension(uploadImage.FileName).ToLower();
-                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
-                    if (!allowedExtensions.Contains(extension))
-                    {
-                        ModelState.AddModelError("ImageUrl", "Chỉ chấp nhận các định dạng ảnh: .jpg, .jpeg, .png, .webp.");
-                        ViewBag.ParentCategoryList = new SelectList(_context.ProductCategories.Where(c => !c.IsDeleted).ToList(), "Id", "Name", model.ParentId);
-                        return View(model);
-                    }
-
-                    // 3. Đường dẫn thư mục
-                    string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                    if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-                    // 4. Tạo tên file theo chuẩn SEO: category-slug-guid_sub.ext
                     string slug = CMS.Data.Helpers.SlugHelper.Generate(model.Name);
-                    string fileName = $"category-{slug}-{Guid.NewGuid().ToString().Substring(0, 8)}{extension}";
-                    string filePath = Path.Combine(folder, fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    var uploadResult = ImageUploadHelper.SaveImage(
+                        uploadImage,
+                        filePrefix: $"category-{slug}",
+                        maxBytes: 2 * 1024 * 1024);
+                    if (!uploadResult.Succeeded)
                     {
-                        uploadImage.CopyTo(stream);
+                        ModelState.AddModelError("ImageUrl", uploadResult.ErrorMessage ?? "Ảnh tải lên không hợp lệ.");
+                        ViewBag.ParentCategoryList = new SelectList(_context.ProductCategories.Where(c => !c.IsDeleted).ToList(), "Id", "Name", model.ParentId);
+                        return View(model);
                     }
 
-                    model.ImageUrl = "/uploads/" + fileName;
+                    model.ImageUrl = uploadResult.Url;
                 }
 
                 _context.ProductCategories.Add(model);
@@ -122,9 +103,9 @@ namespace CMS.Backend.Controllers
             if (category == null) return NotFound();
 
             ViewBag.ParentCategoryList = new SelectList(
-                _context.ProductCategories.Where(c => c.Id != id && !c.IsDeleted).ToList(), 
-                "Id", 
-                "Name", 
+                _context.ProductCategories.Where(c => c.Id != id && !c.IsDeleted).ToList(),
+                "Id",
+                "Name",
                 category.ParentId);
             return View(category);
         }
@@ -149,25 +130,18 @@ namespace CMS.Backend.Controllers
 
                 if (uploadImage != null && uploadImage.Length > 0)
                 {
-                    // 1. Kiểm tra kích thước (max 2MB)
-                    if (uploadImage.Length > 2 * 1024 * 1024)
+                    string slug = CMS.Data.Helpers.SlugHelper.Generate(model.Name);
+                    var uploadResult = ImageUploadHelper.SaveImage(
+                        uploadImage,
+                        filePrefix: $"category-{slug}",
+                        maxBytes: 2 * 1024 * 1024);
+                    if (!uploadResult.Succeeded)
                     {
-                        ModelState.AddModelError("ImageUrl", "Kích thước ảnh đại diện không được vượt quá 2MB.");
+                        ModelState.AddModelError("ImageUrl", uploadResult.ErrorMessage ?? "Ảnh tải lên không hợp lệ.");
                         ViewBag.ParentCategoryList = new SelectList(_context.ProductCategories.Where(c => c.Id != id && !c.IsDeleted).ToList(), "Id", "Name", model.ParentId);
                         return View(model);
                     }
 
-                    // 2. Kiểm tra định dạng (jpg, jpeg, png, webp)
-                    var extension = Path.GetExtension(uploadImage.FileName).ToLower();
-                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
-                    if (!allowedExtensions.Contains(extension))
-                    {
-                        ModelState.AddModelError("ImageUrl", "Chỉ chấp nhận các định dạng ảnh: .jpg, .jpeg, .png, .webp.");
-                        ViewBag.ParentCategoryList = new SelectList(_context.ProductCategories.Where(c => c.Id != id && !c.IsDeleted).ToList(), "Id", "Name", model.ParentId);
-                        return View(model);
-                    }
-
-                    // 3. Xóa ảnh vật lý cũ nếu có
                     if (!string.IsNullOrEmpty(existingCategory.ImageUrl) && existingCategory.ImageUrl.StartsWith("/uploads/"))
                     {
                         var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", existingCategory.ImageUrl.TrimStart('/'));
@@ -181,20 +155,7 @@ namespace CMS.Backend.Controllers
                         }
                     }
 
-                    // 4. Lưu ảnh mới
-                    string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                    if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-                    string slug = CMS.Data.Helpers.SlugHelper.Generate(model.Name);
-                    string fileName = $"category-{slug}-{Guid.NewGuid().ToString().Substring(0, 8)}{extension}";
-                    string filePath = Path.Combine(folder, fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        uploadImage.CopyTo(stream);
-                    }
-
-                    model.ImageUrl = "/uploads/" + fileName;
+                    model.ImageUrl = uploadResult.Url;
                 }
                 else
                 {
@@ -208,9 +169,9 @@ namespace CMS.Backend.Controllers
             }
 
             ViewBag.ParentCategoryList = new SelectList(
-                _context.ProductCategories.Where(c => c.Id != id && !c.IsDeleted).ToList(), 
-                "Id", 
-                "Name", 
+                _context.ProductCategories.Where(c => c.Id != id && !c.IsDeleted).ToList(),
+                "Id",
+                "Name",
                 model.ParentId);
             return View(model);
         }
@@ -303,7 +264,7 @@ namespace CMS.Backend.Controllers
             while (currentId.HasValue)
             {
                 if (!visited.Add(currentId.Value)) return true; // Tránh loop vô hạn nếu DB đã hỏng sẵn
-                
+
                 var cat = await _context.ProductCategories
                     .IgnoreQueryFilters()
                     .AsNoTracking()

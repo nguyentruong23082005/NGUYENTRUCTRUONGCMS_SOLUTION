@@ -110,6 +110,15 @@ Giải pháp được tổ chức thành 3 Project độc lập:
     *   Thay thế toàn bộ dữ liệu mockup bằng dữ liệu thực tế từ Database trên các trang: Menu, Chi tiết sản phẩm (hiển thị tùy chọn size, toppings, đánh giá), Giỏ hàng (đồng bộ giỏ hàng, áp dụng Voucher), Thanh toán (chọn địa chỉ giao hàng, phương thức thanh toán, tạo đơn hàng), Cá nhân (lịch sử đơn hàng, sổ địa chỉ) và Danh sách cửa hàng.
     *   Cập nhật cơ sở dữ liệu và API Backend: bổ sung liên kết danh mục cha (Parent Category) và ảnh danh mục, hỗ trợ tải ảnh sản phẩm lên thư mục Server.
 
+### Buổi 9: Bản đồ Cửa hàng, Khôi phục Mật khẩu & Quản lý nâng cao (Advanced Features & Integration)
+*   **Mục tiêu**: Tích hợp bản đồ trực quan, hệ thống gửi email khôi phục mật khẩu, quản lý địa chỉ nâng cao và viết bộ kiểm thử tự động.
+*   **Nội dung thực hiện**:
+    *   **Bản đồ & Định vị (Leaflet Map & Geolocation)**: Tích hợp bản đồ Leaflet tương tác, hiển thị danh sách cửa hàng Phúc Long trên bản đồ, tự động định vị vị trí người dùng (`useGeolocation`) và vẽ tuyến đường ngắn nhất từ vị trí người dùng đến cửa hàng (`useRouting`).
+    *   **Khôi phục mật khẩu qua Email (Forgot/Reset Password)**: Thiết lập dịch vụ gửi Email qua SMTP (`EmailService`) ở Backend, xây dựng luồng khôi phục mật khẩu bảo mật qua mã xác thực (Reset Password Token), hoàn thiện giao diện Forgot Password và Reset Password ở Frontend.
+    *   **Quản lý địa chỉ & Bản đồ hành chính nâng cao**: Tích hợp bộ dropdown Tỉnh/Thành - Quận/Huyện - Phường/Xã cho cả trang Admin (Quản lý cửa hàng) và Client (Trang cá nhân & Thanh toán), tích hợp thư viện `addressMapper` xử lý đồng bộ địa chỉ cũ/mới của TP.HCM (Quận 2, 9, Thủ Đức cũ sáp nhập thành TP. Thủ Đức).
+    *   **Quản lý hình ảnh**: Xây dựng `ImageUploadHelper` hỗ trợ tải ảnh danh mục, sản phẩm trực tiếp lên Server Backend.
+    *   **Kiểm thử phần mềm (Unit Testing)**: Xây dựng dự án `CMS.Backend.Tests` triển khai các ca kiểm thử tự động (Unit Test) cho các dịch vụ nghiệp vụ chính.
+
 ---
 
 ## 🚀 Hướng dẫn khởi chạy dự án

@@ -22,15 +22,15 @@
   width: 100%;
   height: 180px;
   overflow: hidden;
-  background-color: #eceff1;
+  background-color: #f2f4f3;
 }
 
 .image {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 22px 30px 30px;
-  background-color: #eceff1;
+  padding: 20px 24px;
+  background-color: #f2f4f3;
   display: block;
   transition: transform 0.25s ease;
 }
@@ -52,27 +52,15 @@
   letter-spacing: 0.1em;
 }
 
-.ribbon {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-  display: flex;
-  min-height: 40px;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 10px;
-  border-radius: 0 0 8px 8px;
-  background-color: #b71c1c;
+.ribbonBar {
+  width: 100%;
+  background-color: #be1e2d;
   color: #ffffff;
-  font-size: 12px;
+  font-family: var(--font-primary);
+  font-size: 13px;
   font-weight: 600;
-  line-height: 18px;
+  padding: 8px 0;
   text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .outOfStockBadge {
@@ -131,7 +119,7 @@
   line-height: 21px;
 }
 
-.button {
+.buyButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -143,27 +131,18 @@
   border-radius: 4px;
   background-color: #006f3c;
   color: #ffffff;
+  font-family: var(--font-primary);
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
-.buttonIcon {
-  width: 14px;
-  height: 14px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.button:hover:not(:disabled) {
+.buyButton:hover:not(:disabled) {
   background-color: #0c713d;
 }
 
-.button:disabled {
+.buyButton:disabled {
   background-color: #cccccc;
   color: #9b9b9b;
   cursor: not-allowed;

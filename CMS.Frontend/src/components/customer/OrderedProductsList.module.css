@@ -1,0 +1,81 @@
+.emptyStateContainer {
+  padding: 48px 0;
+  text-align: center;
+}
+
+.emptyEmoji {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.emptyText {
+  font-size: 15px;
+  color: #666666;
+  margin-bottom: 20px;
+}
+
+.prodGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.prodCard {
+  border: 1px solid #ECEFF1;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #FFFFFF;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.prodCard:hover {
+  transform: translateY(-2px);
+  box-shadow: rgba(204, 204, 204, 0.3) 0 4px 10px 0;
+}
+
+.imgContainer {
+  height: 160px;
+  background: #ECEFF1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fallbackEmoji {
+  font-size: 44px;
+}
+
+.infoContainer {
+  padding: 16px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 8px;
+  height: 40px;
+  overflow: hidden;
+  line-height: 20px;
+}
+
+.bottomRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price {
+  font-size: 14px;
+  font-weight: 700;
+  color: #006F3C;
+}
+
+.badge {
+  font-size: 11px;
+  background: #ECEFF1;
+  color: #666666;
+  padding: 2px 8px;
+  border-radius: 10px;
+}

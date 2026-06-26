@@ -1,0 +1,543 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+  padding: 16px;
+}
+
+.modalBox {
+  position: relative;
+  background: #ffffff;
+  width: 100%;
+  max-width: 620px;
+  max-height: 85vh;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: visible; /* Để nút close chồng lên mép ngoài */
+  animation: modalFadeIn 0.3s ease-out;
+  font-family: 'Arimo', sans-serif;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Nút đóng hình tròn màu xanh lá viền trắng, đè lên góc trên bên phải */
+.closeBtn {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 32px;
+  height: 32px;
+  background-color: #006f3c;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10001;
+  padding: 0;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.closeBtn:hover {
+  background-color: #00562f;
+  transform: scale(1.08);
+}
+
+.closeBtn:active {
+  transform: scale(0.95);
+}
+
+/* Cấu trúc Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #e0e0e0;
+  background-color: #ffffff;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+}
+
+.tabBtn {
+  flex: 1;
+  padding: 16px 8px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: #666666;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: center;
+  letter-spacing: 0.5px;
+  outline: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px; /* Đè lên viền dưới của tabs */
+}
+
+.tabBtn:hover {
+  color: #006f3c;
+  background-color: rgba(0, 111, 60, 0.03);
+}
+
+.tabActive {
+  color: #006f3c;
+  border-bottom: 3px solid #006f3c;
+}
+
+/* Nội dung Tab */
+.tabContent {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tabTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #006f3c;
+  margin: 0 0 16px 0;
+  text-align: center;
+}
+
+/* Responsive cho Mobile */
+@media (max-width: 480px) {
+  .modalBox {
+    max-height: 92vh;
+  }
+  .closeBtn {
+    top: 8px;
+    right: 8px; /* Đưa vào trong để tránh bị che khuất trên màn hình siêu nhỏ */
+  }
+  .tabContent {
+    padding: 16px;
+  }
+}
+
+/* GPS Section styling */
+.gpsContainer {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gpsBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border: 1.5px dashed #006f3c;
+  color: #006f3c;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.gpsBtn:hover {
+  background-color: rgba(0, 111, 60, 0.05);
+  border-style: solid;
+}
+
+.gpsLoading {
+  opacity: 0.7;
+  cursor: not-allowed;
+  border-style: solid;
+}
+
+.myLocationIcon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  flex-shrink: 0;
+  display: inline-block;
+  animation: gpsPulse 1.8s infinite ease-in-out;
+}
+
+.gpsLoadingIcon {
+  animation: spin 1s linear infinite !important;
+}
+
+@keyframes gpsPulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
+.gpsError {
+  margin: 0;
+  font-size: 13px;
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border-left: 4px solid #d32f2f;
+  text-align: left;
+  line-height: 1.4;
+}
+
+/* Card kết quả định vị */
+.resolvedCard {
+  background-color: #f4fbf7;
+  border: 1px solid #c8e6c9;
+  border-radius: 6px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: slideDown 0.25s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.resolvedInfo {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.pinIcon {
+  font-size: 18px;
+  color: #006f3c;
+  margin-top: 1px;
+}
+
+.addressText {
+  font-size: 13.5px;
+  color: #333333;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.confirmBtn {
+  background-color: #006f3c;
+  color: #ffffff;
+  border: none;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%;
+  min-height: 40px;
+}
+
+.confirmBtn:hover {
+  background-color: #00562f;
+}
+
+/* Search Section Styling */
+.searchSection {
+  position: relative;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.searchWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.searchIconSvg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888888;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  height: 44px;
+  padding: 10px 40px 10px 36px;
+  font-size: 14px;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  background-color: #f5f5f5;
+  color: #333333;
+  transition: all 0.2s ease;
+  outline: none;
+  font-family: 'Arimo', sans-serif;
+}
+
+.searchInput:focus {
+  border-color: #006f3c;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 111, 60, 0.1);
+}
+
+/* Spinner quay tròn khi tìm kiếm */
+.searchSpinner {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 111, 60, 0.25);
+  border-top: 2px solid #006f3c;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Dropdown gợi ý địa chỉ */
+.suggestionsDropdown {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  z-index: 10010;
+  max-height: 220px;
+  overflow-y: auto;
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.suggestionItem {
+  width: 100%;
+  padding: 10px 12px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #f2f2f2;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease;
+  outline: none;
+  font-family: 'Arimo', sans-serif;
+}
+
+.suggestionItem:last-child {
+  border-bottom: none;
+}
+
+.suggestionItem:hover {
+  background-color: rgba(0, 111, 60, 0.04);
+}
+
+.suggestionPinSvg {
+  width: 15px;
+  height: 15px;
+  color: #888888;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.suggestionText {
+  font-size: 13px;
+  color: #333333;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.searchError {
+  margin: 8px 0 0 0;
+  font-size: 12px;
+  color: #d32f2f;
+  text-align: left;
+  font-weight: 500;
+}
+
+/* Nearby & Store Card Styling */
+.nearbySection {
+  margin-top: 20px;
+  border-top: 1px solid #eeeeee;
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nearbyTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #333333;
+  text-align: left;
+}
+
+.storeListContainer {
+  flex: 1;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-top: 4px;
+}
+
+.nearbyList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.storeCard {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  outline: none;
+  font-family: 'Arimo', sans-serif;
+  width: 100%;
+}
+
+.storeCard:hover {
+  border-color: #006f3c;
+  background-color: rgba(0, 111, 60, 0.02);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.storeThumb {
+  width: 70px;
+  height: 70px;
+  border-radius: 6px;
+  background-size: cover;
+  background-position: center;
+  background-color: #f5f5f5;
+  flex-shrink: 0;
+}
+
+.storePlaceholder {
+  width: 70px;
+  height: 70px;
+  border-radius: 6px;
+  background-color: #f5f5f5;
+  color: #006f3c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.storeInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.storeDistance {
+  font-size: 12px;
+  font-weight: 700;
+  color: #006f3c;
+  background-color: rgba(0, 111, 60, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+  align-self: flex-start;
+  margin-bottom: 2px;
+}
+
+.storeName {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333333;
+  margin: 0;
+}
+
+.storeLine {
+  font-size: 12px;
+  color: #666666;
+  line-height: 1.35;
+}
+
+.storeLine b {
+  color: #444444;
+}
+
+.storeStatus {
+  font-size: 11px;
+  font-weight: 700;
+  color: #006f3c;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+.emptyStores {
+  margin: 24px 0;
+  font-size: 13.5px;
+  color: #888888;
+  text-align: center;
+}
+
+/* SVG icons styling */
+.pinIconSvg {
+  width: 18px;
+  height: 18px;
+  color: #006f3c;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.cardPinIconSvg {
+  width: 12px;
+  height: 12px;
+  color: #006f3c;
+  display: inline-block;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.coffeeIconSvg {
+  width: 24px;
+  height: 24px;
+  color: #006f3c;
+}

@@ -47,6 +47,78 @@ namespace CMS.Backend.Controllers
             return View();
         }
 
+        [HttpGet("/home/seed-best-sellers")]
+        public async Task<IActionResult> SeedBestSellers()
+        {
+            try
+            {
+                // IDs of the 5 target products
+                var productIds = new[] { 2, 3, 4, 8, 6 };
+                var products = await _context.Products
+                    .Where(p => productIds.Contains(p.Id))
+                    .ToListAsync();
+
+                // Set specific TotalSold counts to rank them in the exact order as the photo:
+                // 1. Trà Sữa Phúc Long (L) - ID 2: 150 sold
+                // 2. Trà Sữa Ô Long (L) - ID 3: 140 sold
+                // 3. Hồng Trà Sữa (L) - ID 4: 130 sold
+                // 4. Trà Sữa Lài (M) - ID 8: 120 sold
+                // 5. Trà Sữa Matcha (L) - ID 6: 110 sold
+                foreach (var p in products)
+                {
+                    if (p.Id == 2) p.TotalSold = 150;
+                    else if (p.Id == 3) p.TotalSold = 140;
+                    else if (p.Id == 4) p.TotalSold = 130;
+                    else if (p.Id == 8) p.TotalSold = 120;
+                    else if (p.Id == 6) p.TotalSold = 110;
+                }
+
+                // Create a real completed order containing these 5 products
+                var customer = await _context.Customers.FirstOrDefaultAsync();
+                if (customer != null)
+                {
+                    // Check if test order already exists to avoid duplicates
+                    var existingOrder = await _context.Orders.FirstOrDefaultAsync(o => o.Notes == "Đơn hàng tự động test Bestseller");
+                    if (existingOrder == null)
+                    {
+                        var order = new CMS.Data.Entities.Order
+                        {
+                            CustomerId = customer.Id,
+                            ReceiverName = customer.FullName ?? "Bestseller Tester",
+                            ReceiverPhone = customer.Phone ?? "0123456789",
+                            ShippingAddress = "20 Tăng Nhơn Phú, Phước Long B, Quận 9, TP. HCM",
+                            TotalAmount = products.Sum(p => p.Price),
+                            Status = CMS.Data.Entities.OrderStatus.Completed,
+                            Notes = "Đơn hàng tự động test Bestseller",
+                            OrderDate = DateTime.UtcNow
+                        };
+
+                        _context.Orders.Add(order);
+                        await _context.SaveChangesAsync(); // Save to get order.Id
+
+                        foreach (var p in products)
+                        {
+                            var orderDetail = new CMS.Data.Entities.OrderDetail
+                            {
+                                OrderId = order.Id,
+                                ProductId = p.Id,
+                                Quantity = 1,
+                                UnitPrice = p.Price
+                            };
+                            _context.OrderDetails.Add(orderDetail);
+                        }
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                return Ok("Success: 5 bestseller products updated and test order created successfully!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error: {ex.Message}");
+            }
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

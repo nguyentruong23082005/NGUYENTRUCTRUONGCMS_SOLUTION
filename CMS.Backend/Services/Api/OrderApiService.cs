@@ -5,6 +5,7 @@ using CMS.Data;
 using CMS.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,17 +19,23 @@ namespace CMS.Backend.Services.Api
         private readonly IStockLockStrategy _stockLockStrategy;
         private readonly IVoucherApiService _voucherService;
         private readonly OrderPolicy _orderPolicy;
+        private readonly IEmailService _emailService;
+        private readonly ILogger<OrderApiService> _logger;
 
         public OrderApiService(
             ApplicationDbContext db,
             IStockLockStrategy stockLockStrategy,
             IVoucherApiService voucherService,
-            IOptions<OrderPolicy> orderPolicy)
+            IOptions<OrderPolicy> orderPolicy,
+            IEmailService emailService,
+            ILogger<OrderApiService> logger)
         {
             _db = db;
             _stockLockStrategy = stockLockStrategy;
             _voucherService = voucherService;
             _orderPolicy = orderPolicy.Value;
+            _emailService = emailService;
+            _logger = logger;
         }
 
         public async Task<OrderDto> PlaceOrderAsync(int customerId, PlaceOrderDto dto)
@@ -92,8 +99,9 @@ namespace CMS.Backend.Services.Api
                         throw new InvalidOperationException($"Sản phẩm '{product.Name}' không đủ số lượng tồn kho (Tồn: {product.StockQuantity}, Yêu cầu: {item.Quantity}).");
                     }
 
-                    // Khấu trừ kho sản phẩm gốc
+                    // Khấu trừ kho sản phẩm gốc + cộng tổng đã bán
                     product.StockQuantity -= item.Quantity;
+                    product.TotalSold += item.Quantity;
 
                     decimal basePrice = product.Price;
                     decimal toppingSurcharge = 0;
@@ -208,6 +216,17 @@ namespace CMS.Backend.Services.Api
                 await _db.SaveChangesAsync();
 
                 await transaction.CommitAsync();
+
+                // Gửi email xác nhận đơn hàng (TC31, fire-and-forget, an toàn)
+                var customer = await _db.Customers.FindAsync(customerId);
+                if (customer != null)
+                {
+                    _ = _emailService.SendOrderConfirmationEmailAsync(
+                        customer.Email, customer.FullName, order.Id, totalAmount, shippingAddress)
+                        .ContinueWith(t => _logger.LogError(t.Exception,
+                            "Lỗi gửi email đơn hàng #{OrderId} cho {Email}", order.Id, customer.Email),
+                            TaskContinuationOptions.OnlyOnFaulted);
+                }
 
                 // Tải lại order đầy đủ quan hệ để map sang Dto trả về
                 var savedOrder = await _db.Orders
@@ -357,6 +376,7 @@ namespace CMS.Backend.Services.Api
                     if (product != null)
                     {
                         product.StockQuantity += detail.Quantity;
+                        product.TotalSold = Math.Max(0, product.TotalSold - detail.Quantity);
                     }
 
                     if (detail.OrderDetailOptions != null)

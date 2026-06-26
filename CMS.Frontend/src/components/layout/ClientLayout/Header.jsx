@@ -1,15 +1,29 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
+import { useDelivery } from '../../../context/DeliveryContext';
 import categoryApi from '../../../api/categoryApi';
+import productService from '../../../services/productService';
 import logoImg from '../../../assets/images/logo.png';
 import deliveryImg from '../../../assets/images/delivery-686d7142750173aa8bc5f1d11ea195e4.png';
+import DeliveryModal from '../../common/DeliveryModal';
 import styles from './Header.module.css';
+
+const getFullImageUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+    return path;
+  }
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5188';
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${baseUrl}${cleanPath}`;
+};
 
 const normalizeCategory = (item) => ({
   id: String(item.id),
   name: item.name,
   slug: item.slug || '',
+  imageUrl: item.imageUrl ? getFullImageUrl(item.imageUrl) : '',
   children: (item.children || item.Children || []).map(normalizeCategory)
 });
 
@@ -38,7 +52,11 @@ import {
 // Header chính — thanh điều hướng trên cùng theo thiết kế Phúc Long
 const Header = () => {
   const { user, isAuthenticated, logout } = useAuth();
+  const { deliveryType, deliveryAddress, selectedStore, openModal } = useDelivery();
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const [menuCategories, setMenuCategories] = useState([]);
   const navigate = useNavigate();
 
@@ -57,6 +75,51 @@ const Header = () => {
     fetchMenuCategories();
   }, []);
 
+  useEffect(() => {
+    const keyword = searchQuery.trim();
+    if (keyword.length < 2) {
+      setSearchSuggestions([]);
+      setIsSearchOpen(false);
+      setIsSearching(false);
+      return undefined;
+    }
+
+    let cancelled = false;
+    setIsSearching(true);
+
+    const timer = window.setTimeout(async () => {
+      try {
+        const results = await productService.searchProducts({
+          q: keyword,
+          page: 1,
+          pageSize: 5,
+          sortBy: 'CreatedAt',
+          sortOrder: 'desc'
+        });
+
+        if (!cancelled) {
+          setSearchSuggestions(results);
+          setIsSearchOpen(true);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error('Khong tai duoc goi y tim kiem tu API:', error);
+          setSearchSuggestions([]);
+          setIsSearchOpen(true);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsSearching(false);
+        }
+      }
+    }, 350);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [searchQuery]);
+
   const dropdownCategories = useMemo(
     () => menuCategories.filter((category) => category.children.length > 0),
     [menuCategories]
@@ -64,9 +127,17 @@ const Header = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    const keyword = searchQuery.trim();
+    if (keyword) {
+      setIsSearchOpen(false);
+      navigate(`/search?q=${encodeURIComponent(keyword)}`);
     }
+  };
+
+  const handleSuggestionSelect = (product) => {
+    setSearchQuery(product.name);
+    setIsSearchOpen(false);
+    navigate(`/search?q=${encodeURIComponent(product.name)}`);
   };
 
   const handleLogout = () => {
@@ -96,18 +167,60 @@ const Header = () => {
               placeholder="Bạn muốn mua gì..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => {
+                if (searchQuery.trim().length >= 2) {
+                  setIsSearchOpen(true);
+                }
+              }}
+              onBlur={() => window.setTimeout(() => setIsSearchOpen(false), 120)}
               className={styles.searchInput}
               aria-label="Tìm kiếm sản phẩm"
+              aria-expanded={isSearchOpen}
             />
+            {isSearchOpen && searchQuery.trim().length >= 2 && (
+              <div className={styles.searchDropdown} role="listbox" aria-label="Gợi ý tìm kiếm">
+                {isSearching ? (
+                  <div className={styles.searchState}>Đang tìm...</div>
+                ) : searchSuggestions.length > 0 ? (
+                  searchSuggestions.map((product) => (
+                    <button
+                      key={product.id}
+                      type="button"
+                      className={styles.searchSuggestion}
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        handleSuggestionSelect(product);
+                      }}
+                    >
+                      {product.imageUrl ? (
+                        <img src={product.imageUrl} alt="" className={styles.searchSuggestionImage} />
+                      ) : (
+                        <span className={styles.searchSuggestionPlaceholder} aria-hidden="true" />
+                      )}
+                      <span className={styles.searchSuggestionText}>
+                        <strong>{product.name}</strong>
+                        <small>{product.productCategoryName || 'Sản phẩm'}</small>
+                      </span>
+                    </button>
+                  ))
+                ) : (
+                  <div className={styles.searchState}>Không tìm thấy sản phẩm phù hợp</div>
+                )}
+              </div>
+            )}
           </form>
 
           <div className={styles.headerSpacer} />
 
-          <button type="button" className={styles.deliveryButton}>
+          <button type="button" className={styles.deliveryButton} onClick={openModal}>
             <img src={deliveryImg} alt="" className={styles.deliveryIcon} aria-hidden="true" />
             <span className={styles.deliveryTextGroup}>
-              <strong>Giao Hàng</strong>
-              <small>20 Tăng Nhơn Phú, Phước Long, H...</small>
+              <strong>{deliveryType === 'delivery' ? 'Giao Hàng' : 'Đến Lấy'}</strong>
+              <small>
+                {deliveryType === 'delivery' 
+                  ? (deliveryAddress || 'Chọn địa chỉ giao hàng...') 
+                  : (selectedStore ? selectedStore.name : 'Chọn cửa hàng...')}
+              </small>
             </span>
           </button>
 
@@ -186,7 +299,14 @@ const Header = () => {
                 {dropdownCategories.map((category) => (
                   <div key={category.id} className={styles.dropdownColumn}>
                     <Link to={getMenuPath(category)} className={styles.dropdownTitle}>
-                      {category.name}
+                      {category.imageUrl && (
+                        <img
+                          src={category.imageUrl}
+                          alt={category.name}
+                          className={styles.dropdownCategoryIcon}
+                        />
+                      )}
+                      <span>{category.name}</span>
                     </Link>
                     <div className={styles.dropdownList}>
                       {category.children.map((child) => (
@@ -206,6 +326,7 @@ const Header = () => {
           <Link to="/profile" className={styles.navLink}>HỘI VIÊN</Link>
         </div>
       </nav>
+      <DeliveryModal />
     </header>
   );
 };

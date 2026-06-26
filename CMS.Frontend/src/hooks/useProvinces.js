@@ -10,39 +10,22 @@ const wardCache = {};
 
 async function loadDistricts(provinceCode) {
   if (districtCache[provinceCode]) return districtCache[provinceCode];
-  try {
-    const res = await fetch(`${API_BASE}/p/${provinceCode}?depth=2`);
-    if (!res.ok) throw new Error('API error');
-    const data = await res.json();
-    const list = (data.districts || []).map(d => ({ code: d.code, name: d.name }));
-    districtCache[provinceCode] = list;
-    return list;
-  } catch {
-    // Fallback: dùng file tĩnh đã lưu sẵn
-    const res = await fetch(`${STATIC_BASE}/districts.json`);
-    const all = await res.json();
-    const list = (all[provinceCode] || []).map(d => ({ code: d.code, name: d.name }));
-    districtCache[provinceCode] = list;
-    return list;
-  }
+  // Always load from local static file to ensure correct 2025 post-merger data
+  const res = await fetch(`${STATIC_BASE}/districts.json`);
+  const all = await res.json();
+  const list = (all[provinceCode] || []).map(d => ({ code: d.code, name: d.name }));
+  districtCache[provinceCode] = list;
+  return list;
 }
 
 async function loadWards(districtCode) {
   if (wardCache[districtCode]) return wardCache[districtCode];
-  try {
-    const res = await fetch(`${API_BASE}/d/${districtCode}?depth=2`);
-    if (!res.ok) throw new Error('API error');
-    const data = await res.json();
-    const list = (data.wards || []).map(w => ({ code: w.code, name: w.name }));
-    wardCache[districtCode] = list;
-    return list;
-  } catch {
-    const res = await fetch(`${STATIC_BASE}/wards.json`);
-    const all = await res.json();
-    const list = (all[districtCode] || []).map(w => ({ code: w.code, name: w.name }));
-    wardCache[districtCode] = list;
-    return list;
-  }
+  // Always load from local static file to ensure correct 2025 post-merger data
+  const res = await fetch(`${STATIC_BASE}/wards.json`);
+  const all = await res.json();
+  const list = (all[districtCode] || []).map(w => ({ code: w.code, name: w.name }));
+  wardCache[districtCode] = list;
+  return list;
 }
 
 /**
@@ -101,6 +84,42 @@ export default function useProvinces() {
     setWardState(selected);
   }, []);
 
+// Hàm loại bỏ dấu tiếng Việt
+const removeAccents = (str) => {
+  if (!str) return '';
+  return str.normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'd');
+};
+
+// Hàm chuẩn hóa tên địa phương để so khớp
+const normalizeLocalName = (name) => {
+  if (!name) return '';
+  let str = name.toLowerCase();
+  
+  // Ánh xạ các tên tiếng Anh / viết tắt phổ biến
+  str = str.replace(/\bho chi minh city\b/g, 'ho chi minh');
+  str = str.replace(/\bhcm\b/g, 'ho chi minh');
+  str = str.replace(/\bhanoi\b/g, 'ha noi');
+  str = str.replace(/\bdanang\b/g, 'da nang');
+  str = str.replace(/\bhaiphong\b/g, 'hai phong');
+  str = str.replace(/\bcantho\b/g, 'can tho');
+  
+  // Loại bỏ các tiền tố hành chính
+  str = str.replace(/^(tỉnh|thành phố|quận|huyện|phường|xã|thị xã|thị trấn|thành phồ|phuong|quan|huyen|tinh|xa)\s+/g, '');
+  
+  return removeAccents(str).trim();
+};
+
+// So khớp thông minh hai tên địa lý
+const namesMatch = (dbName, inputName) => {
+  const normDb = normalizeLocalName(dbName);
+  const normInput = normalizeLocalName(inputName);
+  if (!normDb || !normInput) return false;
+  return normDb === normInput || normDb.includes(normInput) || normInput.includes(normDb);
+};
+
   /**
    * initFromNames — khởi tạo dropdown cho chế độ Edit từ tên đã lưu trong DB
    * Gọi sau khi data địa chỉ cũ được load xong
@@ -108,7 +127,9 @@ export default function useProvinces() {
   const initFromNames = useCallback(async (provinceName, districtName, wardName) => {
     if (!provinceName) return;
     const allProvinces = await fetch(`${STATIC_BASE}/provinces.json`).then(r => r.json());
-    const prov = allProvinces.find(p => p.name.toLowerCase() === provinceName.toLowerCase());
+    
+    // Áp dụng Fuzzy Matching tìm Tỉnh
+    const prov = allProvinces.find(p => namesMatch(p.name, provinceName));
     if (!prov) return;
     setProvinceState(prov);
 
@@ -120,7 +141,8 @@ export default function useProvinces() {
     // Ánh xạ đơn vị hành chính cũ trước sáp nhập
     const mapped = mapOldAdministrativeNames(districtName, wardName);
 
-    const dist = dList.find(d => d.name.toLowerCase() === mapped.districtName.toLowerCase());
+    // Áp dụng Fuzzy Matching tìm Quận
+    const dist = dList.find(d => namesMatch(d.name, mapped.districtName));
     if (!dist) return;
     setDistrictState(dist);
 
@@ -128,7 +150,9 @@ export default function useProvinces() {
     setWards(wList);
 
     if (!mapped.wardName) return;
-    const w = wList.find(x => x.name.toLowerCase() === mapped.wardName.toLowerCase());
+    
+    // Áp dụng Fuzzy Matching tìm Phường
+    const w = wList.find(x => namesMatch(x.name, mapped.wardName));
     setWardState(w || null);
   }, []);
 

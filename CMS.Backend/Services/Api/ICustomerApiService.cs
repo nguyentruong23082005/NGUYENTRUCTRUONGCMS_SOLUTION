@@ -11,5 +11,7 @@ namespace CMS.Backend.Services.Api
         Task<CustomerDto> UpdateProfileAsync(int customerId, UpdateProfileDto dto);
         Task LogoutAsync(int customerId);
         void InvalidateTokenCache(int customerId);
+        Task ForgotPasswordAsync(string email);
+        Task ResetPasswordAsync(string token, string newPassword);
     }
 }

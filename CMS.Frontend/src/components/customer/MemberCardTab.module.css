@@ -1,0 +1,58 @@
+.progressCard {
+  background: #FAFAFA;
+  padding: 24px;
+  border: 1px solid #ECEFF1;
+  border-radius: 8px;
+  margin-bottom: 32px;
+}
+
+.progressTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #333333;
+}
+
+.progressDesc {
+  font-size: 14px;
+  color: #666666;
+  margin-bottom: 16px;
+}
+
+.progressBar {
+  height: 10px;
+  background: #ECEFF1;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progressFill {
+  height: 100%;
+  background: #006F3C;
+  transition: width 0.5s ease;
+}
+
+.progressLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #9B9B9B;
+}
+
+.benefitsTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #006F3C;
+}
+
+.benefitsList {
+  list-style-type: disc;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 14px;
+  color: #333333;
+}

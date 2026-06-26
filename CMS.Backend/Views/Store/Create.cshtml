@@ -9,7 +9,6 @@
             <div class="col-md-6"><label asp-for="Phone" class="form-label fw-semibold">Số điện thoại</label><input asp-for="Phone" class="form-control" /></div>
             <div class="col-12"><label asp-for="Address" class="form-label fw-semibold">Địa chỉ chi tiết</label><input asp-for="Address" class="form-control" /><span asp-validation-for="Address" class="text-danger"></span></div>
 
-            {{!-- Cascading dropdown Tỉnh / Quận / Phường --}}
             <div class="col-md-4">
                 <label class="form-label fw-semibold">Tỉnh/TP</label>
                 <select id="sel-province" class="form-select">
@@ -46,13 +45,15 @@
 @section Scripts {
 <script>
 (function () {
-    const API = 'https://provinces.open-api.vn/api';
     const selProvince = document.getElementById('sel-province');
     const selDistrict = document.getElementById('sel-district');
     const selWard     = document.getElementById('sel-ward');
     const hidProvince = document.getElementById('hid-province');
     const hidDistrict = document.getElementById('hid-district');
     const hidWard     = document.getElementById('hid-ward');
+
+    let districtsData = null;
+    let wardsData = null;
 
     async function populate(sel, items, placeholder) {
         sel.innerHTML = `<option value="">${placeholder}</option>`;
@@ -64,8 +65,10 @@
         });
     }
 
-    // Load provinces
-    fetch(`${API}/p/`).then(r => r.json()).then(data => populate(selProvince, data, 'Chọn Tỉnh/Thành phố'));
+    // Load provinces from local static json
+    fetch('/data/provinces.json')
+        .then(r => r.json())
+        .then(data => populate(selProvince, data, 'Chọn Tỉnh/Thành phố'));
 
     selProvince.addEventListener('change', async function () {
         hidProvince.value = this.options[this.selectedIndex]?.text || '';
@@ -74,8 +77,12 @@
         selWard.innerHTML     = '<option value="">Chọn Phường/Xã</option>';
         selDistrict.disabled  = true; selWard.disabled = true;
         if (!this.value) return;
-        const data = await fetch(`${API}/p/${this.value}?depth=2`).then(r => r.json());
-        await populate(selDistrict, data.districts || [], 'Chọn Quận/Huyện');
+
+        if (!districtsData) {
+            districtsData = await fetch('/data/districts.json').then(r => r.json());
+        }
+        const list = districtsData[this.value] || [];
+        await populate(selDistrict, list, 'Chọn Quận/Huyện');
         selDistrict.disabled = false;
     });
 
@@ -85,8 +92,12 @@
         selWard.innerHTML = '<option value="">Chọn Phường/Xã</option>';
         selWard.disabled  = true;
         if (!this.value) return;
-        const data = await fetch(`${API}/d/${this.value}?depth=2`).then(r => r.json());
-        await populate(selWard, data.wards || [], 'Chọn Phường/Xã');
+
+        if (!wardsData) {
+            wardsData = await fetch('/data/wards.json').then(r => r.json());
+        }
+        const list = wardsData[this.value] || [];
+        await populate(selWard, list, 'Chọn Phường/Xã');
         selWard.disabled = false;
     });
 

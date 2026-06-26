@@ -1,5 +1,13 @@
+/* ═══════════════════════════════════════════════
+   StoreLocator — Phúc Long Design System
+   Palette: #006F3C, #ECEFF1, #333333, #9B9B9B
+   Font: Arimo (primary), Roboto (labels)
+   Spacing grid: 4px base
+   ═══════════════════════════════════════════════ */
+
+/* ---------- Section wrapper ---------- */
 .section {
-  padding: 40px 0 64px;
+  padding: 48px 0 64px;
   background-color: #ffffff;
 }
 
@@ -7,131 +15,339 @@
   padding-top: 0;
 }
 
+/* ---------- Heading ---------- */
 .sectionTitle {
   margin: 0;
   color: #006f3c;
-  font-family: var(--font-primary);
+  font-family: Arimo, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 600;
+  line-height: 36px;
   text-align: center;
 }
 
 .sectionSubtitle {
-  margin: 8px 0 24px;
+  margin: 8px 0 28px;
   color: #666666;
-  font-size: 13px;
+  font-family: Arimo, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 21px;
   text-align: center;
 }
 
+/* ---------- Main grid: Map (left) + Sidebar (right) ---------- */
 .grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(380px, 1fr);
-  gap: 32px;
+  grid-template-columns: minmax(0, 1.1fr) 420px;
+  gap: 0;
   align-items: stretch;
-}
-
-.mapPanel {
-  min-height: 560px;
-  overflow: hidden;
-  border: 1px solid #e0e0e0;
-  background-color: #eceff1;
-}
-
-.mapFrame {
-  width: 100%;
-  height: 100%;
-  min-height: 560px;
-  border: 0;
-  display: block;
-}
-
-.sidePanel {
-  min-width: 0;
-}
-
-.searchInput,
-.select {
-  width: 100%;
-  min-height: 40px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #eceff1;
   border-radius: 4px;
+  overflow: hidden;
+  box-shadow: rgba(204, 204, 204, 0.3) 0px 2px 4px 0px;
+}
+
+/* ---------- Map panel ---------- */
+.mapPanel {
+  min-height: 580px;
+  background-color: #eceff1;
+  position: relative;
+}
+
+.mapLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 580px;
+  color: #666666;
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+}
+
+/* ---------- Sidebar ---------- */
+.sidePanel {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px 16px;
   background-color: #ffffff;
-  color: #333333;
-  padding: 10px 12px;
-  font-family: var(--font-primary);
-  font-size: 13px;
+  border-left: 1px solid #eceff1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ---------- Search input ---------- */
+.searchRow {
+  margin-bottom: 16px;
 }
 
 .searchInput {
+  width: 100%;
+  height: 40px;
+  box-sizing: border-box;
+  border: none;
   border-radius: 24px;
   background-color: #eceff1;
-  border-color: transparent;
-  padding-left: 42px;
-}
-
-.listPage {
-  padding-top: 12px;
-}
-
-.filterTitle,
-.currentLocation,
-.listTitle {
-  color: #006f3c;
+  color: #333333;
+  padding: 10px 16px;
+  font-family: Arimo, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 14px;
-  font-weight: 700;
+  line-height: 21px;
+  outline: none;
+  transition: box-shadow 0.2s ease;
 }
 
+.searchInput::placeholder {
+  color: #9b9b9b;
+}
+
+.searchInput:focus {
+  box-shadow: inset 0 0 0 2px #006f3c;
+}
+
+/* ---------- Geolocation button ---------- */
+.geoBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  margin: 12px 0 4px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #006f3c;
+  font-family: Arimo, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s ease;
+  min-height: 40px;
+}
+
+.geoBtn:hover:not(:disabled) {
+  background-color: #eceff1;
+}
+
+.geoBtn:disabled {
+  color: #9b9b9b;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.geoError {
+  margin: 4px 0 8px;
+  font-size: 12px;
+  color: #b71c1c;
+  font-family: Arimo, sans-serif;
+}
+
+/* SVG geolocation icons & animation */
+.myLocationIcon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  flex-shrink: 0;
+  display: inline-block;
+  animation: gpsPulse 1.8s infinite ease-in-out;
+}
+
+.gpsLoadingIcon {
+  animation: spin 1s linear infinite !important;
+}
+
+@keyframes gpsPulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Resolved Address Card */
+.resolvedAddressCard {
+  margin: 8px 0 12px 0;
+  background-color: #f4fbf7;
+  border: 1px solid #c8e6c9;
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  text-align: left;
+  animation: slideDown 0.25s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.resolvedAddressText {
+  font-size: 13px;
+  color: #333333;
+  line-height: 1.4;
+  font-weight: 500;
+  font-family: 'Arimo', sans-serif;
+}
+
+.pinIconSvg {
+  width: 16px;
+  height: 16px;
+  color: #006f3c;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Định dạng SVG cho ghim khoảng cách và nút chỉ đường */
+.badgePinIconSvg {
+  width: 12px;
+  height: 12px;
+  color: #006f3c;
+  margin-right: 4px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.directionIconSvg {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* ---------- Filter dropdowns ---------- */
 .filterTitle {
-  margin: 22px 0 10px;
+  margin: 16px 0 8px;
+  color: #333333;
+  font-family: Arimo, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 19.5px;
 }
 
 .filters {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
+  margin-bottom: 4px;
 }
 
-.currentLocation {
-  margin: 22px 0 12px;
-}
-
-.currentLocation::before {
-  content: '';
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  margin-right: 8px;
-  border: 3px solid #006f3c;
-  border-radius: 50%;
-  vertical-align: -3px;
-}
-
-.listTitle {
-  margin: 0 0 12px;
-}
-
-.regionToggle {
-  min-height: 28px;
-  margin: 0 0 18px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #006f3c;
+.select {
+  width: 100%;
+  height: 40px;
+  box-sizing: border-box;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #333333;
+  padding: 0 8px;
+  font-family: Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 13px;
+  outline: none;
   cursor: pointer;
+  transition: border-color 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23666666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 24px;
+}
+
+.select:focus {
+  border-color: #006f3c;
+  box-shadow: inset 0 0 0 1px #006f3c;
+}
+
+.select:disabled {
+  background-color: #fafafa;
+  color: #9b9b9b;
+  cursor: not-allowed;
+}
+
+/* ---------- Store list ---------- */
+.listTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 8px;
+  color: #333333;
+  font-family: Arimo, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 14px;
+  font-weight: 700;
+  line-height: 21px;
+}
+
+.resultBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 12px;
+  background-color: #006f3c;
+  color: #ffffff;
+  font-size: 11px;
   font-weight: 600;
+}
+
+.list {
+  flex: 1;
+  max-height: 420px;
+  overflow-y: auto;
+  margin-right: -4px;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: #cccccc transparent;
+}
+
+.list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.list::-webkit-scrollbar-thumb {
+  background: #cccccc;
+  border-radius: 2px;
+}
+
+/* ---------- Store button item (sidebar) ---------- */
+.storeItemBtn {
+  width: 100%;
+  padding: 12px 0 14px;
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid #eceff1;
+  background-color: #ffffff;
+  text-align: left;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 12px;
+  align-items: start;
+  transition: background-color 0.15s ease;
+}
+
+.storeItemBtn:hover {
+  background-color: #fafafa;
+}
+
+.activeStore {
+  background-color: #f0f9f4;
+}
+
+.activeStore .storeName {
+  color: #006f3c;
   text-decoration: underline;
 }
 
-.resultCount {
-  margin: 0 0 18px;
-  padding-top: 16px;
-  border-top: 8px solid #eceff1;
-  color: #333333;
-  font-size: 14px;
-  font-weight: 700;
-}
-
+/* ---------- Store card (list page) ---------- */
 .fullList {
   display: flex;
   flex-direction: column;
@@ -139,97 +355,141 @@
 
 .listStoreItem {
   display: grid;
-  grid-template-columns: 44px 1fr;
-  gap: 14px;
-  padding: 14px 0 18px;
-  border-bottom: 1px solid #e7ebea;
-}
-
-.list {
-  max-height: 520px;
-  overflow-y: auto;
-  padding-right: 8px;
-}
-
-.storeItemBtn {
-  width: 100%;
-  min-height: auto;
-  padding: 0 0 18px;
-  margin-bottom: 18px;
-  border: 0;
+  grid-template-columns: 52px 1fr;
+  gap: 16px;
+  padding: 16px 0 20px;
   border-bottom: 1px solid #eceff1;
-  background-color: #ffffff;
-  text-align: left;
-  cursor: pointer;
-  display: grid;
-  grid-template-columns: 54px 1fr;
-  gap: 12px;
-  transition: opacity 0.2s ease;
+  align-items: start;
 }
 
-.storeItemBtn:hover {
-  opacity: 0.86;
-}
-
-.activeStore .storeName {
-  text-decoration: underline;
-}
-
+/* ---------- Store thumbnail ---------- */
 .storeThumb {
   width: 44px;
   height: 44px;
-  margin-top: 4px;
   border-radius: 50%;
   background-color: #e8f3ed;
   background-position: center;
   background-size: cover;
   border: 1px solid #d5e6dd;
+  flex-shrink: 0;
+  display: block;
+  margin-top: 2px;
 }
 
+/* ---------- Store copy block ---------- */
 .storeCopy {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
 }
 
 .storeStatus {
   color: #9b9b9b;
+  font-family: Arimo, sans-serif;
   font-size: 12px;
+  line-height: 18px;
 }
 
 .storeName {
-  color: #006f3c;
-  font-size: 15px;
-  line-height: 22px;
+  color: #333333;
+  font-family: Arimo, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 21px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .storeLine {
   color: #333333;
+  font-family: Arimo, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 13px;
   line-height: 19.5px;
+  white-space: normal;
+  word-break: break-word;
 }
 
-.directionLink {
+.storeLine b {
+  font-weight: 600;
+}
+
+/* ---------- Distance badge ---------- */
+.distanceBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background-color: #e8f3ed;
+  color: #006f3c;
+  font-family: Arimo, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+  width: fit-content;
+}
+
+/* ---------- Direction button ---------- */
+.directionBtn {
   align-self: flex-start;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 36px;
+  height: 40px;
   margin-top: 8px;
-  padding: 8px 22px;
+  padding: 12px 24px;
+  border: none;
   border-radius: 4px;
   background-color: #006f3c;
   color: #ffffff;
-  font-size: 13px;
-  font-weight: 600;
+  font-family: Arimo, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
   text-decoration: none;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
 }
 
+.directionBtn:hover:not(:disabled) {
+  background-color: #0c713d;
+}
+
+.directionBtn:active {
+  background-color: #005230;
+}
+
+.directionBtn:disabled,
+.directionBtn.loading {
+  background-color: #cccccc;
+  color: #9b9b9b;
+  cursor: not-allowed;
+}
+
+/* ---------- List page extras ---------- */
+.listPage {
+  padding-top: 12px;
+}
+
+.resultCount {
+  margin: 0 0 16px;
+  padding-top: 16px;
+  border-top: 8px solid #eceff1;
+  color: #333333;
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 21px;
+}
+
+/* ---------- Empty state ---------- */
 .emptyState {
   max-width: 720px;
   margin: 0 auto;
-  padding: 28px;
+  padding: 32px 28px;
   border: 1px dashed #cccccc;
   border-radius: 8px;
   background-color: #fafafa;
@@ -238,20 +498,74 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  font-family: Arimo, sans-serif;
+  font-size: 14px;
+  line-height: 21px;
 }
 
 .emptyState strong {
   color: #333333;
+  font-size: 16px;
 }
 
-@media (max-width: 900px) {
-  .grid,
+/* ═══════════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════════ */
+
+/* Tablet: 768–1024px */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr 360px;
+  }
+}
+
+/* Mobile: <768px */
+@media (max-width: 768px) {
+  .section {
+    padding: 32px 0 48px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    border: none;
+    box-shadow: none;
+  }
+
+  .mapPanel {
+    min-height: 320px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0;
+  }
+
+  .sidePanel {
+    border-left: none;
+    border-top: 1px solid #eceff1;
+    padding: 16px;
+  }
+
   .filters {
     grid-template-columns: 1fr;
   }
 
-  .mapPanel,
-  .mapFrame {
-    min-height: 360px;
+  .list {
+    max-height: 360px;
+  }
+
+  .sectionTitle {
+    font-size: 20px;
+  }
+
+  .sectionSubtitle {
+    font-size: 13px;
+  }
+
+  .storeName {
+    font-size: 13px;
+  }
+
+  .directionBtn {
+    width: 100%;
+    justify-content: center;
   }
 }
