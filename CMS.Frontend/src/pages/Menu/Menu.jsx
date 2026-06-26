@@ -3,7 +3,6 @@ import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import categoryApi from '../../api/categoryApi';
 import useProducts from '../../hooks/useProducts';
-import usePagination from '../../hooks/usePagination';
 import ProductCard from '../../components/product/ProductCard';
 import ProductCardSkeleton from '../../components/product/ProductCardSkeleton';
 import PriceFilter from '../../components/product/PriceFilter';
@@ -65,6 +64,7 @@ const Menu = () => {
   const [bestSellers, setBestSellers] = useState([]);
   const [newestProducts, setNewestProducts] = useState([]);
   const [bestSellerLabel, setBestSellerLabel] = useState(PRODUCT_BADGE_LABELS.BEST_SELLER);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchBadgeData = async () => {
@@ -92,13 +92,13 @@ const Menu = () => {
     }));
   };
 
-  const { products, loading } = useProducts({
-    pageSize: 500,
+  const { products, pagination, loading } = useProducts({
+    pageSize: 12,
+    page: currentPage,
     ...(searchQuery ? { q: searchQuery, searchMode: true } : {}),
-    ...priceFilter
+    ...priceFilter,
+    ...(activeSlug ? { categorySlug: activeSlug } : {})
   });
-
-  const { currentPage, totalPages, paginatedData, goToPage } = usePagination(products, 12);
 
   const categories = useMemo(() => flattenCategories(categoryTree), [categoryTree]);
   const activeCategory = useMemo(
@@ -106,15 +106,17 @@ const Menu = () => {
     [activeSlug, categories]
   );
 
-  const visibleCategoryTree = useMemo(() => categoryTree
-    .filter((category) => {
-      const productCategoryNames = new Set(products.map((product) => product.productCategoryName).filter(Boolean));
-      const hasOwnProducts = productCategoryNames.has(category.name);
-      const hasChildProducts = (category.children || [])
-        .some((child) => productCategoryNames.has(child.name));
+  const visibleCategoryTree = categoryTree;
 
-      return hasOwnProducts || hasChildProducts;
-    }), [categoryTree, products]);
+  const goToPage = (pageNum) => {
+    setCurrentPage(pageNum);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Reset trang về 1 khi thay đổi các bộ lọc hoặc từ khóa tìm kiếm
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeSlug, searchQuery, priceFilter.minPrice, priceFilter.maxPrice]);
 
   // Tự động mở rộng danh mục cha khi có slug hoạt động (lần đầu tải trang)
   useEffect(() => {
@@ -160,7 +162,7 @@ const Menu = () => {
       return [{
         id: 'search',
         name: `Kết quả tìm kiếm "${searchQuery}"`,
-        products: paginatedData
+        products: products
       }];
     }
 
@@ -197,7 +199,7 @@ const Menu = () => {
         products: products.filter((product) => product.productCategoryName === category.name)
       }];
     }).filter((section) => section.products.length > 0);
-  }, [activeCategory, products, paginatedData, searchQuery, visibleCategoryTree]);
+  }, [activeCategory, products, searchQuery, visibleCategoryTree]);
 
   const getPageTitle = () => {
     if (searchQuery) return `Kết quả tìm kiếm cho "${searchQuery}"`;
@@ -294,9 +296,9 @@ const Menu = () => {
                   </section>
                 ))}
 
-                {searchQuery && totalPages > 1 && (
+                {pagination.totalPages > 1 && (
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', marginTop: '32px' }}>
-                    {Array.from({ length: totalPages }).map((_, i) => {
+                    {Array.from({ length: pagination.totalPages }).map((_, i) => {
                       const pageNum = i + 1;
                       const active = currentPage === pageNum;
                       return (
