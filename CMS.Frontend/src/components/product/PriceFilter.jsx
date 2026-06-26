@@ -41,11 +41,6 @@ const PriceFilter = ({ onFilterChange }) => {
     onFilterChange({ minPrice: null, maxPrice: null });
   };
 
-  const formatDisplay = (value) => {
-    if (!value) return '';
-    return Number(value).toLocaleString('vi-VN');
-  };
-
   return (
     <div className={styles.container}>
       <h3 className={styles.title}>Lọc theo giá</h3>
@@ -57,7 +52,7 @@ const PriceFilter = ({ onFilterChange }) => {
               type="text"
               inputMode="numeric"
               placeholder="0"
-              value={formatDisplay(minPrice)}
+              value={minPrice}
               onChange={handleMinChange}
               className={styles.input}
             />
@@ -70,8 +65,8 @@ const PriceFilter = ({ onFilterChange }) => {
             <input
               type="text"
               inputMode="numeric"
-              placeholder="999.000"
-              value={formatDisplay(maxPrice)}
+              placeholder="999000"
+              value={maxPrice}
               onChange={handleMaxChange}
               className={styles.input}
             />
