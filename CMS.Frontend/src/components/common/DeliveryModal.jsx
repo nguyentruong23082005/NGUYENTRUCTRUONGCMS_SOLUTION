@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useDelivery } from '../../context/DeliveryContext';
+import { useAuth } from '../../context/AuthContext';
 import useStores from '../../hooks/useStores';
+import useCustomers from '../../hooks/useCustomers';
 import styles from './DeliveryModal.module.css';
 
 // Hàm tính khoảng cách Haversine (km)
@@ -48,6 +50,8 @@ const DeliveryModal = () => {
     setPickup,
   } = useDelivery();
 
+  const { user, isAuthenticated } = useAuth();
+  const { createAddress } = useCustomers();
   const { stores } = useStores();
 
   // Tab nội bộ của modal: 'delivery' | 'pickup'
@@ -136,6 +140,20 @@ const DeliveryModal = () => {
     // Xoá ô tìm kiếm và gợi ý để gọn giao diện
     setSearchQuery('');
     setSuggestions([]);
+
+    // Lưu địa chỉ vào sổ địa chỉ nếu đã đăng nhập
+    if (isAuthenticated && structured.street && structured.province) {
+      createAddress({
+        receiverName: user?.fullName || '',
+        receiverPhone: user?.phoneNumber || '',
+        addressLine: structured.street,
+        province: structured.province,
+        district: structured.district,
+        ward: structured.ward,
+        addressType: 'Home',
+        isDefault: false,
+      }).catch(() => {}); // silent fail — không block UX
+    }
   };
 
   // Xử lý định vị GPS & Dịch ngược địa chỉ (Reverse Geocoding)
@@ -218,6 +236,20 @@ const DeliveryModal = () => {
       }
       
       setDelivery(resolvedAddress, tempCoords, tempStructured, nearestStore);
+
+      // Tự động lưu địa chỉ GPS vào sổ địa chỉ nếu đã đăng nhập
+      if (isAuthenticated && tempStructured.street && tempStructured.province) {
+        createAddress({
+          receiverName: user?.fullName || '',
+          receiverPhone: user?.phoneNumber || '',
+          addressLine: tempStructured.street,
+          province: tempStructured.province,
+          district: tempStructured.district,
+          ward: tempStructured.ward,
+          addressType: 'Home',
+          isDefault: false,
+        }).catch(() => {}); // silent fail — không block UX
+      }
     }
   };
 

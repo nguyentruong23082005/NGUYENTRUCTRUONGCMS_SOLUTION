@@ -11,7 +11,7 @@ const FloatingActions = () => {
   return (
     <div className={styles.floatingActions} aria-label="Lối tắt mua hàng">
       <Link
-        to="/cart"
+        to="/checkout"
         className={`${styles.cartButton} ${isCartAnimating ? styles.bounce : ''}`}
         aria-label={`Giỏ hàng có ${cartTotalQuantity} sản phẩm`}
       >
