@@ -190,7 +190,7 @@ const ProductDetail = () => {
             {product.categoryName && <p className={styles.category}>{product.categoryName}</p>}
             <h1 className={styles.title}>{product.name}</h1>
             <p className={styles.sku}>SKU: {product.skuLabel}</p>
-            {product.isBestSeller && <div className={styles.bestSellerBadge}>Best Seller</div>}
+            {product.totalSold >= 100 && <div className={styles.bestSellerBadge}>Best Seller</div>}
             
             <div className={styles.priceQtyRow}>
               <p className={styles.price}>{formatPrice(product.price)}</p>
