@@ -8,6 +8,14 @@ import Loading from '../../components/common/Loading/Loading';
 import EmptyState from '../../components/common/EmptyState/EmptyState';
 import styles from './ProductDetail.module.css';
 import { PRODUCT_BADGE_LABELS, SPECIAL_CATEGORY_SLUGS } from '../../utils/constants';
+import {
+  buildDefaultSelections,
+  formatOptionDelta,
+  getAdjustedOptionSurcharge,
+  getAdjustedOptionTotal,
+  getSelectedOptionValuesWithGroups,
+  normalizeOptionGroups
+} from '../../utils/productOptions';
 
 const findCategoryNameBySlug = (categories = [], slug) => {
   for (const cat of categories) {
@@ -22,33 +30,6 @@ const findCategoryNameBySlug = (categories = [], slug) => {
   }
   return null;
 };
-
-const normalizeOptionValues = (values = []) => values.map((value) => ({
-  id: Number(value.id),
-  name: value.name,
-  priceSurcharge: Number(value.priceSurcharge || 0),
-  stockQuantity: value.stockQuantity
-}));
-
-const normalizeOptionGroups = (groups = []) => groups.map((group) => ({
-  id: Number(group.id),
-  name: group.name,
-  isRequired: Boolean(group.isRequired),
-  maxSelectable: Number(group.maxSelectable || 1),
-  optionValues: normalizeOptionValues(group.optionValues || group.OptionValues || [])
-}));
-
-const buildDefaultSelections = (groups = []) => groups.reduce((selectionMap, group) => {
-  if (!group.isRequired) return selectionMap;
-
-  const firstAvailable = group.optionValues.find((value) => value.stockQuantity !== 0);
-  if (!firstAvailable) return selectionMap;
-
-  return {
-    ...selectionMap,
-    [group.id]: [firstAvailable.id]
-  };
-}, {});
 
 const formatPrice = (price) => new Intl.NumberFormat('vi-VN', {
   style: 'currency',
@@ -91,7 +72,7 @@ const ProductDetail = () => {
             optionGroups
           });
           setProductImages(images || []);
-          setSelectedOptions(buildDefaultSelections(optionGroups));
+          setSelectedOptions(buildDefaultSelections(optionGroups, item.name));
           setQty(1);
           setMainImgFailed(false); // Reset on product change
           
@@ -129,12 +110,15 @@ const ProductDetail = () => {
     return product.optionGroups.flatMap((group) => group.optionValues);
   }, [product]);
 
-  const selectedOptionValues = useMemo(() => {
-    const selectedIds = Object.values(selectedOptions).flat();
-    return allOptionValues.filter((value) => selectedIds.includes(value.id));
-  }, [allOptionValues, selectedOptions]);
+  const selectedOptionValues = useMemo(() => (
+    product
+      ? getSelectedOptionValuesWithGroups(product.optionGroups, selectedOptions).map(({ optionValue }) => optionValue)
+      : []
+  ), [product, selectedOptions]);
 
-  const optionTotal = selectedOptionValues.reduce((total, value) => total + value.priceSurcharge, 0);
+  const optionTotal = useMemo(() => (
+    product ? getAdjustedOptionTotal(product.optionGroups, selectedOptions, product.name) : 0
+  ), [product, selectedOptions]);
   const unitPrice = (product?.price || 0) + optionTotal;
   const totalPrice = unitPrice * qty;
   const isOutOfStock = !product || product.stockQuantity <= 0;
@@ -342,11 +326,7 @@ const ProductDetail = () => {
                             >
                               <div className={styles.sizeName}>{optionValue.name}</div>
                               <div className={styles.sizePrice}>
-                                {optionValue.priceSurcharge > 0 
-                                  ? `+ ${formatPrice(optionValue.priceSurcharge)}` 
-                                  : optionValue.priceSurcharge < 0 
-                                  ? `- ${formatPrice(Math.abs(optionValue.priceSurcharge))}`
-                                  : '0 đ'}
+                                {formatOptionDelta(getAdjustedOptionSurcharge(optionValue, group, product.name))}
                               </div>
                             </button>
                           );

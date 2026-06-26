@@ -1,161 +1,379 @@
-# NGUYÊN TRÚC TRƯỜNG - ĐỒ ÁN CMS FULL-STACK BÁN HÀNG TÍCH HỢP TIN TỨC
+﻿# NGUYENTRUCTRUONG CMS Solution
 
-Dự án này là hệ thống Quản trị nội dung (CMS) và Bán hàng hoàn chỉnh tích hợp tin tức, được thiết kế và xây dựng theo kiến trúc phân lớp chuyên nghiệp sử dụng .NET 8.0, ASP.NET Core MVC, WebAPI, Entity Framework Core và ReactJS.
-
----
-
-## 🛠 Công nghệ sử dụng
-*   **Database**: Microsoft SQL Server
-*   **Data Access**: Entity Framework Core (Code First Migration)
-*   **Backend API/MVC**: ASP.NET Core (.NET 8.0)
-*   **Security**: Cookie-based Authentication & Phân quyền hệ thống (Admin / Editor)
-*   **Frontend**: ReactJS (Vite, TailwindCSS)
+Hệ thống **CMS + bán hàng Phúc Long clone** gồm Admin MVC, REST API và React SPA. Dự án dùng ASP.NET Core .NET 8, Entity Framework Core, SQL Server và React Vite để quản lý sản phẩm, danh mục, bài viết, khách hàng, giỏ hàng, đơn hàng, voucher, đánh giá, cửa hàng và bản đồ.
 
 ---
 
-## 🏗 Kiến trúc dự án (3 lớp)
-Giải pháp được tổ chức thành 3 Project độc lập:
-1.  **CMS.Data (Class Library)**: Lớp truy cập dữ liệu, định nghĩa thực thể (Entities), cấu hình Fluent API, Global Query Filter (Soft Delete), và quản lý Migration.
-2.  **CMS.Backend (ASP.NET Core MVC & WebAPI)**: Lớp ứng dụng quản trị (Admin Panel MVC) và cung cấp các RESTful WebAPI cho Frontend.
-3.  **CMS.Frontend (ReactJS SPA)**: Ứng dụng client-side viết bằng ReactJS kết nối qua WebAPI để phục vụ người xem tin tức và mua hàng.
+## 1. Công nghệ sử dụng
+
+| Thành phần | Công nghệ |
+|---|---|
+| Backend MVC/API | ASP.NET Core 8.0 |
+| ORM | Entity Framework Core 8 |
+| Database | Microsoft SQL Server / LocalDB |
+| Authentication | Cookie Auth cho Admin, JWT Bearer cho API khách hàng |
+| API Docs | Swagger / Swashbuckle |
+| Frontend | React 18 + Vite 6 |
+| Routing | React Router DOM |
+| HTTP Client | Axios |
+| Map | Leaflet + React Leaflet |
+| Test | xUnit, EF Core InMemory, coverlet |
 
 ---
 
-## 📁 Chi tiết nội dung các buổi học (Syllabus)
+## 2. Kiến trúc tổng quan
 
-### Buổi 1: Khởi tạo cấu trúc đồ án & Thiết kế Thực thể (Entities)
-*   **Mục tiêu**: Thiết lập cấu trúc Solution 3 lớp và định nghĩa các thực thể dữ liệu ban đầu.
-*   **Nội dung thực hiện**:
-    *   Tạo Blank Solution chứa 3 dự án độc lập: `CMS.Data`, `CMS.Backend`, và `CMS.Frontend` (ReactJS).
-    *   Tham chiếu liên kết: `CMS.Backend` tham chiếu đến `CMS.Data`.
-    *   Thiết kế 8 Class thực thể cốt lõi trong thư mục `Entities`:
-        1.  `Category`: Danh mục tin tức (Id, Name, Description, Posts).
-        2.  `Post`: Bài viết tin tức (Id, Title, Content, ImageUrl, CreatedDate, CategoryId).
-        3.  `User`: Người dùng quản trị (Id, Username, PasswordHash, FullName, Role).
-        4.  `CategoryProduct`: Danh mục sản phẩm (Id, Name, Description, Products).
-        5.  `Product`: Thông tin sản phẩm (Id, Name, Description, Price, StockQuantity, ImageUrl, CategoryProductId).
-        6.  `Customer`: Khách hàng mua hàng (Id, FullName, Email, Phone, Address, Password, Orders).
-        7.  `Order`: Đơn hàng (Id, OrderDate, CustomerId, Status, Notes, OrderDetails).
-        8.  `OrderDetail`: Chi tiết đơn hàng (Id, OrderId, ProductId, Quantity, UnitPrice).
+Solution được chia thành các project chính:
 
-### Buổi 2: Kết nối Cơ sở dữ liệu với Entity Framework Core
-*   **Mục tiêu**: Cài đặt EF Core, thiết lập DbContext và thực hiện Code First Migration sinh cơ sở dữ liệu.
-*   **Nội dung thực hiện**:
-    *   Cài đặt các gói thư viện NuGet cần thiết:
-        *   `Microsoft.EntityFrameworkCore.SqlServer`
-        *   `Microsoft.EntityFrameworkCore.Tools`
-    *   Xây dựng lớp `ApplicationDbContext` kế thừa từ `DbContext` để đăng ký các `DbSet` thực thể.
-    *   Cấu hình chuỗi kết nối (Connection String) SQL Server trong file `appsettings.json`.
-    *   Thực hiện chạy các lệnh Package Manager Console để sinh CSDL tự động:
-        *   `Add-Migration InitialCreate`
-        *   `Update-Database`
+| Project | Vai trò |
+|---|---|
+| `CMS.Data` | Entity, DbContext, migration, cấu hình quan hệ dữ liệu |
+| `CMS.Backend` | Admin MVC, REST API, service nghiệp vụ, upload ảnh, JWT/Cookie auth |
+| `CMS.Backend.Tests` | Unit test cho backend service/API logic |
+| `CMS.Frontend` | React SPA cho khách hàng: trang chủ, menu, giỏ hàng, checkout, profile, cửa hàng |
 
-### Buổi 3: Truy vấn LINQ & Thao tác dữ liệu chuyên sâu (CRUD)
-*   **Mục tiêu**: Thành thạo các hàm xử lý dữ liệu và viết logic nghiệp vụ.
-*   **Nội dung thực hiện**:
-    *   Viết truy vấn LINQ sử dụng các hàm lọc dữ liệu (`Where`), sắp xếp (`OrderBy`/`OrderByDescending`), và tìm kiếm (`FirstOrDefault`).
-    *   Áp dụng kỹ thuật **Eager Loading** sử dụng phương thức `.Include()` để JOIN dữ liệu bảng (ví dụ: Load thông tin Category đi kèm trong Post).
-    *   Xây dựng hoàn chỉnh luồng xử lý Thêm - Xóa - Sửa cho Danh mục (`Category`) và Bài viết (`Post`).
-    *   Phân biệt luồng xử lý phương thức `GET` (hiển thị trang nhập liệu) và `POST` (nhận dữ liệu từ form và ghi xuống database thông qua `SaveChanges`).
+Luồng chính:
 
-### Buổi 4: Xây dựng giao diện quản trị (Admin Panel MVC)
-*   **Mục tiêu**: Tạo trang giao diện Razor View và Sidebar điều hướng phân chia Layout quản trị.
-*   **Nội dung thực hiện**:
-    *   Thiết lập file Layout chung chuyên biệt dành riêng cho quản trị viên: `_LayoutAdmin.cshtml`.
-    *   Sử dụng Bootstrap chia khung giao diện:
-        *   Cột trái (`col-md-3`): Sidebar điều hướng nhanh các trang quản lý.
-        *   Cột phải (`col-md-9`): Phần hiển thị nội dung động qua `@RenderBody()`.
-    *   Thiết kế Dashboard trang chủ quản trị: hiển thị thống kê tổng quan số lượng bài viết, thành viên, và sản phẩm.
-    *   Hoàn thiện các trang danh sách và form biểu mẫu CRUD cho `Category`, `Post`, và `User`.
-
-### Buổi 5: Bảo mật & Phân quyền hệ thống (Security & Identity)
-*   **Mục tiêu**: Triển khai cơ chế xác thực người dùng và phân chia vai trò quản trị.
-*   **Nội dung thực hiện**:
-    *   Cấu hình dịch vụ xác thực Cookie (`CookieAuthentication`) trong file `Program.cs`.
-    *   Thiết lập ràng buộc kiểm tra đăng nhập trên các Controller quản trị bằng thẻ bảo mật `[Authorize]`.
-    *   Triển khai phân quyền truy cập theo vai trò (Role-based Authorization) giữa `Admin` và `Editor`.
-    *   Xây dựng Controller và giao diện trang đăng nhập/đăng xuất cho quản trị viên.
-    *   Thực hiện băm mật khẩu bảo mật (Password Hashing) thay vì lưu mật khẩu thô để đảm bảo an toàn thông tin.
-
-### Buổi 6: Xây dựng WebAPI RESTful Service (WebAPI RESTful)
-*   **Mục tiêu**: Xây dựng hệ thống RESTful WebAPI phục vụ cho ứng dụng Single Page Application (ReactJS) cùng cơ chế xác thực và bảo mật nâng cao.
-*   **Nội dung thực hiện**:
-    *   Cấu hình cơ chế xác thực JWT Bearer trong `Program.cs` kết hợp với sự kiện `OnTokenValidated` để kiểm tra phiên bản token (`TokenVersion`) nhằm hỗ trợ thu hồi token từ xa (Token Revocation) khi khách hàng đăng xuất hoặc đổi mật khẩu.
-    *   Xây dựng các API nghiệp vụ chính:
-        *   `CustomersController`: Đăng ký, đăng nhập, lấy thông tin cá nhân và đăng xuất an toàn.
-        *   `CustomerAddressesController`: Quản lý sổ địa chỉ CRUD và tự động thiết lập địa chỉ mặc định duy nhất.
-        *   `VouchersController`: Kiểm tra và xác thực tính hợp lệ của mã giảm giá (5 điều kiện bao gồm hạn dùng, giá trị đơn tối thiểu, trạng thái hoạt động, và lịch sử sử dụng).
-        *   `OrdersController`: Quản lý đặt hàng, lịch sử đơn hàng và yêu cầu hủy đơn hàng.
-        *   `ReviewsController`: Xử lý đánh giá sản phẩm có ràng buộc mua hàng và chống spam.
-    *   Tối ưu hóa tranh chấp tồn kho bằng cơ chế khóa bi quan (Pessimistic Locking) trong SQL Server sử dụng chỉ dẫn `UPDLOCK, ROWLOCK`.
-    *   Cấu hình Swagger tự động xử lý JWT Bearer Scheme và viết bộ kiểm thử tự động (Unit Tests) với EF Core InMemory Database.
-
-### Buổi 7: Thiết lập Frontend ReactJS & Giao diện tĩnh Phúc Long (ReactJS Setup)
-*   **Mục tiêu**: Khởi tạo dự án ReactJS (Vite) và thiết kế hệ thống giao diện, các thành phần giao diện tĩnh mô phỏng thương hiệu Phúc Long.
-*   **Nội dung thực hiện**:
-    *   Khởi tạo dự án ReactJS với Vite trong thư mục `CMS.Frontend`, gỡ bỏ gói Shopify Polaris và cài đặt các thư viện bổ sung (`react-router-dom`, `axios`).
-    *   Thiết lập CSS Hệ thống giao diện (Design System) Phúc Long trong `index.css` định nghĩa các biến màu chủ đạo (`#006F3C` - xanh lá đậm, `#0C713D` - xanh hover, `#B71C1C` - đỏ nhấn, `#ECEFF1` - xám nhạt) và các quy tắc typography (Arimo, Roboto).
-    *   Xây dựng cấu trúc định tuyến SPA với `react-router-dom` qua các trang trống: Trang chủ, Thực đơn, Giỏ hàng, Thanh toán, Đăng nhập, Đăng ký, Cá nhân, Cửa hàng.
-    *   Thiết lập quản lý trạng thái toàn cục bằng Context API:
-        *   `CartContext`: Quản lý giỏ hàng (thêm, sửa số lượng, xóa) và lưu trữ giỏ hàng trong `localStorage`.
-        *   `AuthContext`: Quản lý trạng thái đăng nhập và thông tin người dùng.
-    *   Xây dựng các UI Components tĩnh cốt lõi cho Trang chủ: Header, Footer, HeroBanner, CategoryMenu, ProductCard, StoreLocator, PostGrid.
-
-### Buổi 8: Tích hợp API & Kết nối Frontend với Backend WebAPI (API Integration)
-*   **Mục tiêu**: Kết nối ứng dụng ReactJS với hệ thống WebAPI để xử lý dữ liệu động thực tế từ cơ sở dữ liệu.
-*   **Nội dung thực hiện**:
-    *   Cấu hình biến môi trường `.env` (`VITE_API_URL`) và khởi tạo Axios Client tự động đính kèm token JWT vào header `Authorization` cho các yêu cầu bảo mật.
-    *   Xây dựng các dịch vụ API frontend (`authApi`, `productApi`, `categoryApi`, `orderApi`, `storeApi`, `voucherApi`, v.v.) gọi trực tiếp đến các Endpoint tương ứng trên Backend.
-    *   Phát triển các custom hooks (`useAuth`, `useCart`, `useProducts`, `useOrders`, v.v.) để đóng gói logic tương tác dữ liệu và quản lý trạng thái tải.
-    *   Thay thế toàn bộ dữ liệu mockup bằng dữ liệu thực tế từ Database trên các trang: Menu, Chi tiết sản phẩm (hiển thị tùy chọn size, toppings, đánh giá), Giỏ hàng (đồng bộ giỏ hàng, áp dụng Voucher), Thanh toán (chọn địa chỉ giao hàng, phương thức thanh toán, tạo đơn hàng), Cá nhân (lịch sử đơn hàng, sổ địa chỉ) và Danh sách cửa hàng.
-    *   Cập nhật cơ sở dữ liệu và API Backend: bổ sung liên kết danh mục cha (Parent Category) và ảnh danh mục, hỗ trợ tải ảnh sản phẩm lên thư mục Server.
-
-### Buổi 9: Bản đồ Cửa hàng, Khôi phục Mật khẩu & Quản lý nâng cao (Advanced Features & Integration)
-*   **Mục tiêu**: Tích hợp bản đồ trực quan, hệ thống gửi email khôi phục mật khẩu, quản lý địa chỉ nâng cao và viết bộ kiểm thử tự động.
-*   **Nội dung thực hiện**:
-    *   **Bản đồ & Định vị (Leaflet Map & Geolocation)**: Tích hợp bản đồ Leaflet tương tác, hiển thị danh sách cửa hàng Phúc Long trên bản đồ, tự động định vị vị trí người dùng (`useGeolocation`) và vẽ tuyến đường ngắn nhất từ vị trí người dùng đến cửa hàng (`useRouting`).
-    *   **Khôi phục mật khẩu qua Email (Forgot/Reset Password)**: Thiết lập dịch vụ gửi Email qua SMTP (`EmailService`) ở Backend, xây dựng luồng khôi phục mật khẩu bảo mật qua mã xác thực (Reset Password Token), hoàn thiện giao diện Forgot Password và Reset Password ở Frontend.
-    *   **Quản lý địa chỉ & Bản đồ hành chính nâng cao**: Tích hợp bộ dropdown Tỉnh/Thành - Quận/Huyện - Phường/Xã cho cả trang Admin (Quản lý cửa hàng) và Client (Trang cá nhân & Thanh toán), tích hợp thư viện `addressMapper` xử lý đồng bộ địa chỉ cũ/mới của TP.HCM (Quận 2, 9, Thủ Đức cũ sáp nhập thành TP. Thủ Đức).
-    *   **Quản lý hình ảnh**: Xây dựng `ImageUploadHelper` hỗ trợ tải ảnh danh mục, sản phẩm trực tiếp lên Server Backend.
-    *   **Kiểm thử phần mềm (Unit Testing)**: Xây dựng dự án `CMS.Backend.Tests` triển khai các ca kiểm thử tự động (Unit Test) cho các dịch vụ nghiệp vụ chính.
+```txt
+React SPA -> Axios API Client -> ASP.NET Core API -> Service Layer -> EF Core -> SQL Server
+Admin MVC -> Controller/View -> Service/DbContext -> SQL Server
+```
 
 ---
 
-## 🚀 Hướng dẫn khởi chạy dự án
+## 3. Cấu trúc thư mục
 
-### 1. Cài đặt môi trường phát triển
-Yêu cầu hệ thống cần cài đặt:
-1.  **Visual Studio 2022** (Có tích chọn workload *ASP.NET and web development* và *.NET desktop development*).
-2.  **Microsoft SQL Server** (Bản Express hoặc LocalDB).
-3.  **SQL Server Management Studio (SSMS)** để quản lý CSDL trực quan.
-4.  **Node.js (LTS)** để chạy ứng dụng ReactJS Frontend.
+```txt
+NguyenTrucTruong_Solution/
+├── CMS.Backend/                     # ASP.NET Core MVC + WebAPI
+│   ├── Controllers/                 # Controller MVC quản trị và Controller API
+│   │   └── Api/                     # REST API cho React frontend
+│   ├── Helpers/                     # Helper upload ảnh, xử lý file, tiện ích backend
+│   ├── Models/                      # ViewModel, DTO, request/response models
+│   │   ├── Api/                     # ApiResponse, query model
+│   │   ├── Dtos/                    # DTO trả về cho API
+│   │   └── ViewModels/              # ViewModel cho MVC Admin
+│   ├── Services/                    # Service nghiệp vụ backend
+│   │   └── Api/                     # Service phục vụ REST API
+│   ├── Views/                       # Razor Views cho Admin MVC
+│   ├── wwwroot/                     # Static files, ảnh upload, css/js admin
+│   ├── Program.cs                   # Cấu hình DI, Auth, Swagger, MVC/API pipeline
+│   └── appsettings.json             # Connection string và cấu hình backend
+│
+├── CMS.Data/                        # Class Library dữ liệu
+│   ├── Configurations/              # Fluent API configurations
+│   ├── Entities/                    # Entity: Product, Order, Customer, Voucher, Store...
+│   ├── Migrations/                  # EF Core migrations
+│   └── ApplicationDbContext.cs      # DbContext chính
+│
+├── CMS.Backend.Tests/               # Unit tests backend
+│   └── *.cs                         # Test service/API bằng xUnit + InMemory DB
+│
+├── CMS.Frontend/                    # React Vite SPA
+│   ├── public/                      # Static assets public
+│   ├── src/
+│   │   ├── api/                     # Axios clients theo module
+│   │   ├── assets/                  # Ảnh, icon, tài nguyên frontend
+│   │   ├── components/              # Component dùng lại
+│   │   │   ├── common/              # Loading, EmptyState, modal, ScrollToTop...
+│   │   │   ├── home/                # Hero, category menu, newest/best sellers
+│   │   │   ├── layout/              # Header, Footer, ClientLayout
+│   │   │   ├── product/             # ProductCard, QuickOrderModal
+│   │   │   ├── store/               # Store locator, Leaflet map
+│   │   │   └── order/               # Order list/detail components
+│   │   ├── context/                 # AuthContext, CartContext
+│   │   ├── hooks/                   # Custom hooks: products, orders, geolocation...
+│   │   ├── pages/                   # Page-level routes
+│   │   ├── services/                # Service gọi API nghiệp vụ
+│   │   ├── utils/                   # Helper format, constants, product option logic
+│   │   ├── App.jsx                  # Router chính
+│   │   └── main.jsx                 # Entry point React
+│   ├── package.json                 # npm scripts/dependencies
+│   └── vite.config.js               # Vite config
+│
+├── scripts/                         # Script hỗ trợ dữ liệu/tự động hóa
+├── NGUYENTRUCTRUONGCMS_SOLUTION.sln # Visual Studio solution
+└── README.md                        # Tài liệu dự án
+```
 
-### 2. Cấu hình Chuỗi kết nối CSDL (Connection String)
-Mở file `appsettings.json` trong dự án `CMS.Backend` và điều chỉnh cấu hình kết nối SQL Server của bạn:
+---
+
+## 4. Chức năng chính
+
+### Admin MVC
+
+- Đăng nhập/đăng xuất quản trị bằng Cookie Authentication.
+- Phân quyền quản trị theo role.
+- Quản lý bài viết và danh mục bài viết.
+- Quản lý sản phẩm, danh mục sản phẩm, ảnh sản phẩm.
+- Quản lý option group/option value: size, topping, đường, đá, trà.
+- Quản lý đơn hàng, chi tiết đơn hàng, trạng thái đơn hàng.
+- Quản lý khách hàng, địa chỉ khách hàng, đánh giá.
+- Quản lý voucher, banner, cửa hàng, tồn kho.
+
+### Frontend React
+
+- Trang chủ phong cách Phúc Long.
+- Menu sản phẩm có phân trang, lọc, tìm kiếm.
+- Chi tiết sản phẩm với option size/topping/đường/đá.
+- Logic size giống Phúc Long thật: size hiện tại `0 đ`, size khác là chênh lệch `+...đ` hoặc `-...đ` theo backend.
+- Popup đặt mua nhanh từ card sản phẩm.
+- Giỏ hàng, checkout, áp dụng voucher.
+- Đăng ký, đăng nhập, profile, lịch sử đơn hàng.
+- Sổ địa chỉ và chọn địa chỉ giao hàng.
+- Danh sách cửa hàng, bản đồ Leaflet, định vị người dùng.
+- Forgot password / reset password qua email.
+
+---
+
+## 5. REST API hiện có
+
+> Base URL mặc định tùy cấu hình backend, ví dụ: `https://localhost:xxxx` hoặc `http://localhost:5000`.
+>
+> Frontend cấu hình bằng biến môi trường `VITE_API_URL`.
+
+### Banner
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| GET | `/api/banners` | Lấy banner đang active |
+
+### Customer Auth/Profile
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| POST | `/api/customers/register` | Đăng ký khách hàng |
+| POST | `/api/customers/login` | Đăng nhập khách hàng, nhận JWT |
+| GET | `/api/customers/profile` | Lấy thông tin cá nhân |
+| PUT | `/api/customers/profile` | Cập nhật thông tin cá nhân |
+| POST | `/api/customers/logout` | Đăng xuất / thu hồi token |
+| POST | `/api/customers/forgot-password` | Gửi yêu cầu quên mật khẩu |
+| POST | `/api/customers/reset-password` | Đặt lại mật khẩu |
+
+### Customer Addresses
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| GET | `/api/customers/addresses` | Lấy danh sách địa chỉ |
+| GET | `/api/customers/addresses/{id}` | Lấy chi tiết địa chỉ |
+| POST | `/api/customers/addresses` | Tạo địa chỉ mới |
+| PUT | `/api/customers/addresses/{id}` | Cập nhật địa chỉ |
+| DELETE | `/api/customers/addresses/{id}` | Xóa địa chỉ |
+| POST | `/api/customers/addresses/{id}/set-default` | Đặt địa chỉ mặc định |
+
+### Orders
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| POST | `/api/orders` | Đặt hàng |
+| GET | `/api/orders` | Lấy lịch sử đơn hàng của khách hàng |
+| GET | `/api/orders/{id}` | Lấy chi tiết đơn hàng |
+| POST | `/api/orders/{id}/cancel` | Hủy đơn hàng |
+
+### Products
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| GET | `/api/products` | Lấy danh sách sản phẩm phân trang/lọc/sắp xếp |
+| GET | `/api/products/search?q=...` | Tìm kiếm sản phẩm |
+| GET | `/api/products/{id}` | Lấy chi tiết sản phẩm theo id |
+| GET | `/api/products/by-slug/{slug}` | Lấy chi tiết sản phẩm theo slug |
+| GET | `/api/products/newest?count=5` | Lấy sản phẩm mới nhất |
+| GET | `/api/products/best-sellers?count=3` | Lấy sản phẩm bán chạy |
+
+Query phổ biến của `/api/products`:
+
+| Query | Ý nghĩa |
+|---|---|
+| `page` | Trang hiện tại |
+| `pageSize` | Số item mỗi trang |
+| `categoryId` | Lọc theo id danh mục |
+| `categorySlug` | Lọc theo slug danh mục |
+| `keyword` | Từ khóa tìm kiếm |
+| `minPrice`, `maxPrice` | Lọc khoảng giá |
+| `sortBy`, `sortOrder` | Sắp xếp |
+
+### Product Categories
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| GET | `/api/product-categories` | Lấy danh sách danh mục sản phẩm |
+| GET | `/api/product-categories/tree` | Lấy cây danh mục sản phẩm |
+
+### Posts
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| GET | `/api/posts` | Lấy danh sách bài viết phân trang |
+| GET | `/api/posts/{id}` | Lấy chi tiết bài viết theo id |
+| GET | `/api/posts/by-slug/{slug}` | Lấy chi tiết bài viết theo slug |
+
+### Post Categories
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| GET | `/api/post-categories` | Lấy danh mục bài viết |
+| GET | `/api/post-categories/tree` | Lấy cây danh mục bài viết |
+
+### Reviews
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| GET | `/api/products/{productId}/reviews` | Lấy đánh giá của sản phẩm |
+| POST | `/api/reviews` | Tạo đánh giá sản phẩm |
+
+### Stores
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| GET | `/api/stores` | Lấy danh sách cửa hàng |
+
+### Vouchers
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| GET | `/api/vouchers` | Lấy voucher khả dụng |
+| GET | `/api/vouchers/validate?code=...` | Kiểm tra mã voucher |
+
+---
+
+## 6. API Admin MVC / Upload đáng chú ý
+
+Các controller MVC trong `CMS.Backend/Controllers` phục vụ trang quản trị:
+
+- `AccountController`: đăng nhập/đăng xuất admin.
+- `CategoryController`, `PostController`: quản lý tin tức.
+- `ProductCategoryController`, `ProductController`: quản lý sản phẩm.
+- `OptionGroupController`, `OptionValueController`: quản lý option sản phẩm.
+- `OrderController`, `OrderDetailController`: quản lý đơn hàng.
+- `CustomerController`, `CustomerAddressController`: quản lý khách hàng/địa chỉ.
+- `VoucherController`, `BannerController`, `StoreController`, `StockController`, `ReviewController`, `UserController`.
+
+Endpoint upload CKEditor:
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| POST | `/api/upload/ckeditor` | Upload ảnh cho CKEditor |
+
+---
+
+## 7. Cài đặt và chạy dự án
+
+### Yêu cầu môi trường
+
+- .NET SDK 8.0
+- Visual Studio 2022 hoặc Rider/VS Code
+- SQL Server hoặc SQL Server LocalDB
+- Node.js LTS
+- npm
+
+### Backend
+
+Cấu hình connection string trong `CMS.Backend/appsettings.json`:
+
 ```json
-"ConnectionStrings": {
-  "DefaultConnection": "Server=YOUR_SERVER_NAME;Database=NGUYENTRUCTRUONG_DB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=YOUR_SERVER;Database=NGUYENTRUCTRUONG_DB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+  }
 }
 ```
 
-### 3. Đồng bộ hóa Database
-Chạy lệnh sau tại thư mục gốc của giải pháp bằng Command Prompt hoặc PowerShell để khởi tạo CSDL:
+Chạy migration/database:
+
 ```powershell
 dotnet ef database update --project CMS.Data --startup-project CMS.Backend
 ```
 
-### 4. Khởi chạy Backend (Admin Panel MVC)
+Chạy backend:
+
 ```powershell
 dotnet run --project CMS.Backend
 ```
-*   Ứng dụng Backend chạy mặc định tại cổng: `http://localhost:5000` (hoặc cổng được cấu hình).
-*   Trang quản trị admin: truy cập trực tiếp bằng đường dẫn `/Category`, `/Post` hoặc `/User` để đăng nhập.
 
-### 5. Khởi chạy Frontend (ReactJS)
-Mở Terminal tại thư mục `CMS.Frontend`:
+Swagger thường nằm tại:
+
+```txt
+/swagger
+```
+
+### Frontend
+
+Tạo file `.env` trong `CMS.Frontend` nếu cần:
+
+```env
+VITE_API_URL=https://localhost:xxxx/api
+```
+
+Cài package và chạy dev:
+
 ```powershell
 cd CMS.Frontend
 npm install
 npm run dev
 ```
-*   Trang chủ ReactJS sẽ chạy tại: `http://localhost:5173` (hoặc cổng mặc định của Vite).
+
+Build production:
+
+```powershell
+npm run build
+```
+
+Preview production build:
+
+```powershell
+npm run preview
+```
+
+---
+
+## 8. Lệnh thường dùng
+
+| Lệnh | Thư mục chạy | Mô tả |
+|---|---|---|
+| `dotnet restore` | root | Restore NuGet packages |
+| `dotnet build` | root | Build toàn bộ solution |
+| `dotnet test` | root | Chạy unit test backend |
+| `dotnet run --project CMS.Backend` | root | Chạy backend MVC/API |
+| `npm install` | `CMS.Frontend` | Cài dependencies frontend |
+| `npm run dev` | `CMS.Frontend` | Chạy React dev server |
+| `npm run build` | `CMS.Frontend` | Build frontend production |
+| `npm run lint` | `CMS.Frontend` | Kiểm tra lint frontend |
+
+---
+
+## 9. Ghi chú bảo mật
+
+- Không commit connection string thật, SMTP password, JWT secret hoặc API key.
+- JWT dùng cho API khách hàng; Cookie Auth dùng cho Admin MVC.
+- Các endpoint cần đăng nhập phải gửi header:
+
+```txt
+Authorization: Bearer <access_token>
+```
+
+- Voucher, đặt hàng, đánh giá cần validate phía backend, không tin dữ liệu từ frontend.
+- Tồn kho khi đặt hàng cần xử lý trong transaction để tránh bán quá số lượng.
+
+---
+
+## 10. Tiến độ theo buổi
+
+| Buổi | Nội dung chính |
+|---|---|
+| Buổi 1 | Khởi tạo solution 3 lớp, entity cơ bản |
+| Buổi 2 | EF Core, DbContext, migration, SQL Server |
+| Buổi 3 | LINQ, CRUD, eager loading |
+| Buổi 4 | Admin MVC layout, dashboard, CRUD quản trị |
+| Buổi 5 | Cookie Auth, phân quyền Admin/Editor |
+| Buổi 6 | REST API, JWT, order/voucher/review/customer APIs |
+| Buổi 7 | React Vite, layout Phúc Long, Context API |
+| Buổi 8 | Tích hợp frontend với backend API, checkout/profile/menu |
+| Buổi 9 | Leaflet map, forgot/reset password, địa chỉ nâng cao, quick order, logic size giống Phúc Long |
+
+---
+
+## 11. Tác giả
+
+- Sinh viên: **Nguyễn Trúc Trường**
+- Repository: `nguyentruong23082005/NGUYENTRUCTRUONGCMS_SOLUTION`

@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import ErrorBoundary from './components/common/ErrorBoundary';
+import ScrollToTop from './components/common/ScrollToTop';
 import { AuthProvider } from './context/AuthContext';
 import { DeliveryProvider } from './context/DeliveryContext';
 import { CartProvider, useCart } from './context/CartContext';
@@ -26,6 +27,7 @@ function App() {
     <ErrorBoundary>
       <HelmetProvider>
         <BrowserRouter>
+          <ScrollToTop />
           <AuthProvider>
             <DeliveryProvider>
               <CartProvider>

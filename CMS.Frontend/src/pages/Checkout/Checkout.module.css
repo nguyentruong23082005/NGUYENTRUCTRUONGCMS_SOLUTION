@@ -365,7 +365,7 @@
   font-family: 'Arimo', sans-serif;
   font-size: 15px;
   font-weight: 700;
-  color: #333333;
+  color: #006F3C;
   padding: 14px 16px;
   border-bottom: 1px solid #ECEFF1;
   margin: 0;
@@ -423,11 +423,7 @@
   flex: 1;
 }
 
-.cartActions {
-  display: flex;
-  gap: 4px;
-  flex-shrink: 0;
-}
+/* Removed cartActions */
 
 .cartEditBtn,
 .cartDeleteBtn {
@@ -461,7 +457,13 @@
   font-family: 'Arimo', sans-serif;
   font-size: 14px;
   font-weight: 700;
-  color: #333333;
+  color: #006F3C;
+}
+
+.qtyActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 /* Nút số lượng giống mẫu: nền xanh, viền xanh */
