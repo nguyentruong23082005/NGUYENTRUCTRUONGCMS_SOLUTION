@@ -187,7 +187,10 @@ const ProductDetail = () => {
           </div>
 
           <div className={styles.detailsArea}>
-            {product.categoryName && <p className={styles.category}>{product.categoryName}</p>}
+            <div className={styles.categoryRow}>
+              {product.categoryName && <span className={styles.category}>{product.categoryName}</span>}
+              {product.isBestSeller && <span className={styles.bestSellerBadge}>Best Seller</span>}
+            </div>
             <h1 className={styles.title}>{product.name}</h1>
             <p className={styles.sku}>SKU: {product.skuLabel}</p>
             

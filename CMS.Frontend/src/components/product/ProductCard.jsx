@@ -30,10 +30,9 @@ const ProductCard = ({ product }) => {
           onError={() => setImgFailed(true)}
         />
 
+        {product.isBestSeller && <span className={styles.bestSellerBadge}>Best Seller</span>}
         {product.stockQuantity <= 0 && <span className={styles.outOfStockBadge}>Hết hàng</span>}
       </div>
-
-      {ribbonLabel && <div className={styles.ribbonBar}>{ribbonLabel}</div>}
 
       <div className={styles.content}>
         <h3 className={styles.title}>{product.name}</h3>
