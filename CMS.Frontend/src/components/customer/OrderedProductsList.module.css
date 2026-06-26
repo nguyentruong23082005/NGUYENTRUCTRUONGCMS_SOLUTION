@@ -42,6 +42,12 @@
   justify-content: center;
 }
 
+.prodImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .fallbackEmoji {
   font-size: 44px;
 }

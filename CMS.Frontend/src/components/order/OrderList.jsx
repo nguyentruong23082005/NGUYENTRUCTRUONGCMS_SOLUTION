@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Coffee, MapPin, Phone, User, Search } from 'lucide-react';
 import useOrders from '../../hooks/useOrders';
 import styles from '../../pages/Profile/Profile.module.css';
+import { getFullImageUrl } from '../../utils/imageHelper';
 
 // ── Helpers ────────────────────────────────────────────────
 const formatCurrency = (n) =>
@@ -233,7 +234,7 @@ const OrderList = () => {
                             >
                               {item.productImageUrl ? (
                                 <img 
-                                  src={item.productImageUrl} 
+                                  src={getFullImageUrl(item.productImageUrl)} 
                                   alt={item.productName} 
                                   style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                                 />

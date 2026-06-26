@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import useOrders from '../../hooks/useOrders';
 import styles from '../../pages/Profile/Profile.module.css';
 import localStyles from './OrderedProductsList.module.css';
+import { getFullImageUrl } from '../../utils/imageHelper';
 
 const OrderedProductsList = () => {
   const { getOrderHistory, loading } = useOrders();
@@ -22,10 +23,14 @@ const OrderedProductsList = () => {
                 id: item.productId,
                 name: item.productName,
                 price: item.basePrice,
+                image: item.productImageUrl,
                 orderedTimes: 1
               };
             } else {
               itemsMap[item.productId].orderedTimes += 1;
+              if (!itemsMap[item.productId].image && item.productImageUrl) {
+                itemsMap[item.productId].image = item.productImageUrl;
+              }
             }
           });
         }
@@ -66,7 +71,26 @@ const OrderedProductsList = () => {
               onClick={() => navigate(`/product/${product.id}`)}
             >
               <div className={localStyles.imgContainer}>
-                <span className={localStyles.fallbackEmoji}>🍵</span>
+                {product.image ? (
+                  <img 
+                    src={getFullImageUrl(product.image)} 
+                    alt={product.name} 
+                    className={localStyles.prodImage}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      const fallback = e.target.nextSibling;
+                      if (fallback) {
+                        fallback.style.display = 'block';
+                      }
+                    }}
+                  />
+                ) : null}
+                <span 
+                  className={localStyles.fallbackEmoji}
+                  style={{ display: product.image ? 'none' : 'block' }}
+                >
+                  🍵
+                </span>
               </div>
               <div className={localStyles.infoContainer}>
                 <h4 className={localStyles.title}>
@@ -90,3 +114,4 @@ const OrderedProductsList = () => {
 };
 
 export default OrderedProductsList;
+
