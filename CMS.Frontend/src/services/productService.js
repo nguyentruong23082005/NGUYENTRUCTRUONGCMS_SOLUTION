@@ -34,10 +34,17 @@ const normalizeProduct = (item) => ({
 // Lấy danh sách sản phẩm đã chuẩn hoá
 export const getProducts = async (params = {}) => {
   const response = await productApi.getAll(params);
-  if (response.data?.success && response.data?.data?.items) {
-    return response.data.data.items.map(normalizeProduct);
+  const data = response.data?.data;
+  if (response.data?.success && data?.items) {
+    return {
+      items: data.items.map(normalizeProduct),
+      page: Number(data.page || 1),
+      pageSize: Number(data.pageSize || 12),
+      totalItems: Number(data.totalItems || 0),
+      totalPages: Number(data.totalPages || 1)
+    };
   }
-  return [];
+  return { items: [], page: 1, pageSize: 12, totalItems: 0, totalPages: 1 };
 };
 
 // Tim kiem san pham qua endpoint search rieng (TC40)
@@ -50,10 +57,17 @@ export const searchProducts = async (params = {}, config = {}) => {
   delete searchParams.searchMode;
 
   const response = await productApi.search(searchParams, config);
-  if (response.data?.success && response.data?.data?.items) {
-    return response.data.data.items.map(normalizeProduct);
+  const data = response.data?.data;
+  if (response.data?.success && data?.items) {
+    return {
+      items: data.items.map(normalizeProduct),
+      page: Number(data.page || 1),
+      pageSize: Number(data.pageSize || 12),
+      totalItems: Number(data.totalItems || 0),
+      totalPages: Number(data.totalPages || 1)
+    };
   }
-  return [];
+  return { items: [], page: 1, pageSize: 12, totalItems: 0, totalPages: 1 };
 };
 
 // Lấy chi tiết sản phẩm theo ID

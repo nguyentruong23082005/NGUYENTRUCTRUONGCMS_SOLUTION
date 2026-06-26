@@ -100,6 +100,14 @@
   text-transform: uppercase;
 }
 
+.badgeRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
 .bestSellerBadge {
   align-self: flex-start;
   background-color: #be1e2d;
@@ -112,8 +120,20 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   width: fit-content;
-  margin-top: 4px;
-  margin-bottom: 4px;
+}
+
+.newestBadge {
+  align-self: flex-start;
+  background-color: #00713f;
+  color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 3px;
+  font-family: var(--font-primary);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: fit-content;
 }
 
 .title {
@@ -121,7 +141,7 @@
   color: var(--primary-color);
   font-family: var(--font-primary);
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
 }
 
@@ -136,7 +156,7 @@
   color: var(--primary-color);
   font-family: var(--font-primary);
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .qtyRow {
@@ -150,30 +170,28 @@
 .qtyLabel {
   color: #2c3331;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .qtySelector {
   display: inline-flex;
   align-items: center;
-  height: 32px;
-  overflow: hidden;
-  border: 1px solid #d8dfdc;
-  border-radius: 2px;
-  background: #ffffff;
+  height: 36px;
+  gap: 12px;
 }
 
 .qtyBtn {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border: 0;
-  background: var(--primary-color);
+  border-radius: 6px;
+  background: #00713f;
   color: #ffffff;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 600;
   transition: background 0.2s ease;
 }
 
@@ -188,15 +206,14 @@
 }
 
 .qtyInput {
-  width: 40px;
-  height: 32px;
+  width: 30px;
+  height: 36px;
   border: 0;
-  border-left: 1px solid #d8dfdc;
-  border-right: 1px solid #d8dfdc;
+  background: transparent;
   outline: none;
   color: #26312d;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 500;
   text-align: center;
 }
 
@@ -237,7 +254,7 @@
   margin: 0;
   color: #202725;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .optionHeader span {
@@ -271,7 +288,7 @@
   color: #2c3331;
   cursor: pointer;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
@@ -291,7 +308,7 @@
 .optionButton small {
   color: #697471;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .optionButton em {
@@ -326,7 +343,7 @@
   cursor: pointer;
   font-family: var(--font-secondary);
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1;
   text-transform: none;
@@ -444,7 +461,7 @@
   text-align: center;
   color: #2c3331;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .sizePrice {
@@ -454,7 +471,7 @@
   background: #eef2f0;
   color: #697471;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   border-top: 1px solid #dfe5e2;
 }
 
@@ -485,7 +502,7 @@
   background: #eef2f0;
   color: #2c3331;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -520,7 +537,7 @@
 .toppingName {
   color: #2c3331;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .toppingPrice {
@@ -565,7 +582,7 @@
   width: 32px;
   text-align: center;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #26312d;
 }
 

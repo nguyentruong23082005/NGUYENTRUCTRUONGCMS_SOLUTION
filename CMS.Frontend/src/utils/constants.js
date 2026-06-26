@@ -36,3 +36,9 @@ export const ORDER_STATUS_LABEL = {
   Delivered: 'Đã giao',
   Cancelled: 'Đã huỷ'
 };
+
+// Nhãn hiển thị sản phẩm đặc biệt (bán chạy, mới nhất)
+export const PRODUCT_BADGE_LABELS = {
+  BEST_SELLER: 'Best Seller',
+  NEWEST: 'Mới nhất'
+};

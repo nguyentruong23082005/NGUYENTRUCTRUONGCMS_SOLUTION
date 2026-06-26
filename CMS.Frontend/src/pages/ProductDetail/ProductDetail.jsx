@@ -2,10 +2,26 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import productService from '../../services/productService';
+import categoryApi from '../../api/categoryApi';
 import { useCart } from '../../context/CartContext';
 import Loading from '../../components/common/Loading/Loading';
 import EmptyState from '../../components/common/EmptyState/EmptyState';
 import styles from './ProductDetail.module.css';
+import { PRODUCT_BADGE_LABELS } from '../../utils/constants';
+
+const findCategoryNameBySlug = (categories = [], slug) => {
+  for (const cat of categories) {
+    if (cat.slug === slug || cat.Slug === slug) {
+      return cat.name || cat.Name;
+    }
+    const children = cat.children || cat.Children;
+    if (Array.isArray(children) && children.length > 0) {
+      const foundName = findCategoryNameBySlug(children, slug);
+      if (foundName) return foundName;
+    }
+  }
+  return null;
+};
 
 const normalizeOptionValues = (values = []) => values.map((value) => ({
   id: Number(value.id),
@@ -50,16 +66,18 @@ const ProductDetail = () => {
   const [mainImgFailed, setMainImgFailed] = useState(false);
   const [isBestSeller, setIsBestSeller] = useState(false);
   const [isNewest, setIsNewest] = useState(false);
+  const [bestSellerLabel, setBestSellerLabel] = useState(PRODUCT_BADGE_LABELS.BEST_SELLER);
 
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        const [item, images, bestSellers, newestProducts] = await Promise.all([
+        const [item, images, bestSellers, newestProducts, categoriesResponse] = await Promise.all([
           productService.getProductById(id),
           productService.getProductImages(id),
           productService.getBestSellers(10),
-          productService.getNewestProducts(10)
+          productService.getNewestProducts(10),
+          categoryApi.getTree()
         ]);
 
         if (item) {
@@ -79,6 +97,13 @@ const ProductDetail = () => {
           
           setIsBestSeller(bestSellers.some((bp) => bp.id.toString() === item.id.toString()));
           setIsNewest(newestProducts.some((np) => np.id.toString() === item.id.toString()));
+
+          // Lấy nhãn Best Seller động từ tên danh mục trong database
+          const categoriesList = categoriesResponse?.data?.data || [];
+          const dynamicName = findCategoryNameBySlug(categoriesList, 'best-seller');
+          if (dynamicName) {
+            setBestSellerLabel(dynamicName);
+          }
         } else {
           setProduct(null);
           setProductImages([]);
@@ -198,10 +223,14 @@ const ProductDetail = () => {
           </div>
 
           <div className={styles.detailsArea}>
-            {product.categoryName && <p className={styles.category}>{product.categoryName}</p>}
+             {product.categoryName && <p className={styles.category}>{product.categoryName}</p>}
             <h1 className={styles.title}>{product.name}</h1>
             <p className={styles.sku}>SKU: {product.skuLabel}</p>
-            {isBestSeller && <div className={styles.bestSellerBadge}>Best Seller</div>}
+            
+            <div className={styles.badgeRow}>
+              {isBestSeller && <div className={styles.bestSellerBadge}>{bestSellerLabel}</div>}
+              {isNewest && <div className={styles.newestBadge}>{PRODUCT_BADGE_LABELS.NEWEST}</div>}
+            </div>
             
             <div className={styles.priceQtyRow}>
               <p className={styles.price}>{formatPrice(product.price)}</p>
@@ -245,7 +274,6 @@ const ProductDetail = () => {
                 <section key={group.id} className={styles.optionGroup}>
                   <div className={styles.optionHeader}>
                     <h2>{group.name}</h2>
-                    {group.isRequired && <span>Bắt buộc</span>}
                   </div>
 
                   {isToppingGroup ? (

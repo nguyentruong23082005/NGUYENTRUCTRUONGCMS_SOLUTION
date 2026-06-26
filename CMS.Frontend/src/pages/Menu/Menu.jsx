@@ -10,6 +10,7 @@ import PriceFilter from '../../components/product/PriceFilter';
 import EmptyState from '../../components/common/EmptyState/EmptyState';
 import styles from './Menu.module.css';
 import productService from '../../services/productService';
+import { PRODUCT_BADGE_LABELS } from '../../utils/constants';
 
 const normalizeRouteSlug = (slug = '') => decodeURIComponent(slug).replace(/--c\d+$/i, '');
 
@@ -63,6 +64,7 @@ const Menu = () => {
   const [priceFilter, setPriceFilter] = useState({ minPrice: null, maxPrice: null });
   const [bestSellers, setBestSellers] = useState([]);
   const [newestProducts, setNewestProducts] = useState([]);
+  const [bestSellerLabel, setBestSellerLabel] = useState(PRODUCT_BADGE_LABELS.BEST_SELLER);
 
   useEffect(() => {
     const fetchBadgeData = async () => {
@@ -134,7 +136,15 @@ const Menu = () => {
       try {
         const response = await categoryApi.getTree();
         const items = response?.data?.data || [];
-        setCategoryTree(Array.isArray(items) ? items.map((item) => normalizeCategory(item)) : []);
+        const normalized = Array.isArray(items) ? items.map((item) => normalizeCategory(item)) : [];
+        setCategoryTree(normalized);
+
+        // Lấy nhãn Best Seller động từ tên danh mục trong database
+        const flatCats = flattenCategories(normalized);
+        const bsCat = flatCats.find(c => c.slug === 'best-seller');
+        if (bsCat && bsCat.name) {
+          setBestSellerLabel(bsCat.name);
+        }
       } catch (error) {
         console.error('Không tải được danh mục từ API:', error);
         setCategoryTree([]);
@@ -269,8 +279,8 @@ const Menu = () => {
                         const isBest = bestSellers.some((bp) => bp.id.toString() === product.id.toString());
                         const isNew = newestProducts.some((np) => np.id.toString() === product.id.toString());
                         let badgeLabel = '';
-                        if (isBest) badgeLabel = 'Best Seller';
-                        else if (isNew) badgeLabel = 'Mới nhất';
+                        if (isBest) badgeLabel = bestSellerLabel;
+                        else if (isNew) badgeLabel = PRODUCT_BADGE_LABELS.NEWEST;
 
                         return (
                           <ProductCard

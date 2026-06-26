@@ -8,6 +8,7 @@ import productService from '../services/productService';
  */
 export const useProducts = (params = {}) => {
   const [products, setProducts] = useState([]);
+  const [pagination, setPagination] = useState({ page: 1, pageSize: 12, totalItems: 0, totalPages: 1 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -15,14 +16,27 @@ export const useProducts = (params = {}) => {
     setLoading(true);
     setError(null);
     try {
-      const list = params.searchMode
+      const result = params.searchMode
         ? await productService.searchProducts(params)
         : await productService.getProducts(params);
-      setProducts(list);
+      
+      if (result && typeof result === 'object' && 'items' in result) {
+        setProducts(result.items);
+        setPagination({
+          page: result.page,
+          pageSize: result.pageSize,
+          totalItems: result.totalItems,
+          totalPages: result.totalPages
+        });
+      } else {
+        setProducts([]);
+        setPagination({ page: 1, pageSize: 12, totalItems: 0, totalPages: 1 });
+      }
     } catch (err) {
       console.error('Lỗi khi tải sản phẩm từ API:', err);
       setError('Không thể tải danh sách sản phẩm. Vui lòng thử lại sau.');
       setProducts([]);
+      setPagination({ page: 1, pageSize: 12, totalItems: 0, totalPages: 1 });
     } finally {
       setLoading(false);
     }
@@ -33,7 +47,7 @@ export const useProducts = (params = {}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(params)]);
 
-  return { products, loading, error, refetch: fetchProducts };
+  return { products, pagination, loading, error, refetch: fetchProducts };
 };
 
 export default useProducts;
