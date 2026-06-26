@@ -48,14 +48,18 @@ const ProductDetail = () => {
   const [qty, setQty] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [mainImgFailed, setMainImgFailed] = useState(false);
+  const [isBestSeller, setIsBestSeller] = useState(false);
+  const [isNewest, setIsNewest] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        const [item, images] = await Promise.all([
+        const [item, images, bestSellers, newestProducts] = await Promise.all([
           productService.getProductById(id),
-          productService.getProductImages(id)
+          productService.getProductImages(id),
+          productService.getBestSellers(10),
+          productService.getNewestProducts(10)
         ]);
 
         if (item) {
@@ -72,14 +76,21 @@ const ProductDetail = () => {
           setSelectedOptions(buildDefaultSelections(optionGroups));
           setQty(1);
           setMainImgFailed(false); // Reset on product change
+          
+          setIsBestSeller(bestSellers.some((bp) => bp.id.toString() === item.id.toString()));
+          setIsNewest(newestProducts.some((np) => np.id.toString() === item.id.toString()));
         } else {
           setProduct(null);
           setProductImages([]);
+          setIsBestSeller(false);
+          setIsNewest(false);
         }
       } catch (error) {
         console.error(`Lỗi khi tải chi tiết sản phẩm ${id} từ service:`, error);
         setProduct(null);
         setProductImages([]);
+        setIsBestSeller(false);
+        setIsNewest(false);
       } finally {
         setLoading(false);
       }
@@ -190,7 +201,7 @@ const ProductDetail = () => {
             {product.categoryName && <p className={styles.category}>{product.categoryName}</p>}
             <h1 className={styles.title}>{product.name}</h1>
             <p className={styles.sku}>SKU: {product.skuLabel}</p>
-            {product.totalSold >= 100 && <div className={styles.bestSellerBadge}>Best Seller</div>}
+            {isBestSeller && <div className={styles.bestSellerBadge}>Best Seller</div>}
             
             <div className={styles.priceQtyRow}>
               <p className={styles.price}>{formatPrice(product.price)}</p>

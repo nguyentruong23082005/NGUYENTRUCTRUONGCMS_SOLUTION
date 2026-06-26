@@ -9,6 +9,7 @@ import ProductCardSkeleton from '../../components/product/ProductCardSkeleton';
 import PriceFilter from '../../components/product/PriceFilter';
 import EmptyState from '../../components/common/EmptyState/EmptyState';
 import styles from './Menu.module.css';
+import productService from '../../services/productService';
 
 const normalizeRouteSlug = (slug = '') => decodeURIComponent(slug).replace(/--c\d+$/i, '');
 
@@ -60,6 +61,24 @@ const Menu = () => {
 
   const [categoryTree, setCategoryTree] = useState([]);
   const [priceFilter, setPriceFilter] = useState({ minPrice: null, maxPrice: null });
+  const [bestSellers, setBestSellers] = useState([]);
+  const [newestProducts, setNewestProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchBadgeData = async () => {
+      try {
+        const [bs, np] = await Promise.all([
+          productService.getBestSellers(10),
+          productService.getNewestProducts(10)
+        ]);
+        setBestSellers(bs);
+        setNewestProducts(np);
+      } catch (error) {
+        console.error('Lỗi khi tải dữ liệu nhãn:', error);
+      }
+    };
+    fetchBadgeData();
+  }, []);
 
   // Điều khiển đóng/mở danh mục cha độc lập
   const [expandedCategorySlugs, setExpandedCategorySlugs] = useState({});
@@ -246,13 +265,21 @@ const Menu = () => {
                   <section key={section.id} className={styles.productSection}>
                     <h2 className={styles.sectionTitle}>{formatSectionTitle(section.name)}</h2>
                     <div className={styles.grid}>
-                      {section.products.map((product) => (
-                        <ProductCard
-                          key={product.id}
-                          product={product}
-                          badgeLabel={product.totalSold >= 100 ? 'Best Seller' : ''}
-                        />
-                      ))}
+                      {section.products.map((product) => {
+                        const isBest = bestSellers.some((bp) => bp.id.toString() === product.id.toString());
+                        const isNew = newestProducts.some((np) => np.id.toString() === product.id.toString());
+                        let badgeLabel = '';
+                        if (isBest) badgeLabel = 'Best Seller';
+                        else if (isNew) badgeLabel = 'Mới nhất';
+
+                        return (
+                          <ProductCard
+                            key={product.id}
+                            product={product}
+                            badgeLabel={badgeLabel}
+                          />
+                        );
+                      })}
                     </div>
                   </section>
                 ))}
