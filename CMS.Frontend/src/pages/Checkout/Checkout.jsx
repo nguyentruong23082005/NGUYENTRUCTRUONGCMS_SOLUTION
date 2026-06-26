@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '../../context/CartContext';
@@ -6,7 +6,6 @@ import { useAuth } from '../../context/AuthContext';
 import { useDelivery } from '../../context/DeliveryContext';
 import { getFullImageUrl } from '../../utils/imageHelper';
 import orderApi from '../../api/orderApi';
-import useCustomers from '../../hooks/useCustomers';
 import styles from './Checkout.module.css';
 
 const Checkout = () => {
@@ -15,96 +14,83 @@ const Checkout = () => {
   const { deliveryType, deliveryAddress, structuredAddress, openModal } = useDelivery();
   const navigate = useNavigate();
 
-  // Thông tin người nhận
-  const [fullName, setFullName] = useState(user?.fullName || '');
-  const [phone, setPhone] = useState(user?.phoneNumber || '');
+  // Thông tin người nhận — tự động lấy từ tài khoản đã đăng nhập
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone]       = useState('');
 
-  // Ghi chú đơn hàng
-  const [notes, setNotes] = useState('');
+  useEffect(() => {
+    if (user) {
+      setFullName(user.fullName || '');
+      setPhone(user.phoneNumber || '');
+    }
+  }, [user]);
 
-  // Voucher
-  const [voucherCode, setVoucherCode] = useState('');
+  // Ghi chú, mã voucher, phương thức thanh toán, điều khoản
+  const [notes,         setNotes]         = useState('');
+  const [voucherCode,   setVoucherCode]   = useState('');
   const [voucherApplied, setVoucherApplied] = useState(false);
-
-  // Phương thức thanh toán
   const [paymentMethod, setPaymentMethod] = useState('card');
-
-  // Đồng ý điều khoản
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-  // Tab giao hàng / đến lấy (hiển thị theo DeliveryContext)
+  // Tab: delivery | pickup — đồng bộ với DeliveryContext
   const [activeTab, setActiveTab] = useState(deliveryType === 'pickup' ? 'pickup' : 'delivery');
-
-  // Trạng thái form
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-
-  // Cập nhật tab khi deliveryType thay đổi
   useEffect(() => {
     setActiveTab(deliveryType === 'pickup' ? 'pickup' : 'delivery');
   }, [deliveryType]);
 
-  // Định dạng tiền
-  const formatPrice = (price) =>
-    new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+  // Expand/collapse ghi chú
+  const [notesExpanded, setNotesExpanded] = useState(false);
 
-  // Xử lý đặt hàng
-  const handleCheckoutSubmit = async (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess,    setIsSuccess]    = useState(false);
+
+  const formatPrice = (n) =>
+    new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n);
+
+  // ─── Submit ────────────────────────────────────────────────
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!fullName.trim()) {
-      showToast('Vui lòng nhập tên người nhận!', 'error');
-      return;
-    }
+    if (!fullName.trim()) { showToast('Vui lòng nhập họ tên người nhận!', 'error'); return; }
     if (!phone.trim() || !/^[0-9]{10,11}$/.test(phone.trim())) {
-      showToast('Số điện thoại không hợp lệ (10-11 chữ số)!', 'error');
-      return;
+      showToast('Số điện thoại không hợp lệ (10-11 chữ số)!', 'error'); return;
     }
-    if (!agreedToTerms) {
-      showToast('Vui lòng đồng ý với điều khoản và chính sách!', 'error');
-      return;
-    }
-    if (cartItems.length === 0) {
-      showToast('Giỏ hàng trống!', 'error');
-      return;
-    }
+    if (!agreedToTerms) { showToast('Vui lòng đồng ý với điều khoản!', 'error'); return; }
 
     setIsSubmitting(true);
 
-    // Ghép địa chỉ đầy đủ
     const shippingAddress = deliveryAddress ||
       [structuredAddress?.street, structuredAddress?.ward, structuredAddress?.district, structuredAddress?.province]
         .filter(Boolean).join(', ');
 
-    const orderPayload = {
+    const payload = {
       customerAddressId: null,
-      receiverName: fullName,
+      receiverName:  fullName,
       receiverPhone: phone,
       shippingAddress,
       notes,
       voucherCode: voucherCode.trim() || null,
       items: cartItems.map(item => ({
-        productId: Number(item.id),
-        quantity: item.quantity,
+        productId:    Number(item.id),
+        quantity:     item.quantity,
         optionValueIds: item.optionValueIds || [],
       })),
     };
 
     try {
-      await orderApi.create(orderPayload);
+      await orderApi.create(payload);
       setIsSuccess(true);
       clearCart();
-      showToast('Đặt hàng thành công! Phúc Long sẽ liên hệ giao hàng sớm nhất.');
+      showToast('Đặt hàng thành công! Phúc Long sẽ liên hệ sớm nhất.');
       setTimeout(() => navigate('/'), 4000);
-    } catch (error) {
-      console.error('Lỗi khi đặt hàng:', error);
+    } catch (err) {
+      console.error(err);
       showToast('Có lỗi xảy ra. Vui lòng thử lại!', 'error');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // ─── Empty cart ───────────────────────────────────────────
+  // ─── Giỏ trống ─────────────────────────────────────────────
   if (cartItems.length === 0 && !isSuccess) {
     return (
       <div className={styles.page}>
@@ -121,7 +107,7 @@ const Checkout = () => {
     );
   }
 
-  // ─── Success ──────────────────────────────────────────────
+  // ─── Thành công ────────────────────────────────────────────
   if (isSuccess) {
     return (
       <div className={styles.successPage}>
@@ -130,8 +116,8 @@ const Checkout = () => {
           <div className={styles.successIcon}>🎉</div>
           <h2>Đặt Hàng Thành Công!</h2>
           <p className={styles.successText}>
-            Cảm ơn quý khách <strong>{fullName}</strong> đã tin dùng Phúc Long Heritage.
-            Chúng tôi sẽ liên hệ xác nhận qua <strong>{phone}</strong> trong giây lát.
+            Cảm ơn <strong>{fullName}</strong> đã tin dùng Phúc Long Heritage.
+            Chúng tôi sẽ liên hệ qua <strong>{phone}</strong> trong giây lát.
           </p>
           <p className={styles.redirectText}>Tự động điều hướng về Trang chủ sau ít giây...</p>
           <Link to="/" className={styles.homeBtn}>Quay lại Trang chủ</Link>
@@ -140,181 +126,192 @@ const Checkout = () => {
     );
   }
 
-  // ─── Main checkout ────────────────────────────────────────
+  const totalQty = cartItems.reduce((s, i) => s + i.quantity, 0);
+
+  // ─── Main ──────────────────────────────────────────────────
   return (
     <div className={styles.page}>
       <Helmet><title>Thanh toán đơn hàng - Phúc Long Coffee &amp; Tea</title></Helmet>
 
       <div className="container">
         {/* Breadcrumb */}
-        <nav className={styles.breadcrumb} aria-label="breadcrumb">
+        <nav className={styles.breadcrumb}>
           <Link to="/" className={styles.breadcrumbLink}>Trang chủ</Link>
           <span className={styles.breadcrumbSep}>/</span>
-          <span className={styles.breadcrumbCurrent}>Thanh toán</span>
+          <span className={styles.breadcrumbActive}>Thanh toán</span>
         </nav>
 
         <div className={styles.layout}>
-          {/* ══ CỘT TRÁI: Thông tin giao hàng ══ */}
-          <form onSubmit={handleCheckoutSubmit} className={styles.leftCol} id="checkout-form" noValidate>
 
-            {/* Tabs GIAO HÀNG / ĐẾN LẤY */}
+          {/* ══ CỘT TRÁI ══════════════════════════════════════ */}
+          <form onSubmit={handleSubmit} id="checkout-form" noValidate className={styles.leftCol}>
+
+            {/* Tabs */}
             <div className={styles.tabs}>
               <button
                 type="button"
                 className={`${styles.tabBtn} ${activeTab === 'delivery' ? styles.tabActive : ''}`}
                 onClick={() => setActiveTab('delivery')}
-              >
-                GIAO HÀNG
-              </button>
+              >GIAO HÀNG</button>
               <button
                 type="button"
                 className={`${styles.tabBtn} ${activeTab === 'pickup' ? styles.tabActive : ''}`}
                 onClick={() => setActiveTab('pickup')}
-              >
-                ĐẾN LẤY
-              </button>
+              >ĐẾN LẤY</button>
             </div>
 
-            {/* Section: Địa chỉ */}
-            <button
-              type="button"
-              className={styles.sectionRow}
-              onClick={openModal}
-              aria-label="Thay đổi địa chỉ giao hàng"
-            >
-              <div className={styles.sectionRowLeft}>
-                <span className={styles.sectionIcon}>📍</span>
-                <div className={styles.sectionInfo}>
-                  <span className={styles.sectionLabel}>Địa chỉ</span>
-                  <span className={styles.sectionValue}>
-                    {deliveryAddress || 'Chưa chọn địa chỉ giao hàng'}
-                  </span>
-                </div>
+            {/* ── Địa chỉ ── */}
+            <button type="button" className={styles.row} onClick={openModal}>
+              <div className={styles.rowBody}>
+                <span className={styles.rowLabel}>ĐỊA CHỈ</span>
+                <span className={styles.rowValue}>
+                  {deliveryAddress || 'Chưa chọn địa chỉ giao hàng'}
+                </span>
               </div>
-              <span className={styles.sectionChevron}>›</span>
+              <span className={styles.chevron}>›</span>
             </button>
 
-            {/* Section: Người nhận */}
-            <div className={styles.sectionRow} style={{ flexDirection: 'column', alignItems: 'stretch', gap: 12 }}>
-              <div className={styles.sectionRowLeft}>
-                <span className={styles.sectionIcon}>👤</span>
-                <span className={styles.sectionLabel}>Thông tin người nhận</span>
+            {/* ── Người nhận ── */}
+            <div className={styles.row} style={{ cursor: 'default' }}>
+              <div className={styles.rowBody}>
+                <span className={styles.rowLabel} style={{ color: '#006F3C', fontWeight: 700 }}>
+                  {fullName ? fullName.toUpperCase() : 'THÔNG TIN NGƯỜI NHẬN'}
+                </span>
+                <span className={styles.rowValue}>
+                  Số điện thoại:{' '}
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className={styles.inlineInput}
+                    placeholder="Nhập số điện thoại"
+                  />
+                </span>
+                {!fullName && (
+                  <input
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className={styles.inlineInput}
+                    placeholder="Họ và tên người nhận"
+                    style={{ marginTop: 6 }}
+                  />
+                )}
               </div>
-              <div className={styles.receiverGrid}>
-                <input
-                  id="fullName"
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className={styles.receiverInput}
-                  placeholder="Họ và tên người nhận"
-                  required
-                />
-                <input
-                  id="phone"
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className={styles.receiverInput}
-                  placeholder="Số điện thoại liên lạc"
-                  required
-                />
-              </div>
+              <span className={styles.chevron} style={{ visibility: 'hidden' }}>›</span>
             </div>
 
-            {/* Section: Ghi chú */}
-            <div className={styles.sectionRow} style={{ flexDirection: 'column', alignItems: 'stretch', gap: 8 }}>
-              <div className={styles.sectionRowLeft}>
-                <span className={styles.sectionIcon}>📝</span>
-                <span className={styles.sectionLabel}>Ghi chú cho cửa hàng</span>
+            {/* ── Ghi chú ── */}
+            <button
+              type="button"
+              className={styles.row}
+              onClick={() => setNotesExpanded(v => !v)}
+            >
+              <div className={styles.rowBody}>
+                <span className={styles.rowLabel}>GHI CHÚ CHO CỬA HÀNG</span>
+                <span className={styles.rowValue} style={{ color: notes ? '#333' : '#9B9B9B' }}>
+                  {notes || 'Ghi chú:'}
+                </span>
               </div>
-              <textarea
-                id="notes"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                className={styles.notesInput}
-                placeholder="Chỉ chú (ví dụ: ít đá, ngọt vừa, giao giờ hành chính...)"
-                rows={2}
-              />
-            </div>
+              <span className={styles.chevron}>›</span>
+            </button>
 
-            {/* Section: Thông tin hóa đơn VAT */}
-            <div className={styles.vatInfo}>
+            {notesExpanded && (
+              <div className={styles.notesPanel}>
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  className={styles.notesInput}
+                  placeholder="Ví dụ: ít đá, ngọt vừa, giao giờ hành chính..."
+                  rows={3}
+                  autoFocus
+                />
+              </div>
+            )}
+
+            {/* ── VAT ── */}
+            <div className={styles.vatSection}>
+              <p className={styles.vatTitle}>Thông tin xuất hóa đơn VAT</p>
               <p>- Vui lòng xem hướng dẫn xuất phiếu GTGT (VAT) từ hóa đơn giấy đi kèm món nước.</p>
               <p>- Trường hợp không nhận được hóa đơn giấy, vui lòng liên hệ Hotline CSKH: 1900234518 (nhấn phím 1) hoặc Fanpage Phúc Long Coffee &amp; Tea từ 8h00 - 17h45 để được hỗ trợ trực tiếp.</p>
             </div>
-
           </form>
 
-          {/* ══ CỘT PHẢI: Giỏ hàng + Thanh toán ══ */}
+          {/* ══ CỘT PHẢI ══════════════════════════════════════ */}
           <aside className={styles.rightCol}>
 
-            {/* Giỏ hàng */}
-            <div className={styles.cartSection}>
-              <h3 className={styles.cartTitle}>
-                Giỏ hàng của bạn ({cartItems.reduce((s, i) => s + i.quantity, 0)} món)
-              </h3>
+            {/* ── Giỏ hàng ── */}
+            <div className={styles.cartBox}>
+              <p className={styles.cartBoxTitle}>Giỏ hàng của bạn ({totalQty} món)</p>
 
-              <div className={styles.cartList}>
-                {cartItems.map((item) => {
-                  const itemKey = item.cartKey || item.id;
-                  const maxStock = item.stockQuantity ?? 99;
-                  return (
-                    <div key={itemKey} className={styles.cartItem}>
-                      {/* Ảnh sản phẩm */}
-                      <div className={styles.cartItemImg}>
-                        <img
-                          src={getFullImageUrl(item.imageUrl || item.image)}
-                          alt={item.name}
-                          onError={(e) => { e.target.style.display = 'none'; }}
-                        />
-                      </div>
+              {cartItems.map((item) => {
+                const key      = item.cartKey || item.id;
+                const maxStock = item.stockQuantity ?? 99;
+                const imgSrc   = getFullImageUrl(item.imageUrl || item.image);
 
-                      {/* Thông tin */}
-                      <div className={styles.cartItemInfo}>
-                        <span className={styles.cartItemName}>{item.name}</span>
-                        {item.selectedOptions?.length > 0 && (
-                          <span className={styles.cartItemOptions}>
-                            {item.selectedOptions.map(o => o.name).join(', ')}
-                          </span>
-                        )}
-                        <span className={styles.cartItemPrice}>{formatPrice(item.price)}</span>
-                      </div>
-
-                      {/* Nút +/- */}
-                      <div className={styles.cartItemQty}>
-                        <button
-                          type="button"
-                          className={styles.qtyBtn}
-                          onClick={() => updateCartQuantity(itemKey, item.quantity - 1)}
-                          aria-label="Giảm"
-                        >−</button>
-                        <span className={styles.qtyNum}>{item.quantity}</span>
-                        <button
-                          type="button"
-                          className={styles.qtyBtn}
-                          onClick={() => updateCartQuantity(itemKey, item.quantity + 1)}
-                          disabled={item.quantity >= maxStock}
-                          aria-label="Tăng"
-                        >+</button>
-                      </div>
-
-                      {/* Nút xóa */}
-                      <button
-                        type="button"
-                        className={styles.cartItemRemove}
-                        onClick={() => removeFromCart(itemKey)}
-                        aria-label={`Xóa ${item.name}`}
-                      >🗑</button>
+                return (
+                  <div key={key} className={styles.cartItem}>
+                    {/* Ảnh */}
+                    <div className={styles.cartImg}>
+                      <img src={imgSrc} alt={item.name} onError={(e) => { e.target.style.display = 'none'; }} />
                     </div>
-                  );
-                })}
-              </div>
+
+                    {/* Thông tin + nút xóa */}
+                    <div className={styles.cartMeta}>
+                      <div className={styles.cartTop}>
+                        <span className={styles.cartName}>{item.name}</span>
+                        <div className={styles.cartActions}>
+                          <button
+                            type="button"
+                            className={styles.cartEditBtn}
+                            onClick={() => navigate(`/product/${item.id}`)}
+                            aria-label="Chỉnh sửa"
+                            title="Chỉnh sửa"
+                          >✏</button>
+                          <button
+                            type="button"
+                            className={styles.cartDeleteBtn}
+                            onClick={() => removeFromCart(key)}
+                            aria-label="Xóa"
+                            title="Xóa"
+                          >🗑</button>
+                        </div>
+                      </div>
+
+                      {item.selectedOptions?.length > 0 && (
+                        <span className={styles.cartOpts}>
+                          {item.selectedOptions.map(o => o.name).join(', ')}
+                        </span>
+                      )}
+
+                      <div className={styles.cartBottom}>
+                        <span className={styles.cartPrice}>{formatPrice(item.price)}</span>
+                        {/* Nút −/+ */}
+                        <div className={styles.qtyWrap}>
+                          <button
+                            type="button"
+                            className={styles.qtyBtn}
+                            onClick={() => updateCartQuantity(key, item.quantity - 1)}
+                          >−</button>
+                          <span className={styles.qtyNum}>{item.quantity}</span>
+                          <button
+                            type="button"
+                            className={styles.qtyBtn}
+                            onClick={() => updateCartQuantity(key, item.quantity + 1)}
+                            disabled={item.quantity >= maxStock}
+                          >+</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            {/* Thông tin thanh toán */}
-            <div className={styles.summarySection}>
-              <h4 className={styles.summaryTitle}>Thông tin thanh toán</h4>
+            {/* ── Thông tin thanh toán ── */}
+            <div className={styles.summaryBox}>
+              <p className={styles.summaryTitle}>Thông tin thanh toán</p>
+
               <div className={styles.summaryRow}>
                 <span>Tổng tiền tạm tính</span>
                 <span>{formatPrice(cartTotalPrice)}</span>
@@ -324,10 +321,10 @@ const Checkout = () => {
                 <span>0 đ</span>
               </div>
 
-              {/* Voucher */}
+              {/* Mã giảm giá */}
               <div className={styles.voucherRow}>
                 <span>Mã giảm giá</span>
-                <div className={styles.voucherInput}>
+                <div className={styles.voucherCtrl}>
                   <input
                     type="text"
                     value={voucherCode}
@@ -338,54 +335,53 @@ const Checkout = () => {
                   />
                   <button
                     type="button"
-                    className={styles.voucherApplyBtn}
+                    className={styles.voucherBtn}
                     onClick={() => { if (voucherCode.trim()) setVoucherApplied(true); }}
-                  >
-                    Áp dụng
-                  </button>
+                  >Áp dụng</button>
                 </div>
                 {voucherApplied && (
-                  <span className={styles.voucherOk}>✓ Mã "{voucherCode}" đã được áp dụng</span>
+                  <span className={styles.voucherOk}>✓ Đã áp dụng mã "{voucherCode}"</span>
                 )}
               </div>
 
-              <div className={`${styles.summaryRow} ${styles.summaryTotal}`}>
+              <div className={`${styles.summaryRow} ${styles.summaryTotalRow}`}>
                 <span>Tổng tiền (Đã có VAT)</span>
-                <span className={styles.totalPrice}>{formatPrice(cartTotalPrice)}</span>
+                <span className={styles.totalAmt}>{formatPrice(cartTotalPrice)}</span>
               </div>
             </div>
 
-            {/* Phương thức thanh toán */}
-            <div className={styles.paymentSection}>
-              <h4 className={styles.summaryTitle}>Phương thức thanh toán</h4>
+            {/* ── Phương thức thanh toán ── */}
+            <div className={styles.paymentBox}>
+              <p className={styles.summaryTitle}>Phương thức thanh toán</p>
               {[
                 { value: 'card', label: 'Thẻ ngân hàng/Thẻ tín dụng/Ví điện tử' },
-                { value: 'momo', label: 'Ví MoMo' },
-                { value: 'zalopay', label: 'Ví ZaloPay' },
-                { value: 'shopee', label: 'Ví ShopeePay' },
+                { value: 'momo',    label: 'Ví MoMo'      },
+                { value: 'zalopay', label: 'Ví ZaloPay'   },
+                { value: 'shopee',  label: 'Ví ShopeePay' },
+                { value: 'cod',     label: 'Thanh toán tiền mặt khi nhận hàng' },
               ].map(({ value, label }) => (
-                <label key={value} className={styles.radioLabel}>
+                <label key={value} className={styles.radioRow}>
                   <input
                     type="radio"
                     name="paymentMethod"
                     value={value}
                     checked={paymentMethod === value}
                     onChange={() => setPaymentMethod(value)}
-                    className={styles.radioInput}
+                    className={styles.radio}
                   />
                   {label}
                 </label>
               ))}
             </div>
 
-            {/* Điều khoản + Nút thanh toán */}
-            <div className={styles.termsSection}>
-              <label className={styles.termsLabel}>
+            {/* ── Điều khoản + nút ── */}
+            <div className={styles.termsBox}>
+              <label className={styles.termsRow}>
                 <input
                   type="checkbox"
                   checked={agreedToTerms}
                   onChange={(e) => setAgreedToTerms(e.target.checked)}
-                  className={styles.termsCheckbox}
+                  className={styles.checkbox}
                 />
                 <span>
                   Tôi đã đọc, hiểu và đồng ý với tất cả các{' '}
@@ -400,7 +396,7 @@ const Checkout = () => {
                 type="submit"
                 form="checkout-form"
                 className={styles.submitBtn}
-                disabled={isSubmitting || !agreedToTerms || cartItems.length === 0}
+                disabled={isSubmitting || !agreedToTerms}
               >
                 {isSubmitting ? 'ĐANG XỬ LÝ...' : 'TIẾN HÀNH THANH TOÁN'}
               </button>
