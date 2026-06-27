@@ -57,8 +57,12 @@ const AboutDetailPage = () => {
 
       <div className="container">
         {/* Breadcrumbs */}
-        <div className={styles.breadcrumbs}>
-          <Link to="/">Trang chủ</Link> <span>/</span> <Link to="/about">Giới thiệu</Link> <span>/</span> <strong>{post.title}</strong>
+        <div className="breadcrumb-nav">
+          <Link to="/">Trang chủ</Link>
+          <span className="breadcrumb-sep">/</span>
+          <Link to="/about" className="breadcrumb-link">Giới thiệu</Link>
+          <span className="breadcrumb-sep">/</span>
+          <span className="breadcrumb-active">{post.title}</span>
         </div>
 
         <div className={styles.wrapper}>

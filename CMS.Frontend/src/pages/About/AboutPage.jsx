@@ -72,10 +72,10 @@ const AboutPage = () => {
       </Helmet>
 
       <div className="container">
-        <nav className={styles.breadcrumbs} aria-label="Điều hướng">
+        <nav className="breadcrumb-nav" aria-label="Điều hướng">
           <Link to="/">Trang chủ</Link>
-          <span>/</span>
-          <strong>Về chúng tôi</strong>
+          <span className="breadcrumb-sep">/</span>
+          <span className="breadcrumb-active">Về chúng tôi</span>
         </nav>
 
         {posts.length > 0 ? (

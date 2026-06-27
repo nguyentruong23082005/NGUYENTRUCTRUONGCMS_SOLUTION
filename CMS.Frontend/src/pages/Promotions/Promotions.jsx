@@ -12,10 +12,10 @@ const Promotions = () => {
       </Helmet>
 
       <div className="container">
-        <nav className={styles.breadcrumbs} aria-label="Điều hướng">
+        <nav className="breadcrumb-nav" aria-label="Điều hướng">
           <Link to="/">Trang chủ</Link>
-          <span>/</span>
-          <strong>Khuyến mãi</strong>
+          <span className="breadcrumb-sep">/</span>
+          <span className="breadcrumb-active">Khuyến mãi</span>
         </nav>
       </div>
 

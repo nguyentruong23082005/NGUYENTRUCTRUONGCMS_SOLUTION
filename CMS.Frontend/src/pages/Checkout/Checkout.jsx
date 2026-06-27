@@ -160,10 +160,10 @@ const Checkout = () => {
 
       <div className="container">
         {/* Breadcrumb */}
-        <nav className={styles.breadcrumb}>
-          <Link to="/" className={styles.breadcrumbLink}>Trang chủ</Link>
-          <span className={styles.breadcrumbSep}>/</span>
-          <span className={styles.breadcrumbActive}>Thanh toán</span>
+        <nav className="breadcrumb-nav">
+          <Link to="/" className="breadcrumb-link">Trang chủ</Link>
+          <span className="breadcrumb-sep">/</span>
+          <span className="breadcrumb-active">Thanh toán</span>
         </nav>
 
         <div className={styles.layout}>

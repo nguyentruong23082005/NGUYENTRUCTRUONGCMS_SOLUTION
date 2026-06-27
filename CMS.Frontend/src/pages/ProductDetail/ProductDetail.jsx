@@ -189,10 +189,12 @@ const ProductDetail = () => {
       </Helmet>
 
       <div className="container">
-        <nav className={styles.breadcrumbs} aria-label="Điều hướng">
+        <nav className="breadcrumb-nav" aria-label="Điều hướng">
           <Link to="/">Trang chủ</Link>
-          <span>/</span>
-          <Link to="/menu">Sản phẩm</Link>
+          <span className="breadcrumb-sep">/</span>
+          <Link to="/menu" className="breadcrumb-link">Sản phẩm</Link>
+          <span className="breadcrumb-sep">/</span>
+          <span className="breadcrumb-active">{product.name}</span>
         </nav>
 
         <section className={styles.layout}>

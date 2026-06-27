@@ -102,10 +102,10 @@ const Profile = () => {
 
       <div className={styles.container}>
         {/* ── Breadcrumbs ── */}
-        <div className={styles.breadcrumbs}>
-          <span onClick={() => navigate('/')} className={styles.breadcrumbLink}>Trang chủ</span>
-          <span className={styles.breadcrumbSeparator}>/</span>
-          <span className={styles.breadcrumbActive}>Tài khoản</span>
+        <div className="breadcrumb-nav">
+          <span onClick={() => navigate('/')} className="breadcrumb-link">Trang chủ</span>
+          <span className="breadcrumb-sep">/</span>
+          <span className="breadcrumb-active">Tài khoản</span>
         </div>
 
         <div className={styles.layout}>
