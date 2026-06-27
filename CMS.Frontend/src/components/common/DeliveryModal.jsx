@@ -46,6 +46,8 @@ const DeliveryModal = () => {
     closeModal,
     deliveryType,
     deliveryAddress,
+    coordinates,
+    structuredAddress,
     setDelivery,
     setPickup,
   } = useDelivery();
@@ -77,18 +79,20 @@ const DeliveryModal = () => {
   useEffect(() => {
     if (isModalOpen) {
       setActiveTab(deliveryType || 'delivery');
-      // Reset states định vị tạm thời khi mở lại modal
+      // Keep the last resolved location when reopening the modal.
       setGpsError(null);
-      setResolvedAddress('');
-      setTempCoords(null);
-      setTempStructured(null);
+      if (deliveryType === 'delivery' && deliveryAddress && coordinates && structuredAddress) {
+        setResolvedAddress((current) => current || deliveryAddress);
+        setTempCoords((current) => current || coordinates);
+        setTempStructured((current) => current || structuredAddress);
+      }
       setSearchQuery('');
       setSuggestions([]);
       setSearchLoading(false);
       setSearchError(null);
       setPickupQuery('');
     }
-  }, [isModalOpen, deliveryType]);
+  }, [isModalOpen, deliveryType, deliveryAddress, coordinates, structuredAddress]);
 
   // Hiệu ứng Debounce 1000ms cho việc tìm kiếm địa chỉ
   useEffect(() => {
