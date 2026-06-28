@@ -25,6 +25,10 @@ namespace CMS.Data.Entities
 
         public int TokenVersion { get; set; } = 1;
 
+        public string? FirebaseUid { get; set; }
+
+        public string? SignInProvider { get; set; }
+
         // Forgot Password (TC46)
         public string? ResetPasswordToken { get; set; }
         public DateTime? ResetPasswordExpiry { get; set; }
