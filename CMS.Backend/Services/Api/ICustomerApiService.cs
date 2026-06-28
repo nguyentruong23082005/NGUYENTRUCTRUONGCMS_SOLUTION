@@ -7,6 +7,7 @@ namespace CMS.Backend.Services.Api
     {
         Task<CustomerDto> RegisterAsync(RegisterDto dto);
         Task<LoginResponseDto?> LoginAsync(LoginDto dto);
+        Task<LoginResponseDto?> LoginWithSocialAsync(SocialLoginDto dto);
         Task<CustomerDto?> GetProfileAsync(int customerId);
         Task<CustomerDto> UpdateProfileAsync(int customerId, UpdateProfileDto dto);
         Task LogoutAsync(int customerId);

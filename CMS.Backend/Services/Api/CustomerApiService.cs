@@ -7,8 +7,11 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FirebaseAdmin;
+using FirebaseAdmin.Auth;
 
 namespace CMS.Backend.Services.Api
 {
@@ -51,11 +54,10 @@ namespace CMS.Backend.Services.Api
             _db.Customers.Add(customer);
             await _db.SaveChangesAsync();
 
-            // Gửi email chúc mừng đăng ký thành công (fire-and-forget, an toàn)
-            _ = _emailService.SendWelcomeEmailAsync(customer.Email, customer.FullName)
-                .ContinueWith(t => _logger.LogError(t.Exception,
-                    "Lỗi gửi email chào mừng cho {Email}", customer.Email),
-                    TaskContinuationOptions.OnlyOnFaulted);
+            // Gửi email chúc mừng đăng ký thành công.
+            // EmailService tự bắt/log lỗi nên không làm hỏng luồng đăng ký nếu SMTP lỗi.
+            await _emailService.SendWelcomeEmailAsync(customer.Email, customer.FullName);
+
 
             return new CustomerDto
             {
@@ -80,6 +82,124 @@ namespace CMS.Backend.Services.Api
                 return null;
             }
 
+            var token = JwtTokenHelper.GenerateToken(customer, _config);
+
+            return new LoginResponseDto
+            {
+                Token = token,
+                Customer = new CustomerDto
+                {
+                    Id = customer.Id,
+                    FullName = customer.FullName,
+                    Email = customer.Email,
+                    Phone = customer.Phone
+                }
+            };
+        }
+
+        public async Task<LoginResponseDto?> LoginWithSocialAsync(SocialLoginDto dto)
+        {
+            if (FirebaseApp.DefaultInstance == null)
+            {
+                throw new InvalidOperationException("FirebaseApp is not initialized. Firebase credentials may be missing.");
+            }
+
+            FirebaseToken decodedToken;
+            try
+            {
+                decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(dto.IdToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Lỗi xác thực Firebase ID Token.");
+                return null;
+            }
+
+            var uid = decodedToken.Uid;
+            var email = decodedToken.Claims.TryGetValue("email", out var emailObj) ? emailObj?.ToString() : null;
+            var name = (decodedToken.Claims.TryGetValue("name", out var nameObj) ? nameObj?.ToString() : null) ?? "Social User";
+            
+            // Lấy email_verified từ claims
+            bool emailVerified = false;
+            if (decodedToken.Claims.TryGetValue("email_verified", out var evObj))
+            {
+                if (evObj is bool ev)
+                {
+                    emailVerified = ev;
+                }
+                else if (evObj?.ToString()?.ToLower() == "true")
+                {
+                    emailVerified = true;
+                }
+            }
+
+            // Lấy provider từ firebase sign_in_provider claim
+            string provider = "Social";
+            if (decodedToken.Claims.TryGetValue("firebase", out var firebaseObj))
+            {
+                if (firebaseObj is IDictionary<string, object> firebaseDict)
+                {
+                    if (firebaseDict.TryGetValue("sign_in_provider", out var pObj))
+                    {
+                        provider = pObj?.ToString() ?? "Social";
+                    }
+                }
+                else
+                {
+                    var str = firebaseObj.ToString();
+                    if (str?.Contains("google.com") == true) provider = "google.com";
+                    else if (str?.Contains("facebook.com") == true) provider = "facebook.com";
+                }
+            }
+
+            if (string.IsNullOrEmpty(email))
+            {
+                // Fallback email nếu không có
+                email = $"{uid}@firebase.com";
+            }
+
+            var emailLower = email.Trim().ToLower();
+
+            // 1. Tìm theo FirebaseUid
+            var customer = await _db.Customers.FirstOrDefaultAsync(c => c.FirebaseUid == uid);
+            if (customer == null || customer.IsDeleted)
+            {
+                // 2. Tìm theo Email để liên kết tài khoản local có sẵn
+                customer = await _db.Customers.FirstOrDefaultAsync(c => c.Email.ToLower() == emailLower);
+                if (customer != null && !customer.IsDeleted)
+                {
+                    // Chỉ auto-link nếu email đã được xác thực (EmailVerified == true)
+                    if (!emailVerified)
+                    {
+                        throw new InvalidOperationException("Email của tài khoản này chưa được xác minh trên Firebase. Không thể tự động liên kết.");
+                    }
+
+                    customer.FirebaseUid = uid;
+                    customer.SignInProvider = provider;
+                    await _db.SaveChangesAsync();
+                }
+                else
+                {
+                    // 3. Đăng ký tài khoản mới nếu chưa tồn tại
+                    customer = new Customer
+                    {
+                        FullName = name.Trim(),
+                        Email = email,
+                        FirebaseUid = uid,
+                        SignInProvider = provider,
+                        TokenVersion = 1,
+                        Password = null // Tài khoản đăng nhập mạng xã hội không có mật khẩu local
+                    };
+
+                    _db.Customers.Add(customer);
+                    await _db.SaveChangesAsync();
+
+                    // Gửi email chào mừng đăng ký thành công
+                    await _emailService.SendWelcomeEmailAsync(customer!.Email, customer!.FullName);
+                }
+            }
+
+            // Sinh JWT Token cho khách hàng
             var token = JwtTokenHelper.GenerateToken(customer, _config);
 
             return new LoginResponseDto
