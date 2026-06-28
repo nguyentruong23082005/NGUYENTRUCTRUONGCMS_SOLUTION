@@ -394,3 +394,6 @@ TaiLieu_Buoi6.md
 
 # Removed projects
 CMS.Tests/
+
+# Firebase Service Account key
+serviceAccountKey.json
