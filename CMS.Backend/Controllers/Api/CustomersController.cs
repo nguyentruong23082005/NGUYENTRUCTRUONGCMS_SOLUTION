@@ -56,6 +56,28 @@ namespace CMS.Backend.Controllers.Api
         }
 
         /// <summary>
+        /// Đăng nhập bằng tài khoản mạng xã hội (Google, Facebook) qua Firebase.
+        /// </summary>
+        [HttpPost("social-login")]
+        [EnableRateLimiting("AuthPolicy")]
+        public async Task<IActionResult> SocialLogin([FromBody] SocialLoginDto dto)
+        {
+            try
+            {
+                var result = await _customerService.LoginWithSocialAsync(dto);
+                if (result == null)
+                {
+                    return Unauthorized(ApiResponse.FailureResponse("Xác thực mạng xã hội thất bại."));
+                }
+                return Ok(ApiResponse.SuccessResponse(result, "Đăng nhập thành công."));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ApiResponse.FailureResponse(ex.Message));
+            }
+        }
+
+        /// <summary>
         /// Xem thông tin hồ sơ cá nhân của khách hàng.
         /// </summary>
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
