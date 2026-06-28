@@ -8,6 +8,9 @@ export const authApi = {
   register: (customerData) => {
     return axiosClient.post('/api/Customers/register', customerData);
   },
+  socialLogin: (idToken) => {
+    return axiosClient.post('/api/Customers/social-login', { idToken });
+  },
   forgotPassword: (email) => {
     return axiosClient.post('/api/Customers/forgot-password', { email });
   },
