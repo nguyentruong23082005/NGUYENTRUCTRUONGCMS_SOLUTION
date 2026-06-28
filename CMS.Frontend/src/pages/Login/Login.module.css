@@ -46,20 +46,50 @@
   gap: 14px;
 }
 
+.fieldGroup {
+  position: relative;
+}
+
 .input {
   width: 100%;
-  min-height: 52px;
-  padding: 0 14px;
+  min-height: 64px;
+  padding: 18px 16px 0;
   border: 1px solid #cfcfcf;
   border-radius: 3px;
   background-color: #ffffff;
   color: #333333;
   font-size: 15px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input:focus {
   border-color: #00713f;
+  box-shadow: 0 0 0 3px rgba(0, 113, 63, 0.1);
   outline: none;
+}
+
+.floatingLabel {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  padding: 0 6px;
+  background-color: #ffffff;
+  color: #606866;
+  font-size: 15px;
+  line-height: 1;
+  pointer-events: none;
+  transform: translateY(-50%);
+  transform-origin: left center;
+  transition: top 0.18s ease, color 0.18s ease, font-size 0.18s ease, transform 0.18s ease;
+}
+
+.input:focus + .floatingLabel,
+.input:not(:placeholder-shown) + .floatingLabel {
+  top: 0;
+  color: #00713f;
+  font-size: 12px;
+  font-weight: 700;
+  transform: translateY(-50%);
 }
 
 .forgotLink {
@@ -116,4 +146,79 @@
   color: #00713f;
   font-weight: 700;
   text-decoration: none;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #e1e8e5;
+}
+
+.divider span {
+  padding: 0 10px;
+  color: #7a7a7a;
+  font-size: 13px;
+  text-transform: lowercase;
+}
+
+.socialButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.googleBtn,
+.facebookBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid #cfcfcf;
+  border-radius: 3px;
+  background-color: #ffffff;
+  color: #4a4a4a;
+  cursor: pointer;
+  font-family: var(--font-secondary);
+  font-size: 14px;
+  font-weight: 700;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.googleBtn:hover:not(:disabled) {
+  border-color: #b3b3b3;
+  background-color: #f7f9f8;
+}
+
+.facebookBtn {
+  border-color: #1877f2;
+  background-color: #1877f2;
+  color: #ffffff;
+}
+
+.facebookBtn:hover:not(:disabled) {
+  border-color: #166fe5;
+  background-color: #166fe5;
+}
+
+.googleBtn:disabled,
+.facebookBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.socialSvg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
