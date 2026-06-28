@@ -14,6 +14,10 @@ using CMS.Backend.Services.Api;
 using CMS.Backend.Middleware;
 using CMS.Backend.Models;
 
+using CMS.Backend.ModelBinders;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+
 var builder = WebApplication.CreateBuilder(args);
 var jwtKey = builder.Configuration["Jwt:Key"];
 if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
@@ -26,7 +30,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.ModelBinderProviders.Insert(0, new InvariantDoubleModelBinderProvider());
+});
 builder.Services.AddMemoryCache();
 builder.Services.Configure<CMS.Backend.Models.StockSettings>(builder.Configuration.GetSection("StockSettings"));
 builder.Services.Configure<OrderPolicy>(builder.Configuration.GetSection("OrderPolicy"));
@@ -189,6 +196,39 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+GoogleCredential? credential = null;
+var keyPath = builder.Configuration["Firebase:ServiceAccountKeyPath"];
+
+if (!string.IsNullOrEmpty(keyPath) && File.Exists(keyPath))
+{
+    // Local / Dev: đọc từ file JSON
+    credential = GoogleCredential.FromFile(keyPath);
+}
+else
+{
+    // Staging / Production: đọc từ biến môi trường dạng chuỗi JSON
+    var json = Environment.GetEnvironmentVariable("FIREBASE_SERVICE_ACCOUNT_JSON");
+    if (!string.IsNullOrEmpty(json))
+    {
+        credential = GoogleCredential.FromJson(json);
+    }
+}
+
+if (credential != null)
+{
+    if (FirebaseApp.DefaultInstance == null)
+    {
+        FirebaseApp.Create(new AppOptions()
+        {
+            Credential = credential
+        });
+    }
+}
+else
+{
+    Console.WriteLine("Warning: Firebase credentials are not configured. Social login will fail.");
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -209,11 +249,11 @@ app.Use(async (context, next) =>
     context.Response.Headers.TryAdd(
         "Content-Security-Policy",
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' https://cdn.ckeditor.com; " +
-        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; " +
+        "script-src 'self' 'unsafe-inline' https://cdn.ckeditor.com https://unpkg.com; " +
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://unpkg.com; " +
         "font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; " +
         "img-src 'self' data: http: https:; " +
-        "connect-src 'self' http://localhost:5173 http://localhost:5174 http://127.0.0.1:5173 http://127.0.0.1:5174 https://localhost:5173 https://localhost:5174 https://127.0.0.1:5173 https://127.0.0.1:5174; " +
+        "connect-src 'self' http://localhost:5173 http://localhost:5174 http://127.0.0.1:5173 http://127.0.0.1:5174 https://localhost:5173 https://localhost:5174 https://127.0.0.1:5173 https://127.0.0.1:5174 https://nominatim.openstreetmap.org; " +
         "frame-ancestors 'none';");
     await next();
 });
