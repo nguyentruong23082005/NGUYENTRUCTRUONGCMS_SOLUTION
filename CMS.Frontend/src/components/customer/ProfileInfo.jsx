@@ -64,7 +64,7 @@ const ProfileInfo = ({ profile, onRefresh }) => {
         </div>
       )}
 
-      <form className={styles.form} onSubmit={handleSubmit} style={{ maxWidth: '100%' }}>
+      <form className={styles.form} onSubmit={handleSubmit} style={{ maxWidth: '100%' }} autoComplete="off">
         <div className={localStyles.formGrid}>
           <div className={styles.formGroup}>
             <label className={styles.formLabel} htmlFor="pi-fullName">Họ và tên *</label>
@@ -77,6 +77,7 @@ const ProfileInfo = ({ profile, onRefresh }) => {
               maxLength={100}
               placeholder="Nhập họ và tên"
               required
+              autoComplete="off"
             />
           </div>
 
@@ -89,6 +90,7 @@ const ProfileInfo = ({ profile, onRefresh }) => {
               value={form.phone}
               onChange={handleChange}
               placeholder="Nhập số điện thoại"
+              autoComplete="off"
             />
           </div>
 
@@ -100,6 +102,7 @@ const ProfileInfo = ({ profile, onRefresh }) => {
               value={profile?.email || ''}
               disabled
               style={{ backgroundColor: '#F5F5F5', color: '#666666', cursor: 'not-allowed' }}
+              autoComplete="off"
             />
           </div>
         </div>
@@ -117,6 +120,7 @@ const ProfileInfo = ({ profile, onRefresh }) => {
               value={form.currentPassword}
               onChange={handleChange}
               placeholder="Nhập mật khẩu hiện tại"
+              autoComplete="new-password"
             />
           </div>
 
@@ -130,6 +134,7 @@ const ProfileInfo = ({ profile, onRefresh }) => {
               value={form.newPassword}
               onChange={handleChange}
               placeholder="Tối thiểu 6 ký tự"
+              autoComplete="new-password"
             />
           </div>
         </div>
