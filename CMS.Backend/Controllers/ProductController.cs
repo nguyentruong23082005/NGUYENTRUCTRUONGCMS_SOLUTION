@@ -1,3 +1,4 @@
+using CMS.Backend.Helpers;
 using CMS.Backend.Models;
 using CMS.Data;
 using CMS.Data.Entities;
@@ -69,10 +70,23 @@ namespace CMS.Backend.Controllers
         // POST: /Product/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Product model)
+        public IActionResult Create(Product model, IFormFile? uploadImage)
         {
             if (ModelState.IsValid)
             {
+                if (uploadImage != null && uploadImage.Length > 0)
+                {
+                    var uploadResult = ImageUploadHelper.SaveImage(uploadImage, filePrefix: "product");
+                    if (!uploadResult.Succeeded)
+                    {
+                        ModelState.AddModelError(nameof(Product.ImageUrl), uploadResult.ErrorMessage ?? "Ảnh tải lên không hợp lệ.");
+                        PopulateProductFormData(model.ProductCategoryId);
+                        return View(model);
+                    }
+
+                    model.ImageUrl = uploadResult.Url;
+                }
+
                 _context.Products.Add(model);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
@@ -99,12 +113,34 @@ namespace CMS.Backend.Controllers
         // POST: /Product/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Product model)
+        public IActionResult Edit(int id, Product model, IFormFile? uploadImage)
         {
             if (id != model.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
+                if (uploadImage != null && uploadImage.Length > 0)
+                {
+                    var uploadResult = ImageUploadHelper.SaveImage(uploadImage, filePrefix: "product");
+                    if (!uploadResult.Succeeded)
+                    {
+                        ModelState.AddModelError(nameof(Product.ImageUrl), uploadResult.ErrorMessage ?? "Ảnh tải lên không hợp lệ.");
+                        PopulateProductFormData(model.ProductCategoryId, model.Id);
+                        return View(model);
+                    }
+
+                    model.ImageUrl = uploadResult.Url;
+                }
+                else
+                {
+                    // Giữ lại ảnh cũ nếu không nhập ảnh mới
+                    var oldProduct = _context.Products.AsNoTracking().FirstOrDefault(p => p.Id == model.Id);
+                    if (oldProduct != null && string.IsNullOrEmpty(model.ImageUrl))
+                    {
+                        model.ImageUrl = oldProduct.ImageUrl;
+                    }
+                }
+
                 _context.Products.Update(model);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
@@ -116,14 +152,36 @@ namespace CMS.Backend.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddImage(int productId, string imageUrl, bool isPrimary = false)
+        public IActionResult AddImage(int productId, string imageUrl, IFormFile? uploadGalleryImage, bool isPrimary = false)
         {
             var product = _context.Products.Find(productId);
             if (product == null) return NotFound();
 
-            if (string.IsNullOrWhiteSpace(imageUrl))
+            string finalImageUrl = string.Empty;
+
+            if (uploadGalleryImage != null && uploadGalleryImage.Length > 0)
             {
-                TempData["ErrorMessage"] = "Vui lòng nhập URL ảnh sản phẩm.";
+                var uploadResult = ImageUploadHelper.SaveImage(uploadGalleryImage, filePrefix: "product-gallery");
+                if (!uploadResult.Succeeded)
+                {
+                    TempData["ErrorMessage"] = uploadResult.ErrorMessage ?? "Ảnh tải lên không hợp lệ.";
+                    return RedirectToAction(nameof(Edit), new { id = productId });
+                }
+
+                finalImageUrl = uploadResult.Url ?? string.Empty;
+            }
+            else if (!string.IsNullOrWhiteSpace(imageUrl))
+            {
+                finalImageUrl = imageUrl.Trim();
+                if (!ImageUploadHelper.IsSafeImageUrl(finalImageUrl))
+                {
+                    TempData["ErrorMessage"] = "URL ảnh phải là đường dẫn /uploads/ hoặc bắt đầu bằng http/https.";
+                    return RedirectToAction(nameof(Edit), new { id = productId });
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Vui lòng nhập URL ảnh hoặc tải lên tệp ảnh.";
                 return RedirectToAction(nameof(Edit), new { id = productId });
             }
 
@@ -135,7 +193,7 @@ namespace CMS.Backend.Controllers
             _context.ProductImages.Add(new ProductImage
             {
                 ProductId = productId,
-                ImageUrl = imageUrl.Trim(),
+                ImageUrl = finalImageUrl,
                 IsPrimary = isPrimary
             });
             _context.SaveChanges();

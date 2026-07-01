@@ -30,6 +30,7 @@ namespace CMS.Backend.Services.Api
                     Phone = s.Phone,
                     Province = s.Province,
                     District = s.District,
+                    Ward = s.Ward,
                     ImageUrl = s.ImageUrl,
                     GoogleMapUrl = s.GoogleMapUrl,
                     OpeningTime = s.OpeningTime.ToString(@"hh\:mm"),

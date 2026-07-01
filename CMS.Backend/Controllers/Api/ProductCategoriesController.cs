@@ -27,5 +27,16 @@ namespace CMS.Backend.Controllers.Api
             var categories = await _categoryService.GetProductCategoriesAsync();
             return Ok(ApiResponse.SuccessResponse(categories));
         }
+
+        /// <summary>
+        /// Lấy cây danh mục sản phẩm phân cấp cha-con.
+        /// </summary>
+        [HttpGet("tree")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
+        public async Task<IActionResult> GetTree()
+        {
+            var categoriesTree = await _categoryService.GetProductCategoriesTreeAsync();
+            return Ok(ApiResponse.SuccessResponse(categoriesTree));
+        }
     }
 }

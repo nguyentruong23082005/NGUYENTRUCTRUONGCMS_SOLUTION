@@ -58,7 +58,9 @@
             <thead>
                 <tr>
                     <th scope="col">ID</th>
+                    <th scope="col" width="80">Ảnh</th>
                     <th scope="col">Tên danh mục</th>
+                    <th scope="col">Danh mục cha</th>
                     <th scope="col">Mô tả</th>
                     <th scope="col" width="160">Thao tác</th>
                 </tr>
@@ -70,7 +72,27 @@
                     {
                         <tr>
                             <td>@item.Id</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.Name" class="rounded" style="width: 48px; height: 48px; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Không có</span>
+                                }
+                            </td>
                             <td class="fw-semibold text-black">@item.Name</td>
+                            <td>
+                                @if (item.Parent != null)
+                                {
+                                    <span class="badge bg-secondary">@item.Parent.Name</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">—</span>
+                                }
+                            </td>
                             <td class="text-muted">@(item.Description ?? "Không có mô tả")</td>
                             <td>
                                 <div class="d-flex gap-2">
@@ -91,7 +113,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="4" class="text-center text-muted py-4">Không tìm thấy danh mục sản phẩm nào khớp với bộ lọc.</td>
+                        <td colspan="6" class="text-center text-muted py-4">Không tìm thấy danh mục sản phẩm nào khớp với bộ lọc.</td>
                     </tr>
                 }
             </tbody>

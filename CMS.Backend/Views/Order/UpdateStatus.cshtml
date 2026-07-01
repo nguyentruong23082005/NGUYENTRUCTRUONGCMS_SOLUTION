@@ -16,7 +16,7 @@
                 <span class="material-symbols-rounded align-middle text-muted" aria-hidden="true">published_with_changes</span>
                 Cập nhật trạng thái
             </h1>
-            <p class="text-muted small mb-0">Đơn hàng #@Model.Id — Kh—ch: <strong>@(Model.Customer?.FullName ?? "Không rõ")</strong></p>
+            <p class="text-muted small mb-0">Đơn hàng #@Model.Id — Khách: <strong>@(Model.Customer?.FullName ?? "Không rõ")</strong></p>
         </div>
         <a asp-action="Details" asp-route-id="@Model.Id" class="btn-premium-outline text-decoration-none d-inline-flex align-items-center gap-1">
             <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">arrow_back</span>
@@ -43,7 +43,7 @@
     {
         <div class="alert alert-secondary border-0 rounded-3">
             <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">lock</span>
-            Đơn hàng n—y d— ? trạng thái cuối ho?c kh—ng c—n bước x? l— tiếp theo.
+            Đơn hàng này đã ở trạng thái cuối hoặc không còn bước xử lý tiếp theo.
         </div>
     }
     else
@@ -69,7 +69,7 @@
 
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Ghi chú</label>
-                            <textarea name="notes" class="form-control" rows="3" placeholder="Ghi chú th—m v? đơn hàng...">@Model.Notes</textarea>
+                            <textarea name="notes" class="form-control" rows="3" placeholder="Ghi chú thêm về đơn hàng...">@Model.Notes</textarea>
                         </div>
 
                         <div class="mt-4 pt-2">

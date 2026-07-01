@@ -3,26 +3,46 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Text;
 using System.Security.Claims;
+using System.Threading.RateLimiting;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using CMS.Data;
 using CMS.Backend.Services.Api;
+using CMS.Backend.Services.Payment;
 using CMS.Backend.Middleware;
 using CMS.Backend.Models;
 
+using CMS.Backend.ModelBinders;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Polly;
+
 var builder = WebApplication.CreateBuilder(args);
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
+{
+    throw new InvalidOperationException("Jwt:Key must be configured outside source control and contain at least 32 characters.");
+}
 
 // Đăng ký ApplicationDbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.ModelBinderProviders.Insert(0, new InvariantDoubleModelBinderProvider());
+});
 builder.Services.AddMemoryCache();
 builder.Services.Configure<CMS.Backend.Models.StockSettings>(builder.Configuration.GetSection("StockSettings"));
 builder.Services.Configure<OrderPolicy>(builder.Configuration.GetSection("OrderPolicy"));
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+
+// Đăng ký dịch vụ Email
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Đăng ký dịch vụ WebAPI Services (Buổi 6)
 builder.Services.AddScoped<IProductApiService, ProductApiService>();
@@ -45,15 +65,62 @@ builder.Services.AddScoped<IStockLockStrategy>(sp =>
     return new SqlServerStockLockStrategy(db);
 });
 
+// Đăng ký dịch vụ Shipping + Polly Retry (Giai đoạn 2)
+builder.Services.AddHttpClient<CMS.Backend.Services.Shipping.IGhnShippingService, CMS.Backend.Services.Shipping.GhnShippingService>(client =>
+{
+    var ghnConfig = builder.Configuration.GetSection("GHN");
+    int timeoutSeconds = ghnConfig.GetValue<int>("TimeoutSeconds", 10);
+    client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
+    client.BaseAddress = new Uri(ghnConfig["BaseUrl"] ?? "https://dev-online-gateway.ghn.vn/shiip/public-api");
+    client.DefaultRequestHeaders.Add("Token", ghnConfig["Token"]);
+})
+.AddTransientHttpErrorPolicy(policyBuilder =>
+{
+    var ghnConfig = builder.Configuration.GetSection("GHN");
+    int maxRetries = ghnConfig.GetValue<int>("MaxRetries", 2);
+    return policyBuilder.WaitAndRetryAsync(maxRetries, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+});
+
+// Đăng ký dịch vụ Payment Gateway (Giai đoạn 3)
+builder.Services.AddScoped<IPaymentGateway, VnPayGateway>();
+builder.Services.AddHttpClient<MoMoGateway>();
+builder.Services.AddHttpClient<ZaloPayGateway>();
+builder.Services.AddScoped<IPaymentGateway>(sp => sp.GetRequiredService<MoMoGateway>());
+builder.Services.AddScoped<IPaymentGateway>(sp => sp.GetRequiredService<ZaloPayGateway>());
+builder.Services.AddScoped<IPaymentGatewayFactory, PaymentGatewayFactory>();
+
 // Cấu hình CORS cho ReactJS Frontend (Buổi 6)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("ReactDevelopmentCors", policy =>
+    options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(
+                  "http://localhost:5173",
+                  "http://localhost:5174",
+                  "http://127.0.0.1:5173",
+                  "http://127.0.0.1:5174",
+                  "https://localhost:5173",
+                  "https://localhost:5174",
+                  "https://127.0.0.1:5173",
+                  "https://127.0.0.1:5174")
               .AllowAnyHeader()
-              .WithMethods("GET", "POST", "PUT", "DELETE"); // GET là chính trong Phase 6
+              .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS");
     });
+});
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("AuthPolicy", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 10,
+                QueueLimit = 0,
+                Window = TimeSpan.FromMinutes(15)
+            }));
 });
 
 // Cấu hình Swagger kèm XML Comments (Buổi 6)
@@ -100,6 +167,11 @@ builder.Services.AddAuthentication(options =>
 {
     options.LoginPath = "/Account/Login";           // Đường dẫn nếu chưa đăng nhập
     options.AccessDeniedPath = "/Account/AccessDenied"; // Đường dẫn nếu không có quyền
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.ExpireTimeSpan = TimeSpan.FromHours(8);
+    options.SlidingExpiration = true;
 })
 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
 {
@@ -111,7 +183,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "PhucLongPremiumSecretKeyForReactJSFrontEnd2026SuperSecureKey32Chars"))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
     options.Events = new JwtBearerEvents
     {
@@ -150,6 +222,39 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+GoogleCredential? credential = null;
+var keyPath = builder.Configuration["Firebase:ServiceAccountKeyPath"];
+
+if (!string.IsNullOrEmpty(keyPath) && File.Exists(keyPath))
+{
+    // Local / Dev: đọc từ file JSON
+    credential = GoogleCredential.FromFile(keyPath);
+}
+else
+{
+    // Staging / Production: đọc từ biến môi trường dạng chuỗi JSON
+    var json = Environment.GetEnvironmentVariable("FIREBASE_SERVICE_ACCOUNT_JSON");
+    if (!string.IsNullOrEmpty(json))
+    {
+        credential = GoogleCredential.FromJson(json);
+    }
+}
+
+if (credential != null)
+{
+    if (FirebaseApp.DefaultInstance == null)
+    {
+        FirebaseApp.Create(new AppOptions()
+        {
+            Credential = credential
+        });
+    }
+}
+else
+{
+    Console.WriteLine("Warning: Firebase credentials are not configured. Social login will fail.");
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -161,9 +266,27 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.TryAdd("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.TryAdd("X-Frame-Options", "DENY");
+    context.Response.Headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
+    context.Response.Headers.TryAdd("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+    context.Response.Headers.TryAdd(
+        "Content-Security-Policy",
+        "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline' https://cdn.ckeditor.com https://unpkg.com; " +
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://unpkg.com; " +
+        "font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; " +
+        "img-src 'self' data: http: https:; " +
+        "connect-src 'self' http://localhost:5173 http://localhost:5174 http://127.0.0.1:5173 http://127.0.0.1:5174 https://localhost:5173 https://localhost:5174 https://127.0.0.1:5173 https://127.0.0.1:5174 https://nominatim.openstreetmap.org; " +
+        "frame-ancestors 'none';");
+    await next();
+});
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseRateLimiter();
 
 // Đăng ký API Middleware chỉ áp dụng cho route bắt đầu bằng /api (Buổi 6)
 app.UseWhen(
@@ -171,7 +294,7 @@ app.UseWhen(
     apiApp => apiApp.UseMiddleware<ApiExceptionHandlingMiddleware>()
 );
 
-app.UseCors("ReactDevelopmentCors");
+app.UseCors("AllowReactApp");
 
 if (app.Environment.IsDevelopment())
 {
@@ -185,5 +308,6 @@ app.UseAuthorization();  // BƯỚC B: Xác nhận "Anh được làm gì?" (Ki�
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllers();
 
 app.Run();

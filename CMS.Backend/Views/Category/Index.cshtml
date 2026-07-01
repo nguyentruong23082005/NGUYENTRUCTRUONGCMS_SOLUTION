@@ -43,6 +43,7 @@
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Tên danh mục</th>
+                    <th scope="col">Danh mục cha</th>
                     <th scope="col">Mô tả</th>
                     <th scope="col" width="160">Hành động</th>
                 </tr>
@@ -55,6 +56,16 @@
                         <tr>
                             <td>@item.Id</td>
                             <td class="fw-semibold text-black">@item.Name</td>
+                            <td>
+                                @if (item.Parent != null)
+                                {
+                                    <span class="badge bg-secondary">@item.Parent.Name</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">—</span>
+                                }
+                            </td>
                             <td class="text-muted">@item.Description</td>
                             <td>
                                 <div class="d-flex gap-2">
@@ -75,7 +86,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="4" class="text-center text-muted py-4">Không tìm thấy danh mục nào khớp với bộ lọc.</td>
+                        <td colspan="5" class="text-center text-muted py-4">Không tìm thấy danh mục nào khớp với bộ lọc.</td>
                     </tr>
                 }
             </tbody>

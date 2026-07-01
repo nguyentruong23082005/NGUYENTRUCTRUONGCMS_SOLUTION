@@ -27,5 +27,16 @@ namespace CMS.Backend.Controllers.Api
             var categories = await _categoryService.GetPostCategoriesAsync();
             return Ok(ApiResponse.SuccessResponse(categories));
         }
+
+        /// <summary>
+        /// Lấy cây danh mục bài viết phân cấp cha-con.
+        /// </summary>
+        [HttpGet("tree")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
+        public async Task<IActionResult> GetTree()
+        {
+            var categoriesTree = await _categoryService.GetPostCategoriesTreeAsync();
+            return Ok(ApiResponse.SuccessResponse(categoriesTree));
+        }
     }
 }

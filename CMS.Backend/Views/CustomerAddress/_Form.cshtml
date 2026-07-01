@@ -1,12 +1,33 @@
 @model CMS.Data.Entities.CustomerAddress
 <div class="row g-3">
-    <div class="col-md-6"><label asp-for="CustomerId" class="form-label">Khách hàng</label><select asp-for="CustomerId" class="form-select" asp-items="ViewBag.Customers"><option value="">-- Chọn khách hàng --</option></select><span asp-validation-for="CustomerId" class="text-danger"></span></div>
-    <div class="col-md-6"><label asp-for="AddressType" class="form-label">Lo?i d?a ch?</label><input asp-for="AddressType" class="form-control" placeholder="Home, Office..." /><span asp-validation-for="AddressType" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="CustomerId" class="form-label">Khách hàng</label><select asp-for="CustomerId" class="form-select" asp-items="ViewBag.Customers"><option value=""> Chọn khách hàng </option></select><span asp-validation-for="CustomerId" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="AddressType" class="form-label">Loại địa chỉ</label><input asp-for="AddressType" class="form-control" placeholder="Home, Office..." /><span asp-validation-for="AddressType" class="text-danger"></span></div>
     <div class="col-md-6"><label asp-for="ReceiverName" class="form-label">Người nhận</label><input asp-for="ReceiverName" class="form-control" /><span asp-validation-for="ReceiverName" class="text-danger"></span></div>
-    <div class="col-md-6"><label asp-for="ReceiverPhone" class="form-label">—i?n tho?i</label><input asp-for="ReceiverPhone" class="form-control" /><span asp-validation-for="ReceiverPhone" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="ReceiverPhone" class="form-label">Điện thoại</label><input asp-for="ReceiverPhone" class="form-control" /><span asp-validation-for="ReceiverPhone" class="text-danger"></span></div>
     <div class="col-12"><label asp-for="AddressLine" class="form-label">Địa chỉ</label><input asp-for="AddressLine" class="form-control" /><span asp-validation-for="AddressLine" class="text-danger"></span></div>
-    <div class="col-md-4"><label asp-for="Province" class="form-label">Tảnh/Th—nh</label><input asp-for="Province" class="form-control" /><span asp-validation-for="Province" class="text-danger"></span></div>
-    <div class="col-md-4"><label asp-for="District" class="form-label">Qu?n/Huy?n</label><input asp-for="District" class="form-control" /><span asp-validation-for="District" class="text-danger"></span></div>
-    <div class="col-md-4"><label asp-for="Ward" class="form-label">Phu?ng/X—</label><input asp-for="Ward" class="form-control" /><span asp-validation-for="Ward" class="text-danger"></span></div>
-    <div class="col-12 form-check ms-2"><input asp-for="IsDefault" class="form-check-input" /><label asp-for="IsDefault" class="form-check-label">—?t l—m d?a ch? m?c dảnh</label></div>
+    <div class="col-md-4">
+        <label class="form-label">Tỉnh/Thành</label>
+        <select id="sel-province" class="form-select">
+            <option value="">Chọn Tỉnh/Thành phố</option>
+        </select>
+        <input asp-for="Province" type="hidden" id="hid-province" />
+        <span asp-validation-for="Province" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Quận/Huyện</label>
+        <select id="sel-district" class="form-select" disabled>
+            <option value="">Chọn Quận/Huyện</option>
+        </select>
+        <input asp-for="District" type="hidden" id="hid-district" />
+        <span asp-validation-for="District" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Phường/Xã</label>
+        <select id="sel-ward" class="form-select" disabled>
+            <option value="">Chọn Phường/Xã</option>
+        </select>
+        <input asp-for="Ward" type="hidden" id="hid-ward" />
+        <span asp-validation-for="Ward" class="text-danger"></span>
+    </div>
+    <div class="col-12 form-check ms-2"><input asp-for="IsDefault" class="form-check-input" /><label asp-for="IsDefault" class="form-check-label">Đặt làm địa chỉ mặc định</label></div>
 </div>

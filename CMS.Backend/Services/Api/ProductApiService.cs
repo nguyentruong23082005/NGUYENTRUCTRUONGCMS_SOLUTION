@@ -22,20 +22,46 @@ namespace CMS.Backend.Services.Api
         {
             var dbQuery = _db.Products
                 .Include(p => p.ProductCategory)
+                    .ThenInclude(c => c!.Parent)
                 .AsNoTracking();
 
-            // Lọc theo Category
+            // Lọc theo Category (và tất cả danh mục con của nó)
             if (query.CategoryId.HasValue)
             {
-                dbQuery = dbQuery.Where(p => p.ProductCategoryId == query.CategoryId.Value);
+                var categoryIds = await GetCategorySubtreeIdsAsync(query.CategoryId.Value);
+                dbQuery = dbQuery.Where(p => categoryIds.Contains(p.ProductCategoryId));
+            }
+            else if (!string.IsNullOrWhiteSpace(query.CategorySlug))
+            {
+                var category = await _db.ProductCategories
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.Slug == query.CategorySlug);
+                if (category != null)
+                {
+                    var categoryIds = await GetCategorySubtreeIdsAsync(category.Id);
+                    dbQuery = dbQuery.Where(p => categoryIds.Contains(p.ProductCategoryId));
+                }
+                else
+                {
+                    dbQuery = dbQuery.Where(p => false);
+                }
             }
 
             // Tìm kiếm theo từ khóa
             if (!string.IsNullOrWhiteSpace(query.Keyword))
             {
-                string keyword = query.Keyword.Trim();
-                dbQuery = dbQuery.Where(p => p.Name.Contains(keyword) || (p.Description != null && p.Description.Contains(keyword)));
+                string keyword = query.Keyword.Trim().ToLower();
+                dbQuery = dbQuery.Where(p =>
+                    p.Name.ToLower().Contains(keyword)
+                    || (p.Description != null && p.Description.ToLower().Contains(keyword))
+                    || (p.ProductCategory != null && p.ProductCategory.Name.ToLower().Contains(keyword)));
             }
+
+            // Lọc theo khoảng giá (TC39)
+            if (query.MinPrice.HasValue)
+                dbQuery = dbQuery.Where(p => p.Price >= query.MinPrice.Value);
+            if (query.MaxPrice.HasValue)
+                dbQuery = dbQuery.Where(p => p.Price <= query.MaxPrice.Value);
 
             // Sắp xếp
             dbQuery = query.SortBy.ToLower() switch
@@ -43,6 +69,7 @@ namespace CMS.Backend.Services.Api
                 "name" => query.SortOrder.ToLower() == "asc" ? dbQuery.OrderBy(p => p.Name) : dbQuery.OrderByDescending(p => p.Name),
                 "price" => query.SortOrder.ToLower() == "asc" ? dbQuery.OrderBy(p => p.Price) : dbQuery.OrderByDescending(p => p.Price),
                 "createdat" => query.SortOrder.ToLower() == "asc" ? dbQuery.OrderBy(p => p.CreatedAt) : dbQuery.OrderByDescending(p => p.CreatedAt),
+                "totalsold" => query.SortOrder.ToLower() == "asc" ? dbQuery.OrderBy(p => p.TotalSold) : dbQuery.OrderByDescending(p => p.TotalSold),
                 _ => dbQuery.OrderByDescending(p => p.CreatedAt)
             };
 
@@ -59,7 +86,12 @@ namespace CMS.Backend.Services.Api
                     Price = p.Price,
                     ImageUrl = p.ImageUrl,
                     ProductCategoryName = p.ProductCategory != null ? p.ProductCategory.Name : null,
-                    Description = p.Description
+                    ProductCategoryImageUrl = p.ProductCategory != null
+                        ? (p.ProductCategory.ImageUrl ?? (p.ProductCategory.Parent != null ? p.ProductCategory.Parent.ImageUrl : null))
+                        : null,
+                    Description = p.Description,
+                    StockQuantity = p.StockQuantity,
+                    TotalSold = p.TotalSold
                 })
                 .ToListAsync();
 
@@ -70,6 +102,7 @@ namespace CMS.Backend.Services.Api
         {
             return await _db.Products
                 .Include(p => p.ProductCategory)
+                    .ThenInclude(c => c!.Parent)
                 .AsNoTracking()
                 .Select(p => new ProductDto
                 {
@@ -79,7 +112,12 @@ namespace CMS.Backend.Services.Api
                     Price = p.Price,
                     ImageUrl = p.ImageUrl,
                     ProductCategoryName = p.ProductCategory != null ? p.ProductCategory.Name : null,
+                    ProductCategoryImageUrl = p.ProductCategory != null
+                        ? (p.ProductCategory.ImageUrl ?? (p.ProductCategory.Parent != null ? p.ProductCategory.Parent.ImageUrl : null))
+                        : null,
                     Description = p.Description,
+                    StockQuantity = p.StockQuantity,
+                    TotalSold = p.TotalSold,
                     OptionGroups = p.ProductOptionGroups != null
                         ? p.ProductOptionGroups
                             .Select(pog => pog.OptionGroup)
@@ -115,6 +153,7 @@ namespace CMS.Backend.Services.Api
 
             return await _db.Products
                 .Include(p => p.ProductCategory)
+                    .ThenInclude(c => c!.Parent)
                 .AsNoTracking()
                 .Select(p => new ProductDto
                 {
@@ -124,7 +163,12 @@ namespace CMS.Backend.Services.Api
                     Price = p.Price,
                     ImageUrl = p.ImageUrl,
                     ProductCategoryName = p.ProductCategory != null ? p.ProductCategory.Name : null,
+                    ProductCategoryImageUrl = p.ProductCategory != null
+                        ? (p.ProductCategory.ImageUrl ?? (p.ProductCategory.Parent != null ? p.ProductCategory.Parent.ImageUrl : null))
+                        : null,
                     Description = p.Description,
+                    StockQuantity = p.StockQuantity,
+                    TotalSold = p.TotalSold,
                     OptionGroups = p.ProductOptionGroups != null
                         ? p.ProductOptionGroups
                             .Select(pog => pog.OptionGroup)
@@ -152,6 +196,37 @@ namespace CMS.Backend.Services.Api
                         : null
                 })
                 .FirstOrDefaultAsync(p => p.Slug == slug);
+        }
+
+        private async Task<List<int>> GetCategorySubtreeIdsAsync(int rootCategoryId)
+        {
+            var categories = await _db.ProductCategories
+                .Select(c => new { c.Id, c.ParentId })
+                .AsNoTracking()
+                .ToListAsync();
+
+            var result = new List<int> { rootCategoryId };
+            var queue = new Queue<int>();
+            queue.Enqueue(rootCategoryId);
+
+            while (queue.Count > 0)
+            {
+                var currentId = queue.Dequeue();
+                var childrenIds = categories
+                    .Where(c => c.ParentId == currentId)
+                    .Select(c => c.Id);
+
+                foreach (var childId in childrenIds)
+                {
+                    if (!result.Contains(childId))
+                    {
+                        result.Add(childId);
+                        queue.Enqueue(childId);
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

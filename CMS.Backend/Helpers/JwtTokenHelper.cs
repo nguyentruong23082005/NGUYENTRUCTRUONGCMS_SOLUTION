@@ -14,8 +14,14 @@ namespace CMS.Backend.Helpers
         public static string GenerateToken(Customer customer, IConfiguration configuration)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? "PhucLongPremiumSecretKeyForReactJSFrontEnd2026SuperSecureKey32Chars");
-            
+            var jwtKey = configuration["Jwt:Key"];
+            if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
+            {
+                throw new InvalidOperationException("Jwt:Key must be configured outside source control and contain at least 32 characters.");
+            }
+
+            var key = Encoding.UTF8.GetBytes(jwtKey);
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, customer.Id.ToString()),

@@ -36,6 +36,22 @@
         <dt class="col-sm-3 text-muted">Giờ hoạt động</dt>
         <dd class="col-sm-9">@Model.OpeningTime.ToString(@"hh\:mm") - @Model.ClosingTime.ToString(@"hh\:mm")</dd>
 
+        <dt class="col-sm-3 text-muted">Mã quận/huyện GHN</dt>
+        <dd class="col-sm-9">
+            @if (Model.GhnDistrictId.HasValue)
+            {
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-weight: 600;">
+                    @Model.GhnDistrictId
+                </span>
+            }
+            else
+            {
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1" style="font-weight: 600;">
+                    Chưa đồng bộ (Tự động cập nhật khi xem danh sách cửa hàng)
+                </span>
+            }
+        </dd>
+
         <dt class="col-sm-3 text-muted">Google Map</dt>
         <dd class="col-sm-9">
             @if (!string.IsNullOrWhiteSpace(Model.GoogleMapUrl))

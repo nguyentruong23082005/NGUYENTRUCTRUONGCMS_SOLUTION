@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  padding: 24px 0;
+  width: 100%;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 90px;
+}
+
+.circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+}
+
+.text {
+  height: 14px;
+  width: 60px;
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 576px) {
+  .container {
+    gap: 16px;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  
+  .item {
+    flex-shrink: 0;
+  }
+}

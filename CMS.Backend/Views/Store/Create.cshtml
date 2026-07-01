@@ -1,5 +1,6 @@
 @model CMS.Data.Entities.Store
 @{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Thêm cửa hàng"; }
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <div class="card-premium">
     <h1 class="h3 mb-4 fw-bold"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">add_business</span> Thêm cửa hàng</h1>
     <form asp-action="Create" method="post">
@@ -7,16 +8,360 @@
         <div class="row g-3">
             <div class="col-md-6"><label asp-for="Name" class="form-label fw-semibold">Tên cửa hàng</label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
             <div class="col-md-6"><label asp-for="Phone" class="form-label fw-semibold">Số điện thoại</label><input asp-for="Phone" class="form-control" /></div>
-            <div class="col-12"><label asp-for="Address" class="form-label fw-semibold">Địa chỉ</label><input asp-for="Address" class="form-control" /><span asp-validation-for="Address" class="text-danger"></span></div>
-            <div class="col-md-6"><label asp-for="Province" class="form-label fw-semibold">Tỉnh/TP</label><input asp-for="Province" class="form-control" /></div>
-            <div class="col-md-6"><label asp-for="District" class="form-label fw-semibold">Quận/Huyện</label><input asp-for="District" class="form-control" /></div>
+            <div class="col-12"><label asp-for="Address" class="form-label fw-semibold">Địa chỉ chi tiết</label><input asp-for="Address" class="form-control" /><span asp-validation-for="Address" class="text-danger"></span></div>
+
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Tỉnh/TP</label>
+                <select id="sel-province" class="form-select">
+                    <option value="">Chọn Tỉnh/Thành phố</option>
+                </select>
+                <input asp-for="Province" type="hidden" id="hid-province" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Quận/Huyện</label>
+                <select id="sel-district" class="form-select" disabled>
+                    <option value="">Chọn Quận/Huyện</option>
+                </select>
+                <input asp-for="District" type="hidden" id="hid-district" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Phường/Xã</label>
+                <select id="sel-ward" class="form-select" disabled>
+                    <option value="">Chọn Phường/Xã</option>
+                </select>
+                <input asp-for="Ward" type="hidden" id="hid-ward" />
+            </div>
+
             <div class="col-md-6"><label asp-for="OpeningTime" class="form-label fw-semibold">Giờ mở cửa</label><input asp-for="OpeningTime" type="time" class="form-control" /></div>
             <div class="col-md-6"><label asp-for="ClosingTime" class="form-label fw-semibold">Giờ đóng cửa</label><input asp-for="ClosingTime" type="time" class="form-control" /><span asp-validation-for="ClosingTime" class="text-danger"></span></div>
             <div class="col-12"><label asp-for="GoogleMapUrl" class="form-label fw-semibold">Google Map URL</label><input asp-for="GoogleMapUrl" class="form-control" /></div>
             <div class="col-12"><label asp-for="ImageUrl" class="form-label fw-semibold">Image URL</label><input asp-for="ImageUrl" class="form-control" /></div>
-            <div class="col-md-6"><label asp-for="Latitude" class="form-label fw-semibold">Latitude</label><input asp-for="Latitude" class="form-control" /></div>
-            <div class="col-md-6"><label asp-for="Longitude" class="form-label fw-semibold">Longitude</label><input asp-for="Longitude" class="form-control" /></div>
+            <div class="col-md-4"><label asp-for="Latitude" class="form-label fw-semibold">Latitude</label><input asp-for="Latitude" class="form-control" /></div>
+            <div class="col-md-4"><label asp-for="Longitude" class="form-label fw-semibold">Longitude</label><input asp-for="Longitude" class="form-control" /></div>
+            <div class="col-md-4">
+                <label asp-for="GhnDistrictId" class="form-label fw-semibold">Mã quận/huyện GHN</label>
+                <input asp-for="GhnDistrictId" class="form-control" placeholder="Tự động lấy nếu để trống..." />
+                <span asp-validation-for="GhnDistrictId" class="text-danger"></span>
+            </div>
+            
+            <div class="col-12 mt-3">
+                <label class="form-label fw-semibold text-muted d-block">Định vị cửa hàng trên bản đồ</label>
+                <div class="d-flex gap-2 mb-2">
+                    <button type="button" id="btn-geocode-address" class="btn btn-sm btn-success d-inline-flex align-items-center gap-1">
+                        <span class="material-symbols-rounded admin-icon-sm align-middle">location_searching</span>
+                        Định vị tự động từ địa chỉ
+                    </button>
+                    <span id="geocode-status" class="small align-self-center"></span>
+                </div>
+                <div id="admin-map" style="height: 350px; border-radius: 8px; border: 1px solid #ced4da; z-index: 1;"></div>
+            </div>
         </div>
         <div class="d-flex gap-2 mt-4"><button type="submit" class="btn btn-premium-primary border-0 me-2"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">save</span> Lưu</button><a asp-action="Index" class="btn btn-premium-outline text-decoration-none"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">arrow_back</span> Hủy</a></div>
     </form>
 </div>
+
+@section Scripts {
+<script>
+(function () {
+    const selProvince = document.getElementById('sel-province');
+    const selDistrict = document.getElementById('sel-district');
+    const selWard     = document.getElementById('sel-ward');
+    const hidProvince = document.getElementById('hid-province');
+    const hidDistrict = document.getElementById('hid-district');
+    const hidWard     = document.getElementById('hid-ward');
+
+    let districtsData = null;
+    let wardsData = null;
+
+    async function populate(sel, items, placeholder) {
+        sel.innerHTML = `<option value="">${placeholder}</option>`;
+        items.forEach(i => {
+            const opt = document.createElement('option');
+            opt.value = i.code;
+            opt.text  = i.name;
+            sel.appendChild(opt);
+        });
+    }
+
+    // Load provinces from local static json
+    fetch('/data/provinces.json')
+        .then(r => r.json())
+        .then(data => populate(selProvince, data, 'Chọn Tỉnh/Thành phố'));
+
+    selProvince.addEventListener('change', async function () {
+        hidProvince.value = this.options[this.selectedIndex]?.text || '';
+        hidDistrict.value = ''; hidWard.value = '';
+        selDistrict.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+        selWard.innerHTML     = '<option value="">Chọn Phường/Xã</option>';
+        selDistrict.disabled  = true; selWard.disabled = true;
+        if (!this.value) return;
+
+        if (!districtsData) {
+            districtsData = await fetch('/data/districts.json').then(r => r.json());
+        }
+        const list = districtsData[this.value] || [];
+        await populate(selDistrict, list, 'Chọn Quận/Huyện');
+        selDistrict.disabled = false;
+    });
+
+    selDistrict.addEventListener('change', async function () {
+        hidDistrict.value = this.options[this.selectedIndex]?.text || '';
+        hidWard.value = '';
+        selWard.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+        selWard.disabled  = true;
+        if (!this.value) return;
+
+        if (!wardsData) {
+            wardsData = await fetch('/data/wards.json').then(r => r.json());
+        }
+        const list = wardsData[this.value] || [];
+        await populate(selWard, list, 'Chọn Phường/Xã');
+        selWard.disabled = false;
+    });
+
+    selWard.addEventListener('change', function () {
+        hidWard.value = this.options[this.selectedIndex]?.text || '';
+    });
+}());
+</script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function () {
+    const latInput = document.getElementById('Latitude');
+    const lngInput = document.getElementById('Longitude');
+    const btnGeocode = document.getElementById('btn-geocode-address');
+    const statusSpan = document.getElementById('geocode-status');
+
+    // Xử lý dấu phẩy thập phân của tiếng Việt
+    function parseLocaleFloat(val) {
+        if (!val) return 0;
+        return parseFloat(String(val).replace(',', '.'));
+    }
+
+    let defaultLat = parseLocaleFloat(latInput.value) || 10.7769;
+    let defaultLng = parseLocaleFloat(lngInput.value) || 106.7009;
+
+    const map = L.map('admin-map').setView([defaultLat, defaultLng], latInput.value ? 16 : 12);
+
+    L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        maxZoom: 20,
+        attribution: '&copy; Google Maps'
+    }).addTo(map);
+
+    const marker = L.marker([defaultLat, defaultLng], {
+        draggable: true
+    }).addTo(map);
+
+    function setInputValue(input, val) {
+        const hasComma = latInput.value.includes(',') || lngInput.value.includes(',');
+        let valStr = val.toFixed(6);
+        if (hasComma) {
+            valStr = valStr.replace('.', ',');
+        }
+        input.value = valStr;
+    }
+
+    marker.on('dragend', function (e) {
+        const position = marker.getLatLng();
+        setInputValue(latInput, position.lat);
+        setInputValue(lngInput, position.lng);
+    });
+
+    function updateMarker() {
+        const lat = parseLocaleFloat(latInput.value);
+        const lng = parseLocaleFloat(lngInput.value);
+        if (!isNaN(lat) && !isNaN(lng)) {
+            const newLatLng = new L.LatLng(lat, lng);
+            marker.setLatLng(newLatLng);
+            map.panTo(newLatLng);
+        }
+    }
+    latInput.addEventListener('change', updateMarker);
+    lngInput.addEventListener('change', updateMarker);
+
+    btnGeocode.addEventListener('click', function () {
+        const street = document.getElementById('Address').value.trim();
+        const ward = document.getElementById('hid-ward').value;
+        const district = document.getElementById('hid-district').value;
+        const province = document.getElementById('hid-province').value;
+
+        if (!street && !ward && !district && !province) {
+            statusSpan.textContent = 'Vui lòng nhập địa chỉ trước!';
+            statusSpan.style.color = '#b91c1c';
+            return;
+        }
+
+        statusSpan.textContent = 'Đang tìm kiếm...';
+        statusSpan.style.color = '#4b5563';
+
+        // Hàm làm sạch địa chỉ đường đơn giản
+        function cleanStreet(str) {
+            return str.replace(/(tầng|lầu|block|lô|phòng|căn hộ|ki-ốt|kiốt|shopphouse|sh|gf|văn phòng|trệt|tòa nhà)\s*([a-z0-9\-–\svà,]+)/gi, '').replace(/\s+/g, ' ').trim();
+        }
+
+        // Hàm làm sạch tiền tố hành chính (Tỉnh, Phường...)
+        function cleanAdmin(str) {
+            if (!str) return '';
+            return str.replace(/^(phường|xã|quận|huyện|thành phố|tp\.?|tỉnh|thị xã)\s+/gi, '').trim();
+        }
+
+        const cWard = cleanAdmin(ward);
+        const cDistrict = cleanAdmin(district);
+        const cProvince = cleanAdmin(province);
+
+        // Tạo chuỗi danh sách truy vấn từ chi tiết đến khái quát
+        let queries = [];
+        
+        // 1. Đầy đủ nhất
+        let q1Parts = [];
+        if (street) q1Parts.push(street);
+        if (ward) q1Parts.push(ward);
+        if (district) q1Parts.push(district);
+        if (province) q1Parts.push(province);
+        queries.push(q1Parts.join(', '));
+
+        let q1CleanedParts = [];
+        if (street) q1CleanedParts.push(street);
+        if (cWard) q1CleanedParts.push(cWard);
+        if (cDistrict) q1CleanedParts.push(cDistrict);
+        if (cProvince) q1CleanedParts.push(cProvince);
+        queries.push(q1CleanedParts.join(', '));
+
+        // 2. Tách địa chỉ đường bằng dấu phẩy, lấy các đoạn từ phải qua trái
+        if (street && street.includes(',')) {
+            const parts = street.split(',').map(p => p.trim()).filter(Boolean);
+            for (let i = 1; i < parts.length; i++) {
+                const subStreet = parts.slice(parts.length - i).join(', ');
+                
+                let qParts = [subStreet];
+                if (ward) qParts.push(ward);
+                if (district) qParts.push(district);
+                if (province) qParts.push(province);
+                queries.push(qParts.join(', '));
+
+                let qCleanedParts = [subStreet];
+                if (cWard) qCleanedParts.push(cWard);
+                if (cDistrict) qCleanedParts.push(cDistrict);
+                if (cProvince) qCleanedParts.push(cProvince);
+                queries.push(qCleanedParts.join(', '));
+            }
+        }
+
+        // 3. Làm sạch số phòng/tầng
+        const cleanedStreet = cleanStreet(street);
+        if (cleanedStreet && cleanedStreet !== street) {
+            let q2Parts = [cleanedStreet];
+            if (ward) q2Parts.push(ward);
+            if (district) q2Parts.push(district);
+            if (province) q2Parts.push(province);
+            queries.push(q2Parts.join(', '));
+
+            let q2CleanedParts = [cleanedStreet];
+            if (cWard) q2CleanedParts.push(cWard);
+            if (cDistrict) q2CleanedParts.push(cDistrict);
+            if (cProvince) q2CleanedParts.push(cProvince);
+            queries.push(q2CleanedParts.join(', '));
+        }
+
+        // 3.5. Chiết xuất tên đường (bỏ số nhà)
+        function extractStreet(str) {
+            if (!str) return '';
+            const match = str.match(/(đường|phố|đại lộ|ấp|hẻm|ngõ|ngách)\s+.+/i);
+            return match ? match[0] : str;
+        }
+        const streetName = extractStreet(street);
+        if (streetName && streetName !== street) {
+            let qParts = [streetName];
+            if (ward) qParts.push(ward);
+            if (district) qParts.push(district);
+            if (province) qParts.push(province);
+            queries.push(qParts.join(', '));
+
+            let qCleanedParts = [streetName];
+            if (cWard) qCleanedParts.push(cWard);
+            if (cDistrict) qCleanedParts.push(cDistrict);
+            if (cProvince) qCleanedParts.push(cProvince);
+            queries.push(qCleanedParts.join(', '));
+        }
+
+        // 4. Chỉ dùng Phường, Quận, Tỉnh
+        let q3Parts = [];
+        if (ward) q3Parts.push(ward);
+        if (district) q3Parts.push(district);
+        if (province) q3Parts.push(province);
+        if (q3Parts.length > 0) queries.push(q3Parts.join(', '));
+
+        let q3CleanedParts = [];
+        if (cWard) q3CleanedParts.push(cWard);
+        if (cDistrict) q3CleanedParts.push(cDistrict);
+        if (cProvince) q3CleanedParts.push(cProvince);
+        if (q3CleanedParts.length > 0) queries.push(q3CleanedParts.join(', '));
+
+        // 5. Chỉ dùng Quận, Tỉnh
+        let q4Parts = [];
+        if (district) q4Parts.push(district);
+        if (province) q4Parts.push(province);
+        if (q4Parts.length > 0) queries.push(q4Parts.join(', '));
+
+        let q4CleanedParts = [];
+        if (cDistrict) q4CleanedParts.push(cDistrict);
+        if (cProvince) q4CleanedParts.push(cProvince);
+        if (q4CleanedParts.length > 0) queries.push(q4CleanedParts.join(', '));
+
+        // Loại bỏ truy vấn trùng
+        queries = [...new Set(queries)].filter(q => q.trim().length > 3);
+
+        let index = 0;
+
+        function tryNextQuery() {
+            if (index >= queries.length) {
+                statusSpan.textContent = 'Không tìm thấy địa điểm!';
+                statusSpan.style.color = '#b91c1c';
+                return;
+            }
+
+            const currentQuery = queries[index];
+            fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(currentQuery)}&format=json&limit=1`, {
+                headers: {
+                    'User-Agent': 'CMS.Backend/1.0 (nguyentruong23082005@gmail.com)'
+                }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    const lat = parseFloat(data[0].lat);
+                    const lon = parseFloat(data[0].lon);
+
+                    setInputValue(latInput, lat);
+                    setInputValue(lngInput, lon);
+
+                    const newLatLng = new L.LatLng(lat, lon);
+                    marker.setLatLng(newLatLng);
+                    map.setView(newLatLng, 16);
+
+                    // Buộc kích hoạt lại bản đồ vẽ đầy đủ ngói (tiles) nếu trước đó bị lỗi render
+                    setTimeout(() => {
+                        map.invalidateSize();
+                    }, 200);
+
+                    statusSpan.textContent = 'Định vị thành công!';
+                    statusSpan.style.color = '#15803d';
+                } else {
+                    index++;
+                    setTimeout(tryNextQuery, 1000); // Đợi 1 giây trước khi thử phương án dự phòng tiếp theo
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                index++;
+                setTimeout(tryNextQuery, 1000);
+            });
+        }
+
+        tryNextQuery();
+    });
+}());
+</script>
+}

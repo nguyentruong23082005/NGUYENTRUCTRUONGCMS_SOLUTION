@@ -1,0 +1,666 @@
+/* ========================================
+   Header — Thanh điều hướng chính theo thiết kế Phúc Long
+   ======================================== */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1050;
+  background-color: #ffffff;
+  box-shadow: rgba(0, 0, 0, 0.18) 0 1px 2px;
+}
+
+.topBar {
+  background: #ffffff;
+  border-top: 1px solid #2f2f2f;
+}
+
+.topBarInner {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 1280px;
+  height: 64px;
+  margin: 0 auto;
+  gap: 32px;
+  padding: 0 40px;
+}
+
+.logoLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  text-decoration: none;
+}
+
+.logoImage {
+  width: 74px;
+  height: 49px;
+  object-fit: contain;
+  display: block;
+}
+
+.searchForm {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 0 0 304px;
+  max-width: 304px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a7adb1;
+  font-family: Arial, sans-serif;
+  font-size: 19px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  height: 40px;
+  padding: 0 16px 0 44px;
+  border: 0;
+  border-radius: 999px;
+  background-color: #eceff1;
+  color: #4a4f53;
+  font-family: 'Arimo', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  outline: none;
+  transition: box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.searchInput::placeholder {
+  color: #8f969b;
+}
+
+.searchInput:focus {
+  background-color: #f2f4f5;
+  box-shadow: inset 0 0 0 1.5px #00703c;
+}
+
+.searchDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 220;
+  width: min(360px, calc(100vw - 32px));
+  max-height: 360px;
+  overflow-y: auto;
+  border: 1px solid #dfe7e2;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: rgba(0, 0, 0, 0.16) 0 10px 24px;
+}
+
+.searchSuggestion {
+  display: grid;
+  width: 100%;
+  min-height: 64px;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 0;
+  border-bottom: 1px solid #edf2ef;
+  background-color: #ffffff;
+  color: #24312b;
+  text-align: left;
+  cursor: pointer;
+}
+
+.searchSuggestion:last-child {
+  border-bottom: 0;
+}
+
+.searchSuggestion:hover,
+.searchSuggestion:focus-visible {
+  background-color: #f5faf7;
+  outline: none;
+}
+
+.searchSuggestionImage,
+.searchSuggestionPlaceholder {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+}
+
+.searchSuggestionImage {
+  object-fit: cover;
+  background-color: #eef3f0;
+}
+
+.searchSuggestionPlaceholder {
+  display: block;
+  background: linear-gradient(135deg, #e9f3ee, #f7f1e6);
+}
+
+.searchSuggestionText {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.searchSuggestionText strong,
+.searchSuggestionText small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.searchSuggestionText strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: #123b29;
+}
+
+.searchSuggestionText small {
+  font-size: 12px;
+  color: #66736c;
+}
+
+.searchState {
+  padding: 14px 16px;
+  color: #53615a;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.headerSpacer {
+  flex: 1 1 auto;
+}
+
+.deliveryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 260px;
+  height: 40px;
+  padding: 4px 16px 4px 14px;
+  border: 0;
+  border-radius: 999px;
+  background-color: #eceff1;
+  color: #006f3c;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: background-color 0.18s ease, transform 0.18s ease;
+}
+
+.deliveryButton:hover {
+  background-color: #e2e7e9;
+  transform: translateY(-1px);
+}
+
+.deliveryIcon {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.deliveryTextGroup {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  line-height: 1.08;
+  overflow: hidden;
+}
+
+.deliveryTextGroup strong {
+  color: #00703c;
+  font-family: 'Arimo', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.deliveryTextGroup small {
+  max-width: 190px;
+  overflow: hidden;
+  color: #2f3336;
+  font-family: 'Arimo', Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.controls {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 18px;
+}
+
+.iconButton,
+.cartLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: #00703c;
+  text-decoration: none;
+  border-radius: 50%;
+  transition: background-color 0.18s ease, transform 0.18s ease;
+}
+
+.iconButton:hover,
+.cartLink:hover {
+  background-color: #edf5f0;
+  transform: translateY(-1px);
+}
+
+.headerSvgIcon {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cartIcon {
+  font-size: 21px;
+  line-height: 1;
+}
+
+.userMenu {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.accountMenu {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+}
+
+.accountDropdown {
+  position: absolute;
+  top: 100%;           /* sát ngay dưới trigger, không có gap */
+  right: -16px;
+  z-index: 180;
+  width: 264px;
+  padding: 14px 0;
+  padding-top: 24px;   /* khoảng trống được đẩy vào trong, không tạo gap bên ngoài */
+  border: 1px solid #e7ece9;
+  background-color: #ffffff;
+  box-shadow: rgba(0, 0, 0, 0.22) 0 8px 20px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  visibility: hidden;
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+}
+
+/* Cầu nối vô hình lấp khoảng trống giữa icon và dropdown
+   Đảm bảo hover không bị mất khi chuột di chuyển từ icon xuống menu */
+.accountDropdown::before {
+  content: '';
+  position: absolute;
+  top: -16px;          /* phủ lên phần trên dropdown 16px */
+  left: 0;
+  right: 0;
+  height: 16px;        /* chiều cao cầu nối = padding-top của dropdown */
+  background: transparent;
+}
+
+.accountMenu:hover .accountDropdown,
+.accountMenu:focus-within .accountDropdown {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.accountDropdownItem {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 56px;
+  align-items: center;
+  gap: 16px;
+  padding: 0 22px;
+  border: 0;
+  background-color: #ffffff;
+  color: #4b4b4b;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: left;
+  text-decoration: none;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.accountDropdownItem:hover,
+.accountDropdownItem:focus-visible {
+  background-color: #f7faf8;
+  color: #00703c;
+  outline: none;
+}
+
+.accountDropdownItemActive::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  background-color: #00703c;
+}
+
+.accountMenuSvg {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+.logoutBtn {
+  display: none;
+}
+
+.badge {
+  position: absolute;
+  top: -7px;
+  right: -9px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #d71920;
+  color: #ffffff;
+  font-family: 'Arimo', Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  border-radius: 999px;
+  line-height: 1;
+}
+
+.activeCategory {
+  color: var(--primary-color);
+  font-weight: 700;
+  border-left: 3px solid var(--primary-color);
+  padding-left: calc(8px + (var(--category-level, 0) * 18px));
+}
+
+.childCategoryLink {
+  padding-left: calc(10px + (var(--category-level, 0) * 18px));
+  color: #5d6760;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.categoryBranch {
+  display: inline-block;
+  margin-right: 6px;
+  color: #9aa39d;
+}
+
+.bounce {
+  animation: bounceAnim 0.6s ease;
+}
+
+@keyframes bounceAnim {
+  0%, 100% { transform: scale(1); }
+  30% { transform: scale(1.18); }
+  50% { transform: scale(0.94); }
+  70% { transform: scale(1.06); }
+}
+
+.navBar {
+  background-color: #f1f0f1;
+  border-top: 1px solid #eceff1;
+  border-bottom: 1px solid #dddddd;
+}
+
+.navBarInner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  gap: 0;
+  height: 42px;
+  padding: 0 40px;
+}
+
+.navItem {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+}
+
+.navLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 34px;
+  color: #555f58;
+  font-family: 'Arimo', Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.18s ease;
+}
+
+.navLink::after {
+  content: '';
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 0;
+  height: 2px;
+  background-color: #006f3c;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.18s ease;
+}
+
+.navLink:hover {
+  color: #006f3c;
+}
+
+.navItem:hover > .navLink,
+.navItem:focus-within > .navLink {
+  color: #006f3c;
+}
+
+.navLink:hover::after,
+.navLink:active::after,
+.navItem:hover > .navLink::after,
+.navItem:focus-within > .navLink::after {
+  transform: scaleX(1);
+}
+
+.megaDropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  z-index: 140;
+  display: grid;
+  width: min(675px, calc(100vw - 32px));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 44px;
+  padding: 30px 48px 34px;
+  border: 1px solid #e7ece9;
+  background-color: #ffffff;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 8px 18px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-34%, -4px);
+  visibility: hidden;
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+}
+
+.megaDropdown::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 34%;
+  width: 18px;
+  height: 18px;
+  border-left: 1px solid #e7ece9;
+  border-top: 1px solid #e7ece9;
+  background-color: #ffffff;
+  transform: rotate(45deg);
+}
+
+.navItem:hover .megaDropdown,
+.navItem:focus-within .megaDropdown {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-34%, 0);
+  visibility: visible;
+}
+
+.dropdownColumn {
+  min-width: 0;
+}
+
+.dropdownTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  color: #00703c;
+  font-family: var(--font-primary);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 20px;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.dropdownCategoryIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-base);
+  object-fit: contain;
+  background-color: #ffffff;
+  border: 1px solid #e7ece9;
+  padding: 2px;
+}
+
+.dropdownList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dropdownLink {
+  color: #111111;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  text-decoration: none;
+  transition: color 0.16s ease;
+}
+
+.dropdownLink:hover,
+.dropdownTitle:hover {
+  color: #00703c;
+}
+
+@media (max-width: 1024px) {
+  .topBarInner {
+    gap: 14px;
+    padding: 0 12px;
+  }
+
+  .searchForm {
+    flex-basis: 300px;
+    max-width: 300px;
+  }
+
+  .deliveryButton {
+    width: 250px;
+  }
+
+  .deliveryTextGroup small {
+    max-width: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  .topBarInner {
+    height: auto;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    gap: 10px;
+  }
+
+  .logoImage {
+    width: 58px;
+  }
+
+  .searchForm {
+    order: 3;
+    flex: 1 0 100%;
+    max-width: none;
+  }
+
+  .headerSpacer {
+    display: none;
+  }
+
+  .deliveryButton {
+    flex: 1 1 180px;
+    width: auto;
+    min-width: 0;
+  }
+
+  .controls {
+    gap: 12px;
+  }
+
+  .accountDropdown {
+    right: -8px;
+    width: 232px;
+  }
+
+  .navBarInner {
+    justify-content: flex-start;
+    overflow-x: auto;
+    height: 42px;
+    padding: 0 12px;
+    scrollbar-width: none;
+  }
+
+  .megaDropdown {
+    display: none;
+  }
+
+  .navBarInner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .navLink {
+    padding: 0 12px;
+    font-size: 12px;
+  }
+}

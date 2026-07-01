@@ -25,6 +25,14 @@ namespace CMS.Data.Entities
 
         public int TokenVersion { get; set; } = 1;
 
+        public string? FirebaseUid { get; set; }
+
+        public string? SignInProvider { get; set; }
+
+        // Forgot Password (TC46)
+        public string? ResetPasswordToken { get; set; }
+        public DateTime? ResetPasswordExpiry { get; set; }
+
         // Các danh sách bên dưới là quan hệ 1-nhiều: một khách có nhiều đơn hàng, địa chỉ, voucher, đánh giá.
         public virtual ICollection<Order>? Orders { get; set; }
         public virtual ICollection<CustomerAddress>? CustomerAddresses { get; set; }

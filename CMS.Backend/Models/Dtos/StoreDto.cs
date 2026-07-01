@@ -8,6 +8,7 @@ namespace CMS.Backend.Models.Dtos
         public string? Phone { get; init; }
         public string? Province { get; init; }
         public string? District { get; init; }
+        public string? Ward { get; init; }
         public string? ImageUrl { get; init; }
         public string? GoogleMapUrl { get; init; }
         public string OpeningTime { get; init; } = string.Empty;

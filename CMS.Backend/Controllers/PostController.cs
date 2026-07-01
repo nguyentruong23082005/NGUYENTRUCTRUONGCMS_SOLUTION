@@ -1,3 +1,4 @@
+using CMS.Backend.Helpers;
 using CMS.Backend.Models;
 using CMS.Data;
 using CMS.Data.Entities;
@@ -96,19 +97,15 @@ namespace CMS.Backend.Controllers
 
             if (uploadImage != null && uploadImage.Length > 0)
             {
-                string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadImage.FileName);
-                string filePath = Path.Combine(folder, fileName);
-
-                // Lưu file ảnh vào wwwroot/uploads, DB chỉ lưu đường dẫn để hiển thị lại.
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                var uploadResult = ImageUploadHelper.SaveImage(uploadImage, filePrefix: "post");
+                if (!uploadResult.Succeeded)
                 {
-                    uploadImage.CopyTo(stream);
+                    ModelState.AddModelError(nameof(Post.ImageUrl), uploadResult.ErrorMessage ?? "Ảnh tải lên không hợp lệ.");
+                    ViewBag.CategoryList = new SelectList(_context.PostCategories.ToList(), "Id", "Name", model.PostCategoryId);
+                    return View(model);
                 }
 
-                model.ImageUrl = "/uploads/" + fileName;
+                model.ImageUrl = uploadResult.Url;
             }
 
             _context.Posts.Add(model);
@@ -140,18 +137,15 @@ namespace CMS.Backend.Controllers
 
             if (uploadImage != null && uploadImage.Length > 0)
             {
-                string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadImage.FileName);
-                string filePath = Path.Combine(folder, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                var uploadResult = ImageUploadHelper.SaveImage(uploadImage, filePrefix: "post");
+                if (!uploadResult.Succeeded)
                 {
-                    uploadImage.CopyTo(stream);
+                    ModelState.AddModelError(nameof(Post.ImageUrl), uploadResult.ErrorMessage ?? "Ảnh tải lên không hợp lệ.");
+                    ViewBag.CategoryList = new SelectList(_context.PostCategories.ToList(), "Id", "Name", model.PostCategoryId);
+                    return View(model);
                 }
 
-                model.ImageUrl = "/uploads/" + fileName;
+                model.ImageUrl = uploadResult.Url;
             }
             else
             {
@@ -218,6 +212,27 @@ namespace CMS.Backend.Controllers
 
             TempData["SuccessMessage"] = $"Đã khôi phục bài viết '{post.Title}'.";
             return RedirectToAction(nameof(Trash));
+        }
+
+        /// <summary>
+        /// Upload ảnh cho CKEditor — chỉ người đã đăng nhập mới được phép (TC35).
+        /// </summary>
+        [HttpPost]
+        [Route("/api/upload/ckeditor")]
+        [IgnoreAntiforgeryToken]
+        public IActionResult CKEditorUpload(IFormFile upload)
+        {
+            if (upload == null || upload.Length == 0)
+                return BadRequest(new { uploaded = false, error = new { message = "File rỗng" } });
+
+            var uploadResult = ImageUploadHelper.SaveImage(upload, "uploads/ckeditor", "ckeditor", allowGif: true);
+            if (!uploadResult.Succeeded || string.IsNullOrWhiteSpace(uploadResult.Url))
+            {
+                return BadRequest(new { uploaded = false, error = new { message = uploadResult.ErrorMessage } });
+            }
+
+            var url = $"{Request.Scheme}://{Request.Host}{uploadResult.Url}";
+            return Ok(new { uploaded = true, url });
         }
     }
 }

@@ -1,23 +1,2 @@
-/* Xóa bỏ mọi khoảng trắng thừa của trình duyệt */
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  /* Màu nền xám đặc trưng của admin Shopify */
-  background-color: #f4f6f8; 
-  /* Font chữ chuẩn */
-  font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-}
-
-/* Đảm bảo ứng dụng React tràn toàn bộ màn hình */
-#root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Ép thẻ Frame của Polaris giãn hết chiều cao */
-.Polaris-Frame {
-  min-height: 100vh !important;
-}
+/* Entry point CSS — Import global styles */
+@import './styles/global.css';

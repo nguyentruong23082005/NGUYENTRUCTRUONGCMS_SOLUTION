@@ -21,5 +21,10 @@ namespace CMS.Data.Entities
         public virtual ICollection<Product>? Products { get; set; }
 
         public string Slug { get; set; } = string.Empty;
+
+        public int? ParentId { get; set; }
+        public virtual ProductCategory? Parent { get; set; }
+        public virtual ICollection<ProductCategory>? Children { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

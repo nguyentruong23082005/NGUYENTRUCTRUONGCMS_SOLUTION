@@ -9,7 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..24,400,0,0&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/admin-theme.css" asp-appenđãversion="true" />
+    <link rel="stylesheet" href="~/css/admin-theme.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="admin-shell">
     <header class="admin-topbar d-flex align-items-center justify-content-between px-3 px-lg-4 gap-3">
@@ -17,7 +18,7 @@
             <span class="material-symbols-rounded" aria-hidden="true">admin_panel_settings</span>
             <span>CMS Admin</span>
         </div>
-        <div class="admin-search-shell d-none đãmd-flex align-items-center justify-content-between">
+        <div class="admin-search-shell d-none d-md-flex align-items-center justify-content-between">
             <span class="d-inline-flex align-items-center gap-2">
                 <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">search</span>
                 Tìm kiếm

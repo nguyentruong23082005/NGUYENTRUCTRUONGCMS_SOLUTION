@@ -58,15 +58,15 @@ namespace CMS.Backend.Helpers
         {
             return status switch
             {
-                OrderStatus.Pending => "bg-secondary",
-                OrderStatus.Confirmed => "bg-info text-dark",
-                OrderStatus.Preparing => "bg-warning text-dark",
-                OrderStatus.Ready => "bg-primary",
-                OrderStatus.OutForDelivery => "bg-dark",
-                OrderStatus.Delivered => "bg-success",
-                OrderStatus.Completed => "bg-success",
-                OrderStatus.Cancelled => "bg-danger",
-                _ => "bg-secondary"
+                OrderStatus.Pending => "badge-status-pending",
+                OrderStatus.Confirmed => "badge-status-confirmed",
+                OrderStatus.Preparing => "badge-status-preparing",
+                OrderStatus.Ready => "badge-status-ready",
+                OrderStatus.OutForDelivery => "badge-status-shipping",
+                OrderStatus.Delivered => "badge-status-success",
+                OrderStatus.Completed => "badge-status-success",
+                OrderStatus.Cancelled => "badge-status-danger",
+                _ => "badge-status-pending"
             };
         }
 

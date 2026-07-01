@@ -79,8 +79,32 @@
 @section Scripts {
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
     <script>
+        class UploadAdapter {
+            constructor(loader) { this.loader = loader; }
+            upload() {
+                return this.loader.file.then(file => {
+                    const formData = new FormData();
+                    formData.append('upload', file);
+                    return fetch('/api/upload/ckeditor', {
+                        method: 'POST',
+                        body: formData,
+                        credentials: 'same-origin'
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.uploaded) throw new Error(data.error?.message || 'Upload thất bại');
+                        return { default: data.url };
+                    });
+                });
+            }
+        }
+        function UploadPlugin(editor) {
+            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => new UploadAdapter(loader);
+        }
         ClassicEditor
-            .create(document.querySelector('#Content'))
+            .create(document.querySelector('#Content'), {
+                extraPlugins: [UploadPlugin]
+            })
             .catch(error => {
                 console.error(error);
             });

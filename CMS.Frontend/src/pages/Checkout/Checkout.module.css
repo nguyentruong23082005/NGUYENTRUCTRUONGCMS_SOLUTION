@@ -1,0 +1,797 @@
+/* ═══════════════════════════════════════════════════
+   Checkout — Phúc Long Design System
+   Font: Arimo (UI) / Roboto (form labels)
+   Primary: #006F3C  |  Text: #333333  |  Muted: #666666
+   ═══════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Arimo:wght@400;600;700&family=Roboto:wght@400;500&display=swap');
+
+.page {
+  padding: 20px 0 60px;
+  background: #f5f5f5;
+  min-height: 100vh;
+  font-family: 'Arimo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  color: #333333;
+}
+
+/* ── Breadcrumb ────────────────────────────────── */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #9B9B9B;
+  margin-bottom: 16px;
+  font-family: 'Arimo', sans-serif;
+}
+
+.breadcrumbLink {
+  color: #9B9B9B;
+  text-decoration: none;
+}
+
+.breadcrumbLink:hover { color: #006F3C; }
+
+.breadcrumbSep { color: #CCCCCC; }
+
+.breadcrumbActive {
+  color: #006F3C;
+  font-weight: 600;
+}
+
+/* ── Layout ────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 16px;
+  align-items: start;
+}
+
+/* ══ CỘT TRÁI ══════════════════════════════════ */
+.leftCol {
+  background: #FFFFFF;
+  border: 1px solid #ECEFF1;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #ECEFF1;
+}
+
+.tabBtn {
+  flex: 1;
+  padding: 14px 12px;
+  font-family: 'Arimo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: #9B9B9B;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.tabBtn:hover { color: #006F3C; }
+
+.tabActive {
+  color: #006F3C;
+  border-bottom-color: #006F3C;
+}
+
+/* Section rows */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border: none;
+  border-bottom: 1px solid #ECEFF1;
+  background: #FFFFFF;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  gap: 12px;
+  transition: background 0.15s;
+}
+
+.row:last-of-type { border-bottom: none; }
+.row:hover { background: #fafafa; }
+
+.rowBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.rowLabelWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mapPinIcon {
+  width: 18px;
+  height: 18px;
+  color: #006F3C;
+  flex-shrink: 0;
+}
+
+.rowLabel {
+  font-family: 'Arimo', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #006F3C;
+  letter-spacing: 0;
+}
+
+.rowValue {
+  font-family: 'Arimo', sans-serif;
+  font-size: 14px;
+  color: #333333;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.chevron {
+  font-size: 22px;
+  color: #006F3C;
+  flex-shrink: 0;
+  line-height: 1;
+  font-weight: 300;
+}
+
+.chevronSvg {
+  width: 18px;
+  height: 18px;
+  color: #006F3C;
+  flex-shrink: 0;
+}
+
+/* Inline input trong row người nhận (cũ) */
+.inlineInput {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #333333;
+  border: 1px solid #E0E0E0;
+  border-radius: 0;
+  padding: 7.5px 8px;
+  background: #FAFAFA;
+  width: 100%;
+  margin-top: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.inlineInput:focus {
+  outline: none;
+  border-color: #006F3C;
+  box-shadow: inset 0 0 0 1px #006F3C;
+  background: #fff;
+}
+
+.inlineInput::placeholder { color: rgba(0, 0, 0, 0.38); }
+
+/* Panel chọn địa chỉ đã lưu */
+.addressPickerPanel {
+  padding: 0 20px 16px;
+  border-bottom: 1px solid #ECEFF1;
+  background: #FAFAFA;
+}
+
+.addressList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.addressCard {
+  width: 100%;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  background: #FFFFFF;
+  padding: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.addressCard:hover,
+.addressCardActive {
+  border-color: #006F3C;
+  background: #F4FBF7;
+}
+
+.addressHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.addressName {
+  font-family: 'Arimo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #006F3C;
+}
+
+.defaultBadge {
+  border: 1px solid #006F3C;
+  border-radius: 4px;
+  color: #006F3C;
+  font-family: 'Arimo', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
+.addressText {
+  display: block;
+  font-family: 'Arimo', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #4A4A4A;
+}
+
+.gpsAlternativeBtn {
+  margin-top: 12px;
+  width: 100%;
+  border: 1px solid #006F3C;
+  border-radius: 4px;
+  background: #FFFFFF;
+  color: #006F3C;
+  font-family: 'Arimo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.gpsAlternativeBtn:hover {
+  background: #006F3C;
+  color: #FFFFFF;
+}
+
+/* Form sửa người nhận (mới) */
+.receiverFormPanel {
+  padding: 0 20px 16px;
+  border-bottom: 1px solid #ECEFF1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #FAFAFA;
+}
+
+.flatInput {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #333333;
+  border: 1px solid #E0E0E0;
+  border-radius: 4px;
+  padding: 10px 12px;
+  background: #FFFFFF;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.flatInput:focus {
+  outline: none;
+  border-color: #006F3C;
+  box-shadow: inset 0 0 0 1px #006F3C;
+}
+
+.flatInput::placeholder { color: rgba(0, 0, 0, 0.38); }
+
+/* Ghi chú panel (expand) */
+.notesPanel {
+  padding: 0 20px 16px;
+  border-bottom: 1px solid #ECEFF1;
+}
+
+.notesInput {
+  width: 100%;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #333333;
+  border: 1px solid #E0E0E0;
+  border-radius: 0;
+  padding: 8px;
+  background: #FAFAFA;
+  resize: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.notesInput:focus {
+  outline: none;
+  border-color: #006F3C;
+  box-shadow: inset 0 0 0 1px #006F3C;
+}
+
+/* VAT section */
+.vatSection {
+  padding: 16px 20px;
+  font-family: 'Arimo', sans-serif;
+  font-size: 13px;
+  color: #666666;
+  line-height: 1.6;
+  background: #FFFFFF;
+}
+
+.vatTitle {
+  font-weight: 700;
+  color: #006F3C;
+  margin: 0 0 8px;
+}
+
+.vatSection p {
+  margin: 0 0 4px;
+}
+
+.vatSection p:last-child { margin: 0; }
+
+/* ══ CỘT PHẢI ══════════════════════════════════ */
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Cart box */
+.cartBox {
+  background: #FFFFFF;
+  border: 1px solid #ECEFF1;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 0;
+}
+
+.cartBoxTitle {
+  font-family: 'Arimo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #006F3C;
+  padding: 14px 16px;
+  border-bottom: 1px solid #ECEFF1;
+  margin: 0;
+}
+
+.cartItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #ECEFF1;
+}
+
+.cartItem:last-child { border-bottom: none; }
+
+.cartImg {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #ECEFF1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cartImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cartMeta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.cartTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.cartName {
+  font-family: 'Arimo', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #006F3C;
+  line-height: 1.4;
+  flex: 1;
+}
+
+/* Removed cartActions */
+
+.cartEditBtn,
+.cartDeleteBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 4px;
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}
+
+.cartEditBtn:hover,
+.cartDeleteBtn:hover { opacity: 1; }
+
+.cartOpts {
+  font-family: 'Arimo', sans-serif;
+  font-size: 12px;
+  color: #666666;
+  line-height: 1.4;
+}
+
+.cartBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.cartPrice {
+  font-family: 'Arimo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #006F3C;
+}
+
+.qtyActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Nút số lượng giống mẫu: nền xanh, viền xanh */
+.qtyWrap {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #006F3C;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.qtyBtn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #006F3C;
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  padding: 0;
+  line-height: 1;
+}
+
+.qtyBtn:hover:not(:disabled) { background: #0C713D; }
+.qtyBtn:disabled { background: #CCCCCC; cursor: not-allowed; }
+
+.qtyNum {
+  min-width: 32px;
+  text-align: center;
+  font-family: 'Arimo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #333333;
+  background: #FFFFFF;
+  padding: 0 4px;
+  line-height: 32px;
+}
+
+/* Summary box */
+.summaryBox {
+  background: #FFFFFF;
+  border: 1px solid #ECEFF1;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.summaryTitle {
+  font-family: 'Arimo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #333333;
+  margin: 0 0 4px;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Arimo', sans-serif;
+  font-size: 14px;
+  color: #333333;
+}
+
+.summaryTotalRow {
+  border-top: 1px solid #ECEFF1;
+  padding-top: 10px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.totalAmt {
+  font-family: 'Arimo', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #006F3C;
+}
+
+/* Voucher */
+.voucherRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.voucherCtrl {
+  display: flex;
+  gap: 8px;
+}
+
+.voucherField {
+  flex: 1;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  color: #333333;
+  border: 1px solid #E0E0E0;
+  border-radius: 0;
+  padding: 8px;
+  background: #FAFAFA;
+  transition: border-color 0.2s;
+  height: 36px;
+  box-sizing: border-box;
+}
+
+.voucherField:focus {
+  outline: none;
+  border-color: #006F3C;
+  box-shadow: inset 0 0 0 1px #006F3C;
+}
+
+.voucherBtn {
+  background: #006F3C;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  padding: 0 16px;
+  font-family: 'Arimo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  height: 36px;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.voucherBtn:hover { background: #0C713D; }
+
+.voucherOk {
+  font-family: 'Arimo', sans-serif;
+  font-size: 12px;
+  color: #006F3C;
+  font-weight: 600;
+}
+
+/* Payment box */
+.paymentBox {
+  background: #FFFFFF;
+  border: 1px solid #ECEFF1;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.radioRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Arimo', sans-serif;
+  font-size: 14px;
+  color: #333333;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.radio {
+  width: 18px;
+  height: 18px;
+  accent-color: #006F3C;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* Terms + submit */
+.termsBox {
+  background: #FFFFFF;
+  border: 1px solid #ECEFF1;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.termsRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: 'Arimo', sans-serif;
+  font-size: 13px;
+  color: #666666;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: #006F3C;
+  flex-shrink: 0;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.termsLink {
+  color: #007AFF;
+  text-decoration: underline;
+}
+
+.submitBtn {
+  width: 100%;
+  background: #CCCCCC;
+  color: #9B9B9B;
+  font-family: 'Arimo', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: not-allowed;
+  letter-spacing: 0;
+  transition: background 0.2s, color 0.2s;
+  min-height: 48px;
+}
+
+.submitBtn:not(:disabled) {
+  background: #006F3C;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
+.submitBtn:not(:disabled):hover { background: #0C713D; }
+
+/* ══ EMPTY ════════════════════════════════════════ */
+.emptyContainer {
+  text-align: center;
+  padding: 80px 20px;
+  background: #FFFFFF;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.emptyIcon { font-size: 64px; }
+
+.emptyContainer h3 {
+  font-family: 'Arimo', sans-serif;
+  font-size: 20px;
+  color: #006F3C;
+  margin: 0;
+}
+
+.emptyContainer p { color: #666666; font-size: 15px; margin: 0; }
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  background: #006F3C;
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-family: 'Arimo', sans-serif;
+  font-weight: 600;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+
+.backBtn:hover { background: #0C713D; color: #FFFFFF; }
+
+/* ══ SUCCESS ══════════════════════════════════════ */
+.successPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  background: #f5f5f5;
+  padding: 20px;
+}
+
+.successCard {
+  max-width: 520px;
+  width: 100%;
+  background: #FFFFFF;
+  padding: 48px;
+  border-radius: 8px;
+  box-shadow: rgba(0,0,0,0.12) 0px 2px 8px 0px;
+  text-align: center;
+  border-top: 4px solid #006F3C;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  font-family: 'Arimo', sans-serif;
+}
+
+.successIcon { font-size: 64px; }
+
+.successCard h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #006F3C;
+  margin: 0;
+}
+
+.successText { font-size: 14px; color: #333333; line-height: 1.6; margin: 0; }
+.redirectText { font-size: 12px; color: #9B9B9B; font-style: italic; margin: 0; }
+
+.homeBtn {
+  display: inline-flex;
+  align-items: center;
+  background: #006F3C;
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-family: 'Arimo', sans-serif;
+  font-weight: 600;
+  transition: background 0.2s;
+  margin-top: 4px;
+}
+
+.homeBtn:hover { background: #0C713D; color: #FFFFFF; }
+
+/* ══ RESPONSIVE ════════════════════════════════════ */
+@media (max-width: 992px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .page { padding: 12px 0 40px; }
+  .successCard { padding: 32px 16px; }
+}

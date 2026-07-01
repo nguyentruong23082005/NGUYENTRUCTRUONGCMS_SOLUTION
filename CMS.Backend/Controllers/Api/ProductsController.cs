@@ -29,6 +29,36 @@ namespace CMS.Backend.Controllers.Api
         }
 
         /// <summary>
+        /// Tim kiem san pham theo tu khoa q, ho tro phan trang va loc gia.
+        /// </summary>
+        [HttpGet("search")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse))]
+        public async Task<IActionResult> Search([FromQuery(Name = "q")] string? q, [FromQuery] ProductQuery query)
+        {
+            var keyword = (q ?? query.Keyword)?.Trim();
+            if (keyword?.Length > 100)
+            {
+                return BadRequest(ApiResponse.FailureResponse("Search keyword must be 100 characters or fewer."));
+            }
+
+            var pagedResult = await _productService.GetPagedAsync(new ProductQuery
+            {
+                Page = query.Page,
+                PageSize = query.PageSize,
+                CategoryId = query.CategoryId,
+                CategorySlug = query.CategorySlug,
+                Keyword = keyword,
+                MinPrice = query.MinPrice,
+                MaxPrice = query.MaxPrice,
+                SortBy = query.SortBy,
+                SortOrder = query.SortOrder
+            });
+
+            return Ok(ApiResponse.SuccessResponse(pagedResult));
+        }
+
+        /// <summary>
         /// Lấy chi tiết sản phẩm theo mã ID.
         /// </summary>
         [HttpGet("{id:int}")]
@@ -66,6 +96,39 @@ namespace CMS.Backend.Controllers.Api
             }
 
             return Ok(ApiResponse.SuccessResponse(product));
+        }
+        /// <summary>
+        /// Lấy danh sách sản phẩm mới nhất (TC36).
+        /// </summary>
+        [HttpGet("newest")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
+        public async Task<IActionResult> GetNewest([FromQuery] int count = 5)
+        {
+            var result = await _productService.GetPagedAsync(new ProductQuery
+            {
+                Page = 1,
+                PageSize = Math.Clamp(count, 1, 20),
+                SortBy = "CreatedAt",
+                SortOrder = "desc"
+            });
+            return Ok(ApiResponse.SuccessResponse(result));
+        }
+
+        /// <summary>
+        /// Lấy danh sách sản phẩm bán chạy nhất (TC37).
+        /// </summary>
+        [HttpGet("best-sellers")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse))]
+        public async Task<IActionResult> GetBestSellers([FromQuery] int count = 3)
+        {
+            var result = await _productService.GetPagedAsync(new ProductQuery
+            {
+                Page = 1,
+                PageSize = Math.Clamp(count, 1, 20),
+                SortBy = "TotalSold",
+                SortOrder = "desc"
+            });
+            return Ok(ApiResponse.SuccessResponse(result));
         }
     }
 }

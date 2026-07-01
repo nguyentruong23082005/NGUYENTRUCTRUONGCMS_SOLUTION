@@ -2,7 +2,19 @@
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Thêm đơn hàng";
-    var products = ViewBag.Products as List<CMS.Data.Entities.Product> ?? new();
+}
+
+@section Styles {
+    <link href="~/lib/tom-select/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        .ts-control { border-radius: 0.375rem; min-height: 38px; }
+        .product-option { display: flex; align-items: center; gap: 10px; padding: 5px; }
+        .product-option img { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; }
+        .product-info { display: flex; flex-direction: column; line-height: 1.2; }
+        .product-name { font-weight: 500; font-size: 14px; }
+        .product-meta { font-size: 12px; color: #6c757d; }
+        .product-price { font-weight: 600; color: #198754; font-size: 13px; margin-top: 2px; }
+    </style>
 }
 
 <div class="card-premium">
@@ -25,6 +37,9 @@
     }
 
     <form asp-action="Create" method="post">
+        <input type="hidden" id="shippingFeeInput" name="ShippingFee" value="0" />
+        <input type="hidden" id="shippingStoreIdInput" name="ShippingStoreId" value="" />
+        <input type="hidden" id="shippingAddressInput" name="ShippingAddress" value="" />
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-4">
@@ -36,7 +51,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label asp-for="OrderDate" class="form-label fw-semibold">Ngày đặt h—ng</label>
+                    <label asp-for="OrderDate" class="form-label fw-semibold">Ngày đặt hàng</label>
                     <input asp-for="OrderDate" type="datetime-local" class="form-control" />
                     <small class="text-muted d-block mt-1">Để trống nếu muốn tự động lấy giờ hiện tại.</small>
                 </div>
@@ -53,14 +68,91 @@
                     <label asp-for="Notes" class="form-label fw-semibold">Ghi chú</label>
                     <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Nhập ghi chú hoặc yêu cầu giao hàng..."></textarea>
                 </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">local_activity</span>
+                        Mã giảm giá
+                    </label>
+                    <div class="input-group">
+                        <input type="text" id="voucherCodeInput" name="VoucherCode" class="form-control" placeholder="Nhập mã giảm giá..." autocomplete="off" />
+                        <button type="button" id="btnApplyVoucher" class="btn btn-outline-secondary">
+                            <span class="material-symbols-rounded admin-icon-sm align-middle">check_circle</span>
+                            Áp dụng
+                        </button>
+                    </div>
+                    <div id="voucherMsg" class="mt-1 small d-none"></div>
+                </div>
+
+                <div class="mb-4 p-3 rounded-3 border" style="background-color:#f8fafc;">
+                    <label class="form-label fw-semibold">
+                        <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">local_shipping</span>
+                        Địa chỉ giao hàng GHN
+                    </label>
+                    <div class="row g-2">
+                        <div class="col-12">
+                            <select id="shippingProvince" class="form-select">
+                                <option value="">Chọn Tỉnh/Thành</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <select id="shippingDistrict" class="form-select" disabled>
+                                <option value="">Chọn Quận/Huyện</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <select id="shippingWard" class="form-select" disabled>
+                                <option value="">Chọn Phường/Xã</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <input type="text" id="shippingStreet" class="form-control" placeholder="Số nhà, tên đường (Địa chỉ chi tiết)..." required />
+                        </div>
+                    </div>
+                    <div id="shippingMsg" class="mt-2 small text-muted">Chọn đầy đủ địa chỉ để tính phí ship.</div>
+                </div>
+
+                <div class="mb-4 p-3 rounded-3 border" style="background:linear-gradient(135deg,#fff7ed,#fefce8);">
+                    <label class="form-label fw-semibold d-flex align-items-center gap-1">
+                        <span class="material-symbols-rounded admin-icon-sm" aria-hidden="true">payments</span>
+                        Phương thức thanh toán
+                    </label>
+                    <div class="d-grid gap-2">
+                        <label class="form-check border rounded-3 p-2 bg-white">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="PaymentMethod" value="COD" checked>
+                            <span class="fw-semibold">COD</span>
+                            <small class="text-muted d-block ms-4">Thu tiền khi giao hàng.</small>
+                        </label>
+                        <label class="form-check border rounded-3 p-2 bg-white">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="PaymentMethod" value="VNPay">
+                            <span class="fw-semibold">VNPay</span>
+                            <small class="text-muted d-block ms-4">Chuyển sang cổng VNPay sau khi tạo đơn.</small>
+                        </label>
+                        <label class="form-check border rounded-3 p-2 bg-white">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="PaymentMethod" value="MoMo">
+                            <span class="fw-semibold">MoMo</span>
+                            <small class="text-muted d-block ms-4">Chuyển sang ví MoMo sau khi tạo đơn.</small>
+                        </label>
+                        <label class="form-check border rounded-3 p-2 bg-white">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="PaymentMethod" value="ZaloPay">
+                            <span class="fw-semibold">ZaloPay</span>
+                            <small class="text-muted d-block ms-4">Chuyển sang ZaloPay sau khi tạo đơn.</small>
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <div class="col-md-6">
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <label class="form-label fw-semibold mb-0">
                         <span class="material-symbols-rounded admin-icon-sm align-middle" style="font-size:20px;" aria-hidden="true">local_cafe</span>
-                        Sản phẩm trong don
+                        Sản phẩm trong đơn
                     </label>
+                    <div style="width: 250px;">
+                        <select id="globalCategoryFilter" class="form-select form-select-sm" asp-items="ViewBag.Categories">
+                            <option value=""> Lọc theo danh mục </option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Bảng sản phẩm đã chọn -->
@@ -74,9 +166,22 @@
                 </button>
 
                 <div class="p-3 rounded-3" style="background-color:#f0fdf4;">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="text-muted small">Tạm tính:</span>
+                        <span class="small" id="subtotalDisplay">0 ₫</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2" id="discountRow" style="display:none!important;">
+                        <span class="text-muted small">Giảm giá:</span>
+                        <span class="small text-danger" id="discountDisplay">-0 ₫</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2" id="shippingRow" style="display:none!important;">
+                        <span class="text-muted small">Phí ship:</span>
+                        <span class="small text-primary" id="shippingDisplay">0 ₫</span>
+                    </div>
+                    <hr class="my-1">
                     <div class="d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">Tổng tiền:</span>
-                        <span class="fw-bold fs-5 text-success" id="totalAmount">0 d</span>
+                        <span class="fw-semibold">Tổng cộng:</span>
+                        <span class="fw-bold fs-5 text-success" id="totalAmount">0 ₫</span>
                     </div>
                 </div>
             </div>
@@ -86,7 +191,7 @@
         <div>
             <button type="submit" class="btn btn-premium-primary border-0 me-2">
                 <span class="material-symbols-rounded admin-icon-sm align-middle">save</span>
-                Lưu đơn hàng
+                Lưu đơn / Thanh toán
             </button>
             <a asp-action="Index" class="btn btn-premium-outline text-decoration-none">Hủy bỏ</a>
         </div>
@@ -95,10 +200,12 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/tom-select/js/tom-select.complete.min.js"></script>
 
     <script>
-        // Dữ liệu sản phẩm từ server
-        const products = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(products.Select(p => new { p.Id, p.Name, p.Price })));
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        }
 
         let itemIndex = 0;
 
@@ -108,16 +215,13 @@
             row.className = 'row g-2 mb-2 align-items-center item-row';
             row.innerHTML = `
                 <div class="col-6">
-                    <select name="ProductIds" class="form-select form-select-sm product-select" required>
-                        <option value="0">-- Chọn sản phẩm --</option>
-                        ${products.map(p => `<option value="${p.Id}" data-price="${p.Price}">${p.Name} — ${formatMoney(p.Price)}</option>`).join('')}
-                    </select>
+                    <select name="ProductIds" class="product-select" required placeholder=" Gõ để tìm sản phẩm "></select>
                 </div>
                 <div class="col-2">
                     <input type="number" name="Quantities" class="form-control form-control-sm quantity-input" value="1" min="1" required>
                 </div>
                 <div class="col-3">
-                    <span class="item-subtotal text-muted small">0 d</span>
+                    <span class="item-subtotal text-muted small">0 ₫</span>
                 </div>
                 <div class="col-1">
                     <button type="button" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center" onclick="removeItem(this)">
@@ -127,9 +231,69 @@
             `;
             container.appendChild(row);
 
-            // Event listeners
-            row.querySelector('.product-select').addEventListener('change', recalc);
-            row.querySelector('.quantity-input').addEventListener('input', recalc);
+            const selectEl = row.querySelector('.product-select');
+            const qtyInput = row.querySelector('.quantity-input');
+            const subtotalEl = row.querySelector('.item-subtotal');
+
+            // Initialize Tom Select for this dropdown
+            const tomSelect = new TomSelect(selectEl, {
+                valueField: 'id',
+                labelField: 'name',
+                searchField: 'name',
+                loadThrottle: 300,
+                placeholder: 'Gõ để tìm sản phẩm...',
+                preload: true,
+                load: function(query, callback) {
+                    const catId = document.getElementById('globalCategoryFilter').value;
+                    let url = `/api/products/search?q=${encodeURIComponent(query)}`;
+                    if (catId) {
+                        url += `&CategoryId=${catId}`;
+                    }
+                    
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(json => {
+                            if (json.success && json.data && json.data.items) {
+                                callback(json.data.items);
+                            } else {
+                                callback();
+                            }
+                        }).catch(() => {
+                            callback();
+                        });
+                },
+                render: {
+                    option: function(item, escape) {
+                        const img = item.imageUrl ? item.imageUrl : '/images/no-image.png';
+                        const cat = item.productCategoryName ? item.productCategoryName : 'Khác';
+                        return `
+                            <div class="product-option">
+                                <img src="${escape(img)}" alt="${escape(item.name)}" onerror="this.src='/images/no-image.png'">
+                                <div class="product-info">
+                                    <span class="product-name">${escape(item.name)}</span>
+                                    <span class="product-meta">${escape(cat)}</span>
+                                    <span class="product-price">${formatMoney(item.price)}</span>
+                                </div>
+                            </div>
+                        `;
+                    },
+                    item: function(item, escape) {
+                        return `<div><span class="fw-medium">${escape(item.name)}</span> - <span class="text-success">${formatMoney(item.price)}</span></div>`;
+                    }
+                },
+                onChange: function(value) {
+                    // Cập nhật giá data-price cho việc tính toán
+                    const selectedItem = this.options[value];
+                    if (selectedItem && selectedItem.price) {
+                        selectEl.dataset.price = selectedItem.price;
+                    } else {
+                        selectEl.dataset.price = 0;
+                    }
+                    recalc();
+                }
+            });
+
+            qtyInput.addEventListener('input', recalc);
             itemIndex++;
         }
 
@@ -145,23 +309,231 @@
                 const qtyInput = row.querySelector('.quantity-input');
                 const subtotalEl = row.querySelector('.item-subtotal');
 
-                const option = select.options[select.selectedIndex];
-                const price = parseFloat(option?.dataset.price || 0);
+                const price = parseFloat(select.dataset.price || 0);
                 const qty = parseInt(qtyInput.value) || 0;
                 const sub = price * qty;
 
                 subtotalEl.textContent = formatMoney(sub);
                 total += sub;
             });
-            document.getElementById('totalAmount').textContent = formatMoney(total);
+
+            // Cập nhật hiển thị tạm tính
+            document.getElementById('subtotalDisplay').textContent = formatMoney(total);
+
+            // Tính giảm giá và cập nhật tổng cộng
+            const discountAmt = parseFloat(document.getElementById('voucherCodeInput').dataset.discountAmount || 0);
+            const discountRow = document.getElementById('discountRow');
+            if (discountAmt > 0) {
+                discountRow.style.display = '';
+                document.getElementById('discountDisplay').textContent = '-' + formatMoney(discountAmt);
+            } else {
+                discountRow.style.display = 'none';
+            }
+
+            const shippingFee = parseFloat(document.getElementById('shippingFeeInput').value || 0);
+            const shippingRow = document.getElementById('shippingRow');
+            if (shippingFee > 0) {
+                shippingRow.style.display = '';
+                document.getElementById('shippingDisplay').textContent = formatMoney(shippingFee);
+            } else {
+                shippingRow.style.display = 'none';
+            }
+
+            const finalTotal = Math.max(0, total - discountAmt + shippingFee);
+            document.getElementById('totalAmount').textContent = formatMoney(finalTotal);
         }
 
-        function formatMoney(amount) {
-            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        document.getElementById('globalCategoryFilter').addEventListener('change', function() {
+            document.querySelectorAll('.product-select').forEach(el => {
+                if (el.tomselect) {
+                    const selectedValue = el.tomselect.getValue();
+                    el.tomselect.clearOptions(); // Xóa cache
+                    if (selectedValue) {
+                        el.tomselect.addOption(el.tomselect.options[selectedValue]); // Giữ lại option đã chọn
+                    }
+                    // Tự động tải lại danh sách theo danh mục mới
+                    el.tomselect.load("");
+                }
+            });
+        });
+
+        // Xử lý nút Áp dụng mã giảm giá
+        document.getElementById('btnApplyVoucher').addEventListener('click', async function () {
+            const code = document.getElementById('voucherCodeInput').value.trim();
+            const msgEl = document.getElementById('voucherMsg');
+            const input = document.getElementById('voucherCodeInput');
+
+            if (!code) {
+                msgEl.textContent = 'Vui lòng nhập mã giảm giá.';
+                msgEl.className = 'mt-1 small text-warning';
+                return;
+            }
+
+            // Tính tạm tính hiện tại
+            let subtotal = 0;
+            document.querySelectorAll('.item-row').forEach(row => {
+                const select = row.querySelector('.product-select');
+                const qty = parseInt(row.querySelector('.quantity-input').value) || 0;
+                subtotal += parseFloat(select?.dataset?.price || 0) * qty;
+            });
+
+            try {
+                const res = await fetch(`/Order/ValidateVoucherForAdmin?code=${encodeURIComponent(code)}&subtotal=${subtotal}`);
+                const data = await res.json();
+                if (data.isValid) {
+                    input.dataset.discountAmount = data.discountAmount;
+                    msgEl.textContent = `✓ ${data.message || 'Áp dụng thành công!'} — Giảm ${formatMoney(data.discountAmount)}`;
+                    msgEl.className = 'mt-1 small text-success';
+                } else {
+                    input.dataset.discountAmount = 0;
+                    msgEl.textContent = `✗ ${data.message}`;
+                    msgEl.className = 'mt-1 small text-danger';
+                }
+                msgEl.classList.remove('d-none');
+                recalc();
+            } catch (e) {
+                msgEl.textContent = 'Lỗi kết nối, vui lòng thử lại.';
+                msgEl.className = 'mt-1 small text-danger';
+                msgEl.classList.remove('d-none');
+            }
+        });
+
+        // Xóa giảm giá khi xóa mã
+        document.getElementById('voucherCodeInput').addEventListener('input', function () {
+            if (!this.value) {
+                this.dataset.discountAmount = 0;
+                document.getElementById('voucherMsg').classList.add('d-none');
+                recalc();
+            }
+        });
+
+        async function loadShippingProvinces() {
+            const provinceSelect = document.getElementById('shippingProvince');
+            try {
+                const res = await fetch('/Order/ShippingProvinces');
+                const provinces = await res.json();
+                provinces.forEach(p => {
+                    provinceSelect.insertAdjacentHTML('beforeend', `<option value="${p.id}">${p.name}</option>`);
+                });
+            } catch (e) {
+                document.getElementById('shippingMsg').textContent = 'Không tải được danh sách tỉnh/thành từ GHN.';
+                document.getElementById('shippingMsg').className = 'mt-2 small text-danger';
+            }
         }
 
-        // Thêm 1 dòng mặc định khi load trang
+        async function loadShippingDistricts(provinceId) {
+            const districtSelect = document.getElementById('shippingDistrict');
+            const wardSelect = document.getElementById('shippingWard');
+            districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+            wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+            wardSelect.disabled = true;
+            resetShippingFee();
+
+            if (!provinceId) {
+                districtSelect.disabled = true;
+                return;
+            }
+
+            districtSelect.disabled = true;
+            const res = await fetch(`/Order/ShippingDistricts?provinceId=${encodeURIComponent(provinceId)}`);
+            const districts = await res.json();
+            districts.forEach(d => {
+                districtSelect.insertAdjacentHTML('beforeend', `<option value="${d.id}">${d.name}</option>`);
+            });
+            districtSelect.disabled = false;
+        }
+
+        async function loadShippingWards(districtId) {
+            const wardSelect = document.getElementById('shippingWard');
+            wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+            resetShippingFee();
+
+            if (!districtId) {
+                wardSelect.disabled = true;
+                return;
+            }
+
+            wardSelect.disabled = true;
+            const res = await fetch(`/Order/ShippingWards?districtId=${encodeURIComponent(districtId)}`);
+            const wards = await res.json();
+            wards.forEach(w => {
+                wardSelect.insertAdjacentHTML('beforeend', `<option value="${w.code}">${w.name}</option>`);
+            });
+            wardSelect.disabled = false;
+        }
+
+        async function calculateShipping() {
+            const districtId = document.getElementById('shippingDistrict').value;
+            const wardCode = document.getElementById('shippingWard').value;
+            const msgEl = document.getElementById('shippingMsg');
+
+            if (!districtId || !wardCode) {
+                resetShippingFee();
+                return;
+            }
+
+            msgEl.textContent = 'Đang tính phí ship GHN...';
+            msgEl.className = 'mt-2 small text-muted';
+
+            try {
+                const res = await fetch(`/Order/CalculateShipping?toDistrictId=${encodeURIComponent(districtId)}&toWardCode=${encodeURIComponent(wardCode)}`);
+                if (!res.ok) throw new Error('Shipping request failed');
+                const data = await res.json();
+                document.getElementById('shippingFeeInput').value = data.fee || 0;
+                document.getElementById('shippingStoreIdInput').value = data.nearestStoreId || '';
+
+                const estimateText = data.isEstimated ? ' (phí ước tính)' : '';
+                msgEl.textContent = `Giao từ: ${data.nearestStoreName || 'Kho trung tâm'} — Phí ship: ${formatMoney(data.fee || 0)}${estimateText}`;
+                msgEl.className = data.isEstimated ? 'mt-2 small text-warning' : 'mt-2 small text-success';
+                recalc();
+            } catch (e) {
+                resetShippingFee();
+                msgEl.textContent = 'Không tính được phí ship. Vui lòng kiểm tra cấu hình GHN hoặc thử lại.';
+                msgEl.className = 'mt-2 small text-danger';
+            }
+        }
+
+        function resetShippingFee() {
+            document.getElementById('shippingFeeInput').value = 0;
+            document.getElementById('shippingStoreIdInput').value = '';
+            recalc();
+        }
+
+        document.getElementById('shippingProvince').addEventListener('change', function () {
+            loadShippingDistricts(this.value).catch(() => {
+                document.getElementById('shippingMsg').textContent = 'Không tải được danh sách quận/huyện.';
+                document.getElementById('shippingMsg').className = 'mt-2 small text-danger';
+            });
+        });
+
+        document.getElementById('shippingDistrict').addEventListener('change', function () {
+            loadShippingWards(this.value).catch(() => {
+                document.getElementById('shippingMsg').textContent = 'Không tải được danh sách phường/xã.';
+                document.getElementById('shippingMsg').className = 'mt-2 small text-danger';
+            });
+        });
+
+        document.getElementById('shippingWard').addEventListener('change', calculateShipping);
+
+        // Đồng bộ địa chỉ chi tiết trước khi submit form
+        document.querySelector('form').addEventListener('submit', function (e) {
+            const street = document.getElementById('shippingStreet').value.trim();
+            const provinceSelect = document.getElementById('shippingProvince');
+            const districtSelect = document.getElementById('shippingDistrict');
+            const wardSelect = document.getElementById('shippingWard');
+
+            const provinceText = provinceSelect.options[provinceSelect.selectedIndex]?.text || '';
+            const districtText = districtSelect.options[districtSelect.selectedIndex]?.text || '';
+            const wardText = wardSelect.options[wardSelect.selectedIndex]?.text || '';
+
+            if (street && provinceText && districtText && wardText) {
+                const fullAddress = [street, wardText, districtText, provinceText].filter(Boolean).join(', ');
+                document.getElementById('shippingAddressInput').value = fullAddress;
+            }
+        });
+
         document.getElementById('btnAddItem').addEventListener('click', addItem);
+        loadShippingProvinces();
         addItem();
     </script>
 }

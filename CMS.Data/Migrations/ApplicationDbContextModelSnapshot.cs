@@ -95,6 +95,9 @@ namespace CMS.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FirebaseUid")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -106,6 +109,15 @@ namespace CMS.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ResetPasswordExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ResetPasswordToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SignInProvider")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TokenVersion")
@@ -311,6 +323,15 @@ namespace CMS.Data.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PaymentTransactionId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ReceiverName")
                         .HasColumnType("nvarchar(max)");
 
@@ -319,6 +340,12 @@ namespace CMS.Data.Migrations
 
                     b.Property<string>("ShippingAddress")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("ShippingFee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("ShippingStoreId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -486,6 +513,9 @@ namespace CMS.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -495,6 +525,8 @@ namespace CMS.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -543,6 +575,9 @@ namespace CMS.Data.Migrations
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int");
 
+                    b.Property<int>("TotalSold")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -573,6 +608,9 @@ namespace CMS.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -580,6 +618,9 @@ namespace CMS.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Slug")
                         .IsRequired()
@@ -590,6 +631,8 @@ namespace CMS.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -715,6 +758,9 @@ namespace CMS.Data.Migrations
                     b.Property<string>("District")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("GhnDistrictId")
+                        .HasColumnType("int");
+
                     b.Property<string>("GoogleMapUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -748,6 +794,9 @@ namespace CMS.Data.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Ward")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -946,6 +995,16 @@ namespace CMS.Data.Migrations
                     b.Navigation("PostCategory");
                 });
 
+            modelBuilder.Entity("CMS.Data.Entities.PostCategory", b =>
+                {
+                    b.HasOne("CMS.Data.Entities.PostCategory", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("CMS.Data.Entities.Product", b =>
                 {
                     b.HasOne("CMS.Data.Entities.ProductCategory", "ProductCategory")
@@ -955,6 +1014,16 @@ namespace CMS.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("ProductCategory");
+                });
+
+            modelBuilder.Entity("CMS.Data.Entities.ProductCategory", b =>
+                {
+                    b.HasOne("CMS.Data.Entities.ProductCategory", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("CMS.Data.Entities.ProductImage", b =>
@@ -1037,6 +1106,8 @@ namespace CMS.Data.Migrations
 
             modelBuilder.Entity("CMS.Data.Entities.PostCategory", b =>
                 {
+                    b.Navigation("Children");
+
                     b.Navigation("Posts");
                 });
 
@@ -1051,6 +1122,8 @@ namespace CMS.Data.Migrations
 
             modelBuilder.Entity("CMS.Data.Entities.ProductCategory", b =>
                 {
+                    b.Navigation("Children");
+
                     b.Navigation("Products");
                 });
 

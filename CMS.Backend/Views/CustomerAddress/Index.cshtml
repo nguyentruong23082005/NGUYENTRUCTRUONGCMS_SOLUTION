@@ -13,14 +13,14 @@
         </h1>
         <div class="d-flex gap-2 flex-wrap">
             <a asp-action="Trash" class="btn btn-premium-outline text-decoration-none">
-            <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">delete</span>
-            Thùng rác
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">delete</span>
+                Thùng rác
             </a>
-            <a asp-action="Create" class="btn-premium-primary text-decoration-none">
-            <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">add</span>
-            Thêm địa chỉ
-        </a>
-            </div>
+            <a asp-action="Create" class="btn btn-premium-primary text-decoration-none">
+                <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">add</span>
+                Thêm địa chỉ
+            </a>
+        </div>
     </div>
 
     @if (TempData["SuccessMessage"] != null)

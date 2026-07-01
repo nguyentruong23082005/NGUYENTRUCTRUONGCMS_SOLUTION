@@ -5,6 +5,8 @@ using System.Security.Claims;
 using CMS.Data;
 using CMS.Data.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
+
 namespace CMS.Backend.Controllers
 {
     public class AccountController : Controller
@@ -26,6 +28,7 @@ namespace CMS.Backend.Controllers
         // POST: /Account/Login — Kiểm tra thông tin và cấp Cookie
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [EnableRateLimiting("AuthPolicy")]
         public async Task<IActionResult> Login(string username, string password)
         {
             // Bước 1: Kiểm tra tài khoản trong bảng Users
@@ -74,7 +77,7 @@ namespace CMS.Backend.Controllers
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity));
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Dashboard", "Home");
                 }
             }
 

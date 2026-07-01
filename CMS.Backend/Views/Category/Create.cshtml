@@ -20,6 +20,13 @@
                     <span asp-validation-for="Name" class="text-danger small"></span>
                 </div>
                 <div class="mb-4">
+                    <label asp-for="ParentId" class="form-label fw-semibold">Danh mục cha</label>
+                    <select asp-for="ParentId" asp-items="ViewBag.ParentCategoryList" class="form-select">
+                        <option value=""> Chọn danh mục cha (nếu có) </option>
+                    </select>
+                    <span asp-validation-for="ParentId" class="text-danger small"></span>
+                </div>
+                <div class="mb-4">
                     <label asp-for="Description" class="form-label fw-semibold">Mô tả</label>
                     <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả cho danh mục..."></textarea>
                     <span asp-validation-for="Description" class="text-danger small"></span>

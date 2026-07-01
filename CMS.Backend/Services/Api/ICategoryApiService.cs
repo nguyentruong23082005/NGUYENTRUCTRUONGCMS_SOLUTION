@@ -8,5 +8,7 @@ namespace CMS.Backend.Services.Api
     {
         Task<IReadOnlyCollection<ProductCategoryDto>> GetProductCategoriesAsync();
         Task<IReadOnlyCollection<PostCategoryDto>> GetPostCategoriesAsync();
+        Task<IReadOnlyCollection<ProductCategoryDto>> GetProductCategoriesTreeAsync();
+        Task<IReadOnlyCollection<PostCategoryDto>> GetPostCategoriesTreeAsync();
     }
 }

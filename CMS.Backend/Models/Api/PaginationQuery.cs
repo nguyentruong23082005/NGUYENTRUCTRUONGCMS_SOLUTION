@@ -7,7 +7,7 @@ namespace CMS.Backend.Models.Api
         [Range(1, int.MaxValue, ErrorMessage = "Page must be greater than 0")]
         public int Page { get; init; } = 1;
 
-        [Range(1, 50, ErrorMessage = "PageSize must be between 1 and 50")]
+        [Range(1, 500, ErrorMessage = "PageSize must be between 1 and 500")]
         public int PageSize { get; init; } = 10;
     }
 }

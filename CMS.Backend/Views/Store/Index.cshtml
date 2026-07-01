@@ -12,11 +12,18 @@
             Danh sách Cửa hàng
         </h1>
         <div class="d-flex gap-2 flex-wrap">
+            <form asp-action="GeocodeAll" method="post" style="display: inline;" onsubmit="return confirm('Chạy đồng bộ tọa độ cho tất cả cửa hàng chưa có tọa độ? (Quá trình này có thể mất vài giây/cửa hàng để tuân thủ rate limit)');">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-premium-outline">
+                    <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">explore</span>
+                    Đồng bộ tọa độ tự động
+                </button>
+            </form>
             <a asp-action="Trash" class="btn btn-premium-outline text-decoration-none">
                 <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">delete</span>
                 Thùng rác
             </a>
-            <a asp-action="Create" class="btn-premium-primary text-decoration-none">
+            <a asp-action="Create" class="btn btn-premium-primary text-decoration-none">
                 <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">add</span>
                 Thêm cửa hàng
             </a>
@@ -77,7 +84,21 @@
                         <tr>
                             <td>@item.Id</td>
                             <td class="fw-semibold text-black">@item.Name</td>
-                            <td class="text-muted">@item.Address</td>
+                            <td class="text-muted">
+                                @item.Address
+                                @if (item.GhnDistrictId.HasValue)
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size: 10px; font-weight: 500;" title="Mã quận huyện GHN đã đồng bộ: @item.GhnDistrictId">
+                                        GHN ID: @item.GhnDistrictId
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1" style="font-size: 10px; font-weight: 500;" title="Chưa đồng bộ GHN (Hệ thống sẽ tự động cập nhật)">
+                                        Chưa sync GHN
+                                    </span>
+                                }
+                            </td>
                             <td class="text-muted">@item.Phone</td>
                             <td class="text-muted">@item.OpeningTime.ToString(@"hh\:mm") - @item.ClosingTime.ToString(@"hh\:mm")</td>
                             <td>

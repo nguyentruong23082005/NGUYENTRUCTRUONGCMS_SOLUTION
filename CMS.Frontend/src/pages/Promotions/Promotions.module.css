@@ -1,0 +1,27 @@
+.page {
+  min-height: 100vh;
+  padding: 40px 0 56px;
+  background-color: #ffffff;
+  font-family: var(--font-secondary);
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #d8d8d8;
+  color: #4f5b55;
+  font-size: 14px;
+}
+
+.breadcrumbs a {
+  color: #00713f;
+  text-decoration: none;
+}
+
+.breadcrumbs strong {
+  color: #333333;
+  font-weight: 500;
+}

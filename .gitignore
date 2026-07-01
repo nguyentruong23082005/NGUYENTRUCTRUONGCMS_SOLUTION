@@ -285,6 +285,15 @@ FakesAssemblies/
 .ntvs_analysis.dat
 node_modules/
 
+# Local environment and secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+appsettings.Local.json
+appsettings.*.Local.json
+
 # Visual Studio 6 build log
 *.plg
 
@@ -367,3 +376,24 @@ FodyWeavers.xsd
 .agent/
 .planning/
 .codegraph/
+.config/
+
+# Python scraper scripts and data
+phuclong_scraper.py
+phuclong_discover.py
+phuclong_api_discovery.json
+phuclong_data.json
+
+# Scratch files and notes
+Untitled-1.md
+Untitled-2.md
+cautrucfe
+extracted_pdf.txt
+LenhBuild.txt
+TaiLieu_Buoi6.md
+
+# Removed projects
+CMS.Tests/
+
+# Firebase Service Account key
+serviceAccountKey.json

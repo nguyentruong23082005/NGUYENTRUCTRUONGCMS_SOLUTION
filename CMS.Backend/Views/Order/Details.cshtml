@@ -63,7 +63,7 @@
 
     @* Thông tin đơn hàng *@
     <div class="row mb-4 g-3">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="border rounded-3 p-3 h-100" style="background:#f8f9fa;">
                 <h6 class="fw-bold mb-3">
                     <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">person</span>
@@ -74,7 +74,7 @@
                 <p class="mb-0"><span class="text-muted">SĐT:</span> @(Model.Customer?.Phone ?? "—")</p>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="border rounded-3 p-3 h-100" style="background:#f8f9fa;">
                 <h6 class="fw-bold mb-3">
                     <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">local_shipping</span>
@@ -92,12 +92,57 @@
                 </p>
             </div>
         </div>
+        <div class="col-md-4">
+            <div class="border rounded-3 p-3 h-100" style="background:#f8f9fa;">
+                <h6 class="fw-bold mb-3">
+                    <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">payments</span>
+                    Thanh toán
+                </h6>
+                <p class="mb-1">
+                    <span class="text-muted">Phương thức:</span> 
+                    <strong>
+                        @(Model.PaymentMethod == PaymentMethod.COD ? "COD" : 
+                          Model.PaymentMethod == PaymentMethod.VNPay ? "Cổng VNPay" : 
+                          Model.PaymentMethod == PaymentMethod.MoMo ? "Ví MoMo" : 
+                          Model.PaymentMethod == PaymentMethod.ZaloPay ? "Ví ZaloPay" : Model.PaymentMethod.ToString())
+                    </strong>
+                </p>
+                <p class="mb-1">
+                    <span class="text-muted">Trạng thái:</span>
+                    @if (Model.PaymentStatus == PaymentStatus.Paid)
+                    {
+                        <span class="badge bg-success">
+                            <span class="material-symbols-rounded admin-icon-sm align-middle" style="font-size:14px;" aria-hidden="true">check_circle</span>
+                            Đã thanh toán
+                        </span>
+                    }
+                    else if (Model.PaymentStatus == PaymentStatus.Failed)
+                    {
+                        <span class="badge bg-danger">
+                            <span class="material-symbols-rounded admin-icon-sm align-middle" style="font-size:14px;" aria-hidden="true">error</span>
+                            Thanh toán thất bại
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">
+                            <span class="material-symbols-rounded admin-icon-sm align-middle" style="font-size:14px;" aria-hidden="true">pending</span>
+                            Chờ thanh toán
+                        </span>
+                    }
+                </p>
+                @if (!string.IsNullOrEmpty(Model.PaymentTransactionId))
+                {
+                    <p class="mb-0 small text-muted"><span class="text-muted">Mã GD:</span> @Model.PaymentTransactionId</p>
+                }
+            </div>
+        </div>
     </div>
 
-    @* Bảng sản phẩm (reađãonly) *@
+    @* Bảng sản phẩm (readonly) *@
     <h6 class="fw-bold mb-3">
         <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">inventory_2</span>
-        Sản phẩm trong don
+        Sản phẩm trong đơn
     </h6>
     <div class="table-responsive mb-3">
         <table class="table-premium">
@@ -113,7 +158,7 @@
             <tbody>
                 @if (Model.OrderDetails == null || !Model.OrderDetails.Any())
                 {
-                    <tr><td colspan="5" class="text-center text-muted py-3">Không có sản phẩm n—o.</td></tr>
+                    <tr><td colspan="5" class="text-center text-muted py-3">Không có sản phẩm nào.</td></tr>
                 }
                 else
                 {
@@ -131,32 +176,32 @@
                                         {
                                             <span class="badge bg-light text-dark border">
                                                 <span class="material-symbols-rounded admin-icon-sm align-middle" style="font-size:16px;" aria-hidden="true">tune</span>
-                                                @(option.OptionValue?.OptionGroup?.Name ?? "T—y ch?n"):
+                                                @(option.OptionValue?.OptionGroup?.Name ?? "Tùy chọn"):
                                                 @(option.OptionValue?.Name ?? "Không rõ")
                                                 @if (option.Price > 0)
                                                 {
-                                                    <span class="text-danger">(+@option.Price.ToString("N0") d)</span>
+                                                    <span class="text-danger">(+@option.Price.ToString("N0")đ)</span>
                                                 }
                                             </span>
                                         }
                                     </div>
                                 }
                             </td>
-                            <td class="text-end">@item.UnitPrice.ToString("N0") d</td>
+                            <td class="text-end">@item.UnitPrice.ToString("N0")đ</td>
                             <td class="text-center">@item.Quantity</td>
-                            <td class="text-end fw-bold text-danger">@((item.Quantity * item.UnitPrice).ToString("N0")) d</td>
+                            <td class="text-end fw-bold text-danger">@((item.Quantity * item.UnitPrice).ToString("N0"))đ</td>
                         </tr>
                     }
                 }
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="4" class="text-end fw-bold">Giảm gi—:</td>
-                    <td class="text-end text-success fw-bold">- @Model.DiscountAmount.ToString("N0") d</td>
+                    <td colspan="4" class="text-end fw-bold">Giảm giá:</td>
+                    <td class="text-end text-success fw-bold">- @Model.DiscountAmount.ToString("N0")đ</td>
                 </tr>
                 <tr>
                     <td colspan="4" class="text-end fw-bold fs-6">Tổng cộng:</td>
-                    <td class="text-end text-danger fw-bold fs-6">@Model.TotalAmount.ToString("N0") d</td>
+                    <td class="text-end text-danger fw-bold fs-6">@Model.TotalAmount.ToString("N0")đ</td>
                 </tr>
             </tfoot>
         </table>

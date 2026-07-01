@@ -1,0 +1,319 @@
+﻿.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.55);
+  font-family: Arimo, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.modal {
+  position: relative;
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 24px;
+  width: min(620px, 100%);
+  max-height: min(680px, calc(100vh - 48px));
+  padding: 28px 22px 24px 22px;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.closeBtn {
+  position: absolute;
+  top: -13px;
+  right: -13px;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: #006f3c;
+  color: #ffffff;
+  font-size: 24px;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.loading {
+  grid-column: 1 / -1;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #006f3c;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.imagePanel {
+  height: 235px;
+  border-radius: 10px;
+  background: #eceff1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.productImage {
+  width: 175px;
+  height: 175px;
+  object-fit: contain;
+  background: #ffffff;
+}
+
+.imageFallback {
+  color: #006f3c;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.infoPanel {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.infoScroll {
+  max-height: 355px;
+  padding-right: 8px;
+  overflow-y: auto;
+}
+
+.infoScroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.infoScroll::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #9b9b9b;
+}
+
+.title {
+  margin: 0 0 6px;
+  color: #006f3c;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.description {
+  margin: 0 0 8px;
+  color: #666666;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+.priceQtyRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.price {
+  color: #006f3c;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.qtySelector,
+.toppingSelector {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qtyBtn,
+.toppingBtn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 3px;
+  background: #006f3c;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.toppingBtn {
+  width: 24px;
+  height: 24px;
+  background: #edf4f0;
+  color: #006f3c;
+}
+
+.qtyBtn:disabled,
+.toppingBtn:disabled {
+  background: #eceff1;
+  color: #9b9b9b;
+  cursor: not-allowed;
+}
+
+.qtyNum,
+.toppingQty {
+  min-width: 16px;
+  color: #333333;
+  font-size: 14px;
+  text-align: center;
+}
+
+.optionGroup {
+  margin: 0 0 10px;
+}
+
+.optionTitle {
+  margin: 0 0 7px;
+  color: #006f3c;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+}
+
+.sizeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(54px, 1fr));
+  gap: 8px;
+}
+
+.pillGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sizeButton,
+.pillButton {
+  min-height: 38px;
+  border: 1px solid #eceff1;
+  border-radius: 3px;
+  background: #f7f8f8;
+  color: #333333;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.sizeButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.sizeButton small {
+  font-size: 11px;
+  color: #666666;
+}
+
+.pillButton {
+  min-width: 58px;
+  padding: 7px 14px;
+}
+
+.sizeButton.selected,
+.pillButton.selected {
+  border-color: #006f3c;
+  background: #006f3c;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.sizeButton.selected small {
+  color: #ffffff;
+}
+
+.sizeButton:disabled,
+.pillButton:disabled {
+  color: #9b9b9b;
+  cursor: not-allowed;
+}
+
+.toppingList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toppingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.toppingInfo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.toppingName {
+  color: #333333;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.toppingPrice {
+  color: #666666;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.addBtn {
+  width: 100%;
+  min-height: 40px;
+  border: none;
+  border-radius: 4px;
+  background: #006f3c;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.addBtn:hover:not(:disabled) {
+  background: #0c713d;
+}
+
+.addBtn:disabled {
+  background: #cccccc;
+  color: #9b9b9b;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .overlay {
+    align-items: flex-start;
+    padding: 18px;
+    overflow-y: auto;
+  }
+
+  .modal {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 22px 16px 18px;
+  }
+
+  .imagePanel {
+    height: 190px;
+  }
+
+  .infoScroll {
+    max-height: none;
+    overflow: visible;
+  }
+}

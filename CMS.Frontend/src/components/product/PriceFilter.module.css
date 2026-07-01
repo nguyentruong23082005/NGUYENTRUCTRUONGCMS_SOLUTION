@@ -1,0 +1,91 @@
+.container {
+  margin-top: 24px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 12px;
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.inputGroup {
+  flex: 1;
+}
+
+.label {
+  display: block;
+  font-size: 0.75rem;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.inputWrapper:focus-within {
+  border-color: #006F3C;
+  box-shadow: 0 0 0 2px rgba(0, 111, 60, 0.1);
+}
+
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 8px 8px;
+  font-size: 0.85rem;
+  min-width: 0;
+  background: transparent;
+}
+
+.unit {
+  padding: 0 8px;
+  color: #888;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.separator {
+  color: #ccc;
+  font-size: 1rem;
+  padding-bottom: 4px;
+}
+
+.clearBtn {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  color: #666;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clearBtn:hover {
+  background: #fee2e2;
+  border-color: #f87171;
+  color: #dc2626;
+}

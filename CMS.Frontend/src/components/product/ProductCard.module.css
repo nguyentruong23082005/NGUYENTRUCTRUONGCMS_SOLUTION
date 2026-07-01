@@ -1,0 +1,149 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 298px;
+  overflow: hidden;
+  border: 1px solid #eceff1;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #333333;
+  text-decoration: none;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover {
+  border-color: #006f3c;
+  box-shadow: rgba(204, 204, 204, 0.3) 0 2px 4px;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background-color: #f2f4f3;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 20px 24px;
+  background-color: #f2f4f3;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.card:hover .image {
+  transform: scale(1.04);
+}
+
+.imagePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #eceff1, #ffffff);
+  color: #006f3c;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.ribbonBar {
+  width: 100%;
+  background-color: #be1e2d;
+  color: #ffffff;
+  font-family: var(--font-primary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 0;
+  text-align: center;
+}
+
+.outOfStockBadge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 6px 12px;
+  border-radius: 2px;
+  background-color: #b71c1c;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.outOfStockBadge {
+  left: auto;
+  right: 10px;
+  background-color: #666666;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background-color: #ffffff;
+}
+
+.title {
+  margin: 0;
+  min-height: 42px;
+  color: #00713f;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card:hover .title {
+  color: #006f3c;
+}
+
+.price {
+  margin: 0;
+  color: #006f3c;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 21px;
+}
+
+.buyButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 40px;
+  margin-top: auto;
+  border: none;
+  border-radius: 4px;
+  background-color: #006f3c;
+  color: #ffffff;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.buyButton:hover:not(:disabled) {
+  background-color: #0c713d;
+}
+
+.buyButton:disabled {
+  background-color: #cccccc;
+  color: #9b9b9b;
+  cursor: not-allowed;
+}

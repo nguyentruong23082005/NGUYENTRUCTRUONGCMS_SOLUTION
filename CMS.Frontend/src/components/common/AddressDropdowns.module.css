@@ -1,0 +1,27 @@
+.wrapper {
+  display: contents; /* không thêm DOM node thừa — các select nằm thẳng trong grid cha */
+}
+
+/* Style mặc định cho select khi dùng độc lập (không có inputClassName từ cha) */
+.select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #374151;
+  background-color: #fff;
+  cursor: pointer;
+  appearance: auto;
+}
+
+.select:disabled {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.select:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 1px;
+}

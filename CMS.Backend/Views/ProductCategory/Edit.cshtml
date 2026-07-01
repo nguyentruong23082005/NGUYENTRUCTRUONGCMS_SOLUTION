@@ -13,13 +13,38 @@
 
     <div class="row">
         <div class="col-md-8 col-lg-6">
-            <form asp-action="Edit" method="post">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
                 <input type="hidden" asp-for="Id" />
 
                 <div class="mb-4">
                     <label asp-for="Name" class="form-label fw-semibold">Tên danh mục</label>
                     <input asp-for="Name" class="form-control" placeholder="Tên danh mục sản phẩm" required />
                     <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="ParentId" class="form-label fw-semibold">Danh mục cha</label>
+                    <select asp-for="ParentId" asp-items="ViewBag.ParentCategoryList" class="form-select">
+                        <option value=""> Chọn danh mục cha (nếu có) </option>
+                    </select>
+                    <span asp-validation-for="ParentId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold d-block">Ảnh danh mục hiện tại</label>
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <div class="mb-2">
+                            <img src="@Model.ImageUrl" alt="@Model.Name" class="rounded border" style="width: 120px; height: 120px; object-fit: cover;" />
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted small">Chưa có ảnh</p>
+                    }
+                    <input type="file" name="uploadImage" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+                    <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                    <p class="text-muted small mt-1">Chọn ảnh khác để thay đổi. Định dạng hỗ trợ: .jpg, .jpeg, .png, .webp. Dung lượng tối đa: 2MB.</p>
                 </div>
 
                 <div class="mb-4">
