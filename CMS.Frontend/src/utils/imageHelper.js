@@ -1,6 +1,8 @@
+import { IMAGE_BASE_URL } from './constants';
+
 /**
  * Helper xử lý đường dẫn ảnh từ API
- * Tự động ghép nối với VITE_API_URL từ biến môi trường mà không có fallback hardcode
+ * Tự động ghép nối với IMAGE_BASE_URL từ hằng số cấu hình hệ thống
  */
 export const getFullImageUrl = (path) => {
   if (!path) return '';
@@ -10,9 +12,8 @@ export const getFullImageUrl = (path) => {
     return path;
   }
   
-  const baseUrl = import.meta.env.VITE_API_URL || '';
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
-  return `${baseUrl}${cleanPath}`;
+  return `${IMAGE_BASE_URL}${cleanPath}`;
 };
 
 export default getFullImageUrl;

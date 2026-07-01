@@ -1,5 +1,6 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import ClientLayout from '../components/layout/ClientLayout/ClientLayout';
 import Home from '../pages/Home/Home';
 import Menu from '../pages/Menu/Menu';
@@ -17,6 +18,17 @@ import Profile from '../pages/Profile/Profile';
 import StoresPage from '../pages/Stores/StoresPage';
 import NotFound from '../pages/NotFound/NotFound';
 
+const RequireAuth = ({ children }) => {
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  return children;
+};
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -30,7 +42,7 @@ const AppRoutes = () => {
         <Route path="about" element={<AboutPage />} />
         <Route path="about/:postSlug" element={<AboutDetailPage />} />
         <Route path="cart" element={<Navigate to="/checkout" replace />} />
-        <Route path="checkout" element={<Checkout />} />
+        <Route path="checkout" element={<RequireAuth><Checkout /></RequireAuth>} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="forgot-password" element={<ForgotPassword />} />

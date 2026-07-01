@@ -88,6 +88,7 @@
                     <th scope="col">ID</th>
                     <th scope="col">Ngày đặt</th>
                     <th scope="col">Khách hàng</th>
+                    <th scope="col">Thanh toán</th>
                     <th scope="col">Trạng thái</th>
                     <th scope="col">Ghi chú</th>
                     <th scope="col" width="130">Thao tác</th>
@@ -100,16 +101,31 @@
                     {
                         <tr>
                             <td>@item.Id</td>
-                            <td class="text-muted">@item.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
-                            <td class="fw-semibold text-black">@(item.Customer?.FullName ?? "Không rõ")</td>
-                            <td>
+                            <td class="text-muted text-nowrap">@item.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="fw-semibold text-black text-nowrap">@(item.Customer?.FullName ?? "Không rõ")</td>
+                            <td class="text-nowrap">
+                                <div class="d-flex flex-column gap-1">
+                                    <span class="small fw-semibold d-inline-flex align-items-center gap-1 text-secondary" style="font-size: 11.5px;">
+                                        <span class="material-symbols-rounded align-middle" style="font-size: 14px;">payments</span>
+                                        @(item.PaymentMethod == PaymentMethod.COD ? "COD" : 
+                                          item.PaymentMethod == PaymentMethod.VNPay ? "VNPay" : 
+                                          item.PaymentMethod == PaymentMethod.MoMo ? "MoMo" : 
+                                          item.PaymentMethod == PaymentMethod.ZaloPay ? "ZaloPay" : item.PaymentMethod.ToString())
+                                    </span>
+                                    <span class="badge @(item.PaymentStatus == PaymentStatus.Paid ? "badge-payment-paid" : item.PaymentStatus == PaymentStatus.Failed ? "badge-payment-failed" : "badge-payment-pending") align-self-start" style="font-size: 10px; padding: 2px 6px;">
+                                        @(item.PaymentStatus == PaymentStatus.Paid ? "Đã thanh toán" : 
+                                          item.PaymentStatus == PaymentStatus.Failed ? "Thất bại" : "Chờ TT")
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="text-nowrap">
                                 <span class="badge @OrderStatusHelper.GetBadgeClass(item.Status) rounded-pill px-2.5 py-1">
                                     <span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">@OrderStatusHelper.GetMaterialIcon(item.Status)</span>
                                     @OrderStatusHelper.GetDisplayName(item.Status)
                                 </span>
                             </td>
                             <td class="text-muted">@(item.Notes ?? "Không có")</td>
-                            <td>
+                            <td class="text-nowrap">
                                 <div class="d-flex gap-2 flex-nowrap">
                                     <a asp-action="Details" asp-route-id="@item.Id"
                                        class="btn btn-sm btn-info text-white d-inline-flex align-items-center justify-content-center"

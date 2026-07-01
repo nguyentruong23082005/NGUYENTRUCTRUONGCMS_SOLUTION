@@ -4,7 +4,10 @@
  */
 
 // URL gốc API Backend (ưu tiên biến môi trường, fallback sang localhost)
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://localhost:7296';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5188';
+
+// URL gốc hình ảnh (ưu tiên biến môi trường, fallback sang localhost)
+export const IMAGE_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5188';
 
 // Tên key localStorage
 export const STORAGE_KEYS = {

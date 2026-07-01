@@ -88,7 +88,7 @@ namespace CMS.Data
                 .HasOne(odo => odo.OrderDetail)
                 .WithMany(od => od.OrderDetailOptions)
                 .HasForeignKey(odo => odo.OrderDetailId)
-                .IsRequired(false);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // FK: OrderDetailOption -> OptionValue.
             modelBuilder.Entity<OrderDetailOption>()

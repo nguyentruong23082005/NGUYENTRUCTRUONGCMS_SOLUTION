@@ -2,19 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import categoryApi from '../../api/categoryApi';
 import { logApiError } from '../../utils/apiError';
+import { getFullImageUrl } from '../../utils/imageHelper';
 import styles from './CategoryMenu.module.css';
 
-const getFullImageUrl = (path) => {
-  if (!path) return '';
-  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
-    return path;
-  }
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5188';
-  const cleanPath = path.startsWith('/') ? path : `/${path}`;
-  return `${baseUrl}${cleanPath}`;
-};
-
-// Component hiển thị danh mục sản phẩm dưới dạng các khối tròn chứa hình ảnh (đáp ứng tiêu chí Mã số 38)
+// Component hiển thị danh mục sản phẩm dưới dạng thanh menu ngang với ảnh bo tròn (đáp ứng tiêu chí Mã số 38)
 // Đã loại bỏ hoàn toàn dữ liệu ảo (mock data), chỉ sử dụng dữ liệu thực tế tải từ Backend API
 const CategoryMenu = () => {
   const [categories, setCategories] = useState([]);
@@ -60,44 +51,31 @@ const CategoryMenu = () => {
     return null;
   }
 
-  // Xác định emoji dựa trên tên danh mục
-  const getCategoryEmoji = (name = '') => {
-    const lower = name.toLowerCase();
-    if (lower.includes('bánh') || lower.includes('cake')) return '🍰';
-    if (lower.includes('trà') || lower.includes('tea')) return '🍵';
-    return '☕';
-  };
-
   return (
     <section className={styles.section}>
       <div className="container">
-        <h3 className={styles.sectionTitle}>Danh Mục Sản Phẩm</h3>
-        <div className={styles.grid}>
+        <div className={styles.categoryPillsContainer}>
+          <Link to="/menu" className={styles.pillItem}>
+            Tất cả sản phẩm
+          </Link>
+          
           {categories.map((cat) => {
             const hasImage = Boolean(cat.imageUrl && !failedImages[cat.id]);
-
             return (
               <Link
                 key={cat.id}
                 to={`/menu/${cat.slug}`}
-                className={styles.item}
+                className={styles.pillItem}
               >
-                <div className={styles.imageContainer}>
-                  {hasImage ? (
-                    <img
-                      src={cat.imageUrl}
-                      alt={cat.name}
-                      className={styles.image}
-                      loading="lazy"
-                      onError={() => handleImageError(cat.id)}
-                    />
-                  ) : (
-                    <div className={styles.imagePlaceholder}>
-                      {getCategoryEmoji(cat.name)}
-                    </div>
-                  )}
-                </div>
-                <span className={styles.name}>{cat.name}</span>
+                {hasImage && (
+                  <img
+                    src={cat.imageUrl}
+                    alt=""
+                    className={styles.pillImage}
+                    onError={() => handleImageError(cat.id)}
+                  />
+                )}
+                <span>{cat.name}</span>
               </Link>
             );
           })}

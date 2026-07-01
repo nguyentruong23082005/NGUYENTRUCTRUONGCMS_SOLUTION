@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import useStores from '../../hooks/useStores';
 import useProvinces from '../../hooks/useProvinces';
 import useGeolocation from '../../hooks/useGeolocation';
@@ -82,9 +82,64 @@ const StoreLocator = ({ variant = 'map' }) => {
 
   /* Geolocation */
   const {
-    userLocation, loading: geoLoading, error: geoError, granted: geoGranted,
+    userLocation, setUserLocation, loading: geoLoading, error: geoError, granted: geoGranted, setGranted: setGeoGranted,
     requestLocation, getDistance, sortByDistance,
   } = useGeolocation();
+
+  /* Tìm kiếm địa điểm ngoài hệ thống (Nominatim Autocomplete) */
+  const [addressSearch, setAddressSearch] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchContainerRef = useRef(null);
+
+  useEffect(() => {
+    if (addressSearch.trim().length < 3) {
+      setSuggestions([]);
+      return;
+    }
+    const delayDebounce = setTimeout(() => {
+      setSearchLoading(true);
+      fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(addressSearch)}&format=json&limit=5&countrycodes=vn`, {
+        headers: {
+          'User-Agent': 'CMS.Frontend/1.0 (nguyentruong23082005@gmail.com)'
+        }
+      })
+        .then(r => r.json())
+        .then(data => {
+          setSuggestions(data || []);
+          setSearchLoading(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setSearchLoading(false);
+        });
+    }, 400);
+
+    return () => clearTimeout(delayDebounce);
+  }, [addressSearch]);
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target)) {
+        setSuggestionsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
+  const handleSelectSuggestion = (sug) => {
+    const lat = parseFloat(sug.lat);
+    const lon = parseFloat(sug.lon);
+    setUserLocation({ latitude: lat, longitude: lon });
+    setGeoGranted(true);
+    setResolvedAddress(sug.display_name);
+    setAddressSearch('');
+    setSuggestions([]);
+    setSuggestionsOpen(false);
+    handleClearRoute();
+  };
 
   // Tự động dịch ngược tọa độ GPS thành địa chỉ chữ khi định vị thành công
   useEffect(() => {
@@ -188,7 +243,7 @@ const StoreLocator = ({ variant = 'map' }) => {
           <button
             type="button"
             className={`${styles.directionBtn} ${activeRoute === store.id && routeLoading ? styles.loading : ''}`}
-            onClick={() => handleDirection(store)}
+            onClick={(e) => { e.stopPropagation(); handleDirection(store); }}
             disabled={routeLoading && activeRoute === store.id}
           >
             {routeLoading && activeRoute === store.id ? (
@@ -297,6 +352,32 @@ const StoreLocator = ({ variant = 'map' }) => {
                   aria-label="Tìm cửa hàng"
                 />
 
+                {/* Tìm kiếm địa điểm của bạn (Autocomplete) */}
+                <div ref={searchContainerRef} className={styles.addressSearchWrapper}>
+                  <input
+                    className={styles.searchInput}
+                    type="text"
+                    value={addressSearch}
+                    onChange={(e) => {
+                      setAddressSearch(e.target.value);
+                      setSuggestionsOpen(true);
+                    }}
+                    onFocus={() => setSuggestionsOpen(true)}
+                    placeholder="Nhập địa chỉ của bạn..."
+                    aria-label="Tìm địa chỉ của bạn"
+                  />
+                  {searchLoading && <div className={styles.searchSpinner}>Đang tìm gợi ý...</div>}
+                  {suggestionsOpen && suggestions.length > 0 && (
+                    <ul className={styles.suggestionsList}>
+                      {suggestions.map((sug, idx) => (
+                        <li key={idx} onClick={() => handleSelectSuggestion(sug)} className={styles.suggestionItem}>
+                          <span className={styles.suggestionText}>{sug.display_name}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
                 {/* Geolocation button */}
                 <button
                   type="button"
@@ -370,23 +451,53 @@ const StoreLocator = ({ variant = 'map' }) => {
                   </select>
                 </div>
 
-                <h3 className={styles.listTitle}>
-                  Danh sách cửa hàng <span className={styles.resultBadge}>{sortedStores.length}</span>
-                </h3>
+                {routeInfo && routeInfo.steps && routeInfo.steps.length > 0 ? (
+                  <div className={styles.directionsPanel}>
+                    <div className={styles.directionsHeader}>
+                      <button
+                        type="button"
+                        onClick={handleClearRoute}
+                        className={styles.backBtn}
+                      >
+                        ← Quay lại danh sách
+                      </button>
+                      <h4 className={styles.directionsTitle}>Chỉ dẫn đường đi</h4>
+                    </div>
+                    <div className={styles.routeSummary}>
+                      <span>Khoảng cách: <strong>{routeInfo.distance} km</strong></span>
+                      <span>Thời gian đi: <strong>~{routeInfo.duration} phút</strong></span>
+                    </div>
+                    <div className={styles.stepsList}>
+                      {routeInfo.steps.map((step, idx) => (
+                        <div key={idx} className={styles.stepItem}>
+                          <span className={styles.stepNum}>{idx + 1}</span>
+                          <span className={styles.stepText}>{step.instruction}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <h3 className={styles.listTitle}>
+                      Danh sách cửa hàng <span className={styles.resultBadge}>{sortedStores.length}</span>
+                    </h3>
 
-                <div className={styles.list}>
-                  {sortedStores.map((store) => (
-                    <button
-                      key={store.id}
-                      type="button"
-                      onClick={() => { setSelectedStore(store); handleClearRoute(); }}
-                      className={`${styles.storeItemBtn} ${selectedStore?.id === store.id ? styles.activeStore : ''}`}
-                    >
-                      <StoreThumb store={store} />
-                      {renderStoreInfo(store)}
-                    </button>
-                  ))}
-                </div>
+                    <div className={styles.list}>
+                      {sortedStores.map((store) => (
+                        <div
+                          key={store.id}
+                          onClick={() => { setSelectedStore(store); handleClearRoute(); }}
+                          className={`${styles.storeItemBtn} ${selectedStore?.id === store.id ? styles.activeStore : ''}`}
+                          role="button"
+                          tabIndex={0}
+                        >
+                          <StoreThumb store={store} />
+                          {renderStoreInfo(store)}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           )

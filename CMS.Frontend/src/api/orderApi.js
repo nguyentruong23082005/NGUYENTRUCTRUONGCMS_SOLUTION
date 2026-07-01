@@ -13,6 +13,18 @@ export const orderApi = {
   },
   cancel: (id) => {
     return axiosClient.post(`/api/orders/${id}/cancel`);
+  },
+  getShippingProvinces: () => {
+    return axiosClient.get('/api/orders/shipping/provinces');
+  },
+  getShippingDistricts: (provinceId) => {
+    return axiosClient.get('/api/orders/shipping/districts', { params: { provinceId } });
+  },
+  getShippingWards: (districtId) => {
+    return axiosClient.get('/api/orders/shipping/wards', { params: { districtId } });
+  },
+  calculateShippingFee: (districtId, wardCode, storeId) => {
+    return axiosClient.get('/api/orders/shipping/fee', { params: { districtId, wardCode, storeId } });
   }
 };
 

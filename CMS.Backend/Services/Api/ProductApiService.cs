@@ -25,14 +25,26 @@ namespace CMS.Backend.Services.Api
                     .ThenInclude(c => c!.Parent)
                 .AsNoTracking();
 
-            // Lọc theo Category
+            // Lọc theo Category (và tất cả danh mục con của nó)
             if (query.CategoryId.HasValue)
             {
-                dbQuery = dbQuery.Where(p => p.ProductCategoryId == query.CategoryId.Value);
+                var categoryIds = await GetCategorySubtreeIdsAsync(query.CategoryId.Value);
+                dbQuery = dbQuery.Where(p => categoryIds.Contains(p.ProductCategoryId));
             }
             else if (!string.IsNullOrWhiteSpace(query.CategorySlug))
             {
-                dbQuery = dbQuery.Where(p => p.ProductCategory != null && p.ProductCategory.Slug == query.CategorySlug);
+                var category = await _db.ProductCategories
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.Slug == query.CategorySlug);
+                if (category != null)
+                {
+                    var categoryIds = await GetCategorySubtreeIdsAsync(category.Id);
+                    dbQuery = dbQuery.Where(p => categoryIds.Contains(p.ProductCategoryId));
+                }
+                else
+                {
+                    dbQuery = dbQuery.Where(p => false);
+                }
             }
 
             // Tìm kiếm theo từ khóa
@@ -184,6 +196,37 @@ namespace CMS.Backend.Services.Api
                         : null
                 })
                 .FirstOrDefaultAsync(p => p.Slug == slug);
+        }
+
+        private async Task<List<int>> GetCategorySubtreeIdsAsync(int rootCategoryId)
+        {
+            var categories = await _db.ProductCategories
+                .Select(c => new { c.Id, c.ParentId })
+                .AsNoTracking()
+                .ToListAsync();
+
+            var result = new List<int> { rootCategoryId };
+            var queue = new Queue<int>();
+            queue.Enqueue(rootCategoryId);
+
+            while (queue.Count > 0)
+            {
+                var currentId = queue.Dequeue();
+                var childrenIds = categories
+                    .Where(c => c.ParentId == currentId)
+                    .Select(c => c.Id);
+
+                foreach (var childId in childrenIds)
+                {
+                    if (!result.Contains(childId))
+                    {
+                        result.Add(childId);
+                        queue.Enqueue(childId);
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

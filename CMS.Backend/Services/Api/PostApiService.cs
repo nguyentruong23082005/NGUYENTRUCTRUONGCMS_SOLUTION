@@ -24,10 +24,28 @@ namespace CMS.Backend.Services.Api
                 .Include(p => p.PostCategory)
                 .AsNoTracking();
 
-            // Lọc theo Category
+            // Lọc theo Category và các danh mục con đệ quy
             if (query.CategoryId.HasValue)
             {
-                dbQuery = dbQuery.Where(p => p.PostCategoryId == query.CategoryId.Value);
+                var categoryId = query.CategoryId.Value;
+                var categoryIds = new List<int> { categoryId };
+                var allCategories = await _db.PostCategories.AsNoTracking().ToListAsync();
+
+                void AddChildren(int parentId)
+                {
+                    var children = allCategories.Where(c => c.ParentId == parentId).Select(c => c.Id).ToList();
+                    foreach (var childId in children)
+                    {
+                        if (!categoryIds.Contains(childId))
+                        {
+                            categoryIds.Add(childId);
+                            AddChildren(childId);
+                        }
+                    }
+                }
+
+                AddChildren(categoryId);
+                dbQuery = dbQuery.Where(p => categoryIds.Contains(p.PostCategoryId));
             }
 
             // Tìm kiếm theo từ khóa

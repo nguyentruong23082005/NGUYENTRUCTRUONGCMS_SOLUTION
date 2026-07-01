@@ -8,3 +8,120 @@
         <div class="d-flex gap-2 mt-4"><button type="submit" class="btn btn-premium-primary border-0 me-2"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">save</span> Cập nhật</button><a asp-action="Index" class="btn btn-premium-outline text-decoration-none"><span class="material-symbols-rounded admin-icon-sm align-middle" aria-hidden="true">arrow_back</span> Quay lại</a></div>
     </form>
 </div>
+
+@section Scripts {
+<script src="~/js/administrative-mapper.js"></script>
+<script>
+(function () {
+    const selProvince = document.getElementById('sel-province');
+    const selDistrict = document.getElementById('sel-district');
+    const selWard     = document.getElementById('sel-ward');
+    const hidProvince = document.getElementById('hid-province');
+    const hidDistrict = document.getElementById('hid-district');
+    const hidWard     = document.getElementById('hid-ward');
+
+    const initialProvinceName = '@Html.Raw(Model?.Province)';
+    let initialDistrictName   = '@Html.Raw(Model?.District)';
+    let initialWardName       = '@Html.Raw(Model?.Ward)';
+
+    let districtsData = null;
+    let wardsData = null;
+
+    const mapped = typeof mapOldAdministrativeNames === 'function' ? mapOldAdministrativeNames(initialDistrictName, initialWardName) : { districtName: initialDistrictName, wardName: initialWardName };
+    initialDistrictName = mapped.districtName;
+    initialWardName     = mapped.wardName;
+
+    async function populate(sel, items, placeholder) {
+        sel.innerHTML = `<option value="">${placeholder}</option>`;
+        items.forEach(i => {
+            const opt = document.createElement('option');
+            opt.value = i.code;
+            opt.text  = i.name;
+            sel.appendChild(opt);
+        });
+    }
+
+    async function getDistricts(provCode) {
+        if (!districtsData) {
+            districtsData = await fetch('/data/districts.json').then(r => r.json());
+        }
+        return districtsData[provCode] || [];
+    }
+
+    async function getWards(distCode) {
+        if (!wardsData) {
+            wardsData = await fetch('/data/wards.json').then(r => r.json());
+        }
+        return wardsData[distCode] || [];
+    }
+
+    async function init() {
+        const provinces = await fetch('/data/provinces.json').then(r => r.json());
+        await populate(selProvince, provinces, 'Chọn Tỉnh/Thành phố');
+
+        if (initialProvinceName) {
+            const foundProv = provinces.find(p => p.name === initialProvinceName);
+            if (foundProv) {
+                selProvince.value = foundProv.code;
+                hidProvince.value = foundProv.name;
+
+                const districts = await getDistricts(foundProv.code);
+                await populate(selDistrict, districts, 'Chọn Quận/Huyện');
+                selDistrict.disabled = false;
+
+                if (initialDistrictName) {
+                    const foundDist = districts.find(d => d.name === initialDistrictName);
+                    if (foundDist) {
+                        selDistrict.value = foundDist.code;
+                        hidDistrict.value = foundDist.name;
+
+                        const wards = await getWards(foundDist.code);
+                        await populate(selWard, wards, 'Chọn Phường/Xã');
+                        selWard.disabled = false;
+
+                        if (initialWardName) {
+                            const foundWard = wards.find(w => w.name === initialWardName);
+                            if (foundWard) {
+                                selWard.value = foundWard.code;
+                                hidWard.value = foundWard.name;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    init().catch(console.error);
+
+    selProvince.addEventListener('change', async function () {
+        hidProvince.value = this.options[this.selectedIndex]?.text || '';
+        hidDistrict.value = ''; hidWard.value = '';
+        selDistrict.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+        selWard.innerHTML     = '<option value="">Chọn Phường/Xã</option>';
+        selDistrict.disabled  = true; selWard.disabled = true;
+        if (!this.value) return;
+        
+        const list = await getDistricts(this.value);
+        await populate(selDistrict, list, 'Chọn Quận/Huyện');
+        selDistrict.disabled = false;
+    });
+
+    selDistrict.addEventListener('change', async function () {
+        hidDistrict.value = this.options[this.selectedIndex]?.text || '';
+        hidWard.value = '';
+        selWard.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+        selWard.disabled  = true;
+        if (!this.value) return;
+        
+        const list = await getWards(this.value);
+        await populate(selWard, list, 'Chọn Phường/Xã');
+        selWard.disabled = false;
+    });
+
+    selWard.addEventListener('change', function () {
+        hidWard.value = this.options[this.selectedIndex]?.text || '';
+    });
+}());
+</script>
+}

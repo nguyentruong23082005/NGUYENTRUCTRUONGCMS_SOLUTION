@@ -1,5 +1,8 @@
 using CMS.Backend.Helpers;
 using CMS.Backend.Models;
+using CMS.Backend.Services.Api;
+using CMS.Backend.Services.Payment;
+using CMS.Backend.Services.Shipping;
 using CMS.Data;
 using CMS.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -15,10 +18,23 @@ namespace CMS.Backend.Controllers
     public class OrderController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IVoucherApiService _voucherService;
+        private readonly IGhnShippingService _shippingService;
+        private readonly IPaymentGatewayFactory _paymentGatewayFactory;
+        private readonly IConfiguration _configuration;
 
-        public OrderController(ApplicationDbContext context)
+        public OrderController(
+            ApplicationDbContext context,
+            IVoucherApiService voucherService,
+            IGhnShippingService shippingService,
+            IPaymentGatewayFactory paymentGatewayFactory,
+            IConfiguration configuration)
         {
             _context = context;
+            _voucherService = voucherService;
+            _shippingService = shippingService;
+            _paymentGatewayFactory = paymentGatewayFactory;
+            _configuration = configuration;
         }
 
         // GET: /Order
@@ -92,14 +108,109 @@ namespace CMS.Backend.Controllers
         public IActionResult Create()
         {
             ViewBag.CustomerId = new SelectList(_context.Customers, "Id", "FullName");
-            ViewBag.Products = _context.Products.OrderBy(p => p.Name).ToList();
+            ViewBag.Categories = new SelectList(_context.ProductCategories.OrderBy(c => c.Name), "Id", "Name");
             return View();
+        }
+
+        // GET: /Order/ValidateVoucherForAdmin?code=SALE20&subtotal=500000
+        // [Authorize] đã áp dụng ở class level — chỉ user đã đăng nhập (admin/staff) mới gọi được.
+        [HttpGet]
+        public async Task<IActionResult> ValidateVoucherForAdmin(string code, decimal subtotal)
+        {
+            // Chống brute-force: từ chối request không có mã
+            if (string.IsNullOrWhiteSpace(code) || code.Trim().Length < 3)
+            {
+                return Json(new { isValid = false, message = "Mã giảm giá phải có ít nhất 3 ký tự.", discountAmount = 0 });
+            }
+
+            // customerId = 0 vì Admin tạo đơn thay khách, bỏ qua ràng buộc CustomerVoucher
+            var result = await _voucherService.ValidateVoucherAsync(code, 0, subtotal);
+            return Json(new
+            {
+                isValid = result.IsValid,
+                message = result.Message,
+                discountAmount = result.DiscountAmount
+            });
+        }
+
+        // GET: /Order/ShippingProvinces
+        [HttpGet]
+        public async Task<IActionResult> ShippingProvinces()
+        {
+            var provinces = await _shippingService.GetProvincesAsync();
+            return Json(provinces.Select(p => new
+            {
+                id = p.ProvinceID,
+                name = p.ProvinceName
+            }));
+        }
+
+        // GET: /Order/ShippingDistricts?provinceId=202
+        [HttpGet]
+        public async Task<IActionResult> ShippingDistricts(int provinceId)
+        {
+            if (provinceId <= 0)
+            {
+                return BadRequest(new { message = "Tỉnh/Thành không hợp lệ." });
+            }
+
+            var districts = await _shippingService.GetDistrictsAsync(provinceId);
+            return Json(districts.Select(d => new
+            {
+                id = d.DistrictID,
+                name = d.DistrictName
+            }));
+        }
+
+        // GET: /Order/ShippingWards?districtId=1452
+        [HttpGet]
+        public async Task<IActionResult> ShippingWards(int districtId)
+        {
+            if (districtId <= 0)
+            {
+                return BadRequest(new { message = "Quận/Huyện không hợp lệ." });
+            }
+
+            var wards = await _shippingService.GetWardsAsync(districtId);
+            return Json(wards.Select(w => new
+            {
+                code = w.WardCode,
+                name = w.WardName
+            }));
+        }
+
+        // GET: /Order/CalculateShipping?toDistrictId=1452&toWardCode=21012
+        [HttpGet]
+        public async Task<IActionResult> CalculateShipping(int toDistrictId, string toWardCode, int? storeId)
+        {
+            if (toDistrictId <= 0 || string.IsNullOrWhiteSpace(toWardCode))
+            {
+                return BadRequest(new { message = "Vui lòng chọn đầy đủ Quận/Huyện và Phường/Xã." });
+            }
+
+            int defaultWeight = _configuration.GetValue<int>("GHN:DefaultWeight", 500);
+            var result = await _shippingService.CalculateBestFeeAsync(toDistrictId, toWardCode.Trim(), defaultWeight, storeId);
+
+            return Json(new
+            {
+                fee = result.Fee,
+                nearestStoreId = result.NearestStoreId,
+                nearestStoreName = result.NearestStoreName,
+                isEstimated = result.IsEstimated
+            });
         }
 
         // POST: /Order/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Order model, int[] ProductIds, int[] Quantities)
+        public async Task<IActionResult> Create(
+            Order model,
+            int[] ProductIds,
+            int[] Quantities,
+            string? VoucherCode,
+            decimal ShippingFee = 0,
+            int? ShippingStoreId = null,
+            PaymentMethod PaymentMethod = PaymentMethod.COD)
         {
             // Validate: phải có ít nhất 1 sản phẩm
             if (ProductIds == null || ProductIds.Length == 0 || ProductIds.All(id => id == 0))
@@ -115,9 +226,23 @@ namespace CMS.Backend.Controllers
                 }
                 model.Status = OrderStatus.Pending;
 
+                // Tự động gán tên và số điện thoại người nhận từ thông tin khách hàng nếu để trống
+                var customer = await _context.Customers.FindAsync(model.CustomerId);
+                if (customer != null)
+                {
+                    if (string.IsNullOrWhiteSpace(model.ReceiverName))
+                    {
+                        model.ReceiverName = customer.FullName;
+                    }
+                    if (string.IsNullOrWhiteSpace(model.ReceiverPhone))
+                    {
+                        model.ReceiverPhone = customer.Phone;
+                    }
+                }
+
                 // Tạo chi tiết đơn hàng từ sản phẩm đã chọn
                 var orderDetails = new List<OrderDetail>();
-                decimal total = 0;
+                decimal subtotal = 0;
                 for (int i = 0; ProductIds != null && i < ProductIds.Length; i++)
                 {
                     if (ProductIds[i] == 0) continue;
@@ -132,27 +257,100 @@ namespace CMS.Backend.Controllers
                         UnitPrice = product.Price
                     };
                     orderDetails.Add(detail);
-                    total += product.Price * qty;
+                    subtotal += product.Price * qty;
                 }
 
                 if (!orderDetails.Any())
                 {
                     ModelState.AddModelError("", "Không tìm thấy sản phẩm hợp lệ. Vui lòng chọn lại.");
                     ViewBag.CustomerId = new SelectList(_context.Customers, "Id", "FullName", model.CustomerId);
-                    ViewBag.Products = _context.Products.OrderBy(p => p.Name).ToList();
+                    ViewBag.Categories = new SelectList(_context.ProductCategories.OrderBy(c => c.Name), "Id", "Name");
                     return View(model);
                 }
 
-                model.TotalAmount = total;
-                model.OrderDetails = orderDetails;
-                _context.Orders.Add(model);
-                _context.SaveChanges();
+                // Bọc toàn bộ validate voucher + lưu đơn trong transaction
+                // để tránh race condition: 2 admin cùng dùng 1 voucher đồng thời
+                await using var transaction = await _context.Database.BeginTransactionAsync(
+                    System.Data.IsolationLevel.RepeatableRead);
+                try
+                {
+                    decimal discountAmount = 0;
+
+                    if (!string.IsNullOrWhiteSpace(VoucherCode))
+                    {
+                        // Re-validate ngay trong transaction (tránh TOCTOU gap)
+                        // Lock row voucher: đọc với UPDLOCK để ngăn concurrent reads
+                        var codeUpper = VoucherCode.Trim().ToUpper();
+                        var voucher = await _context.Vouchers
+                            .FromSqlRaw("SELECT * FROM Vouchers WITH (UPDLOCK, ROWLOCK) WHERE Code = {0}", codeUpper)
+                            .FirstOrDefaultAsync();
+
+                        string? voucherError = null;
+                        if (voucher == null)
+                            voucherError = "Mã giảm giá không tồn tại.";
+                        else if (!voucher.IsActive)
+                            voucherError = "Mã giảm giá đã bị ngưng hoạt động.";
+                        else if (voucher.ExpiryDate < DateTime.Now)
+                            voucherError = "Mã giảm giá đã hết hạn sử dụng.";
+                        else if (subtotal < voucher.MinimumOrderAmount)
+                            voucherError = $"Đơn hàng tối thiểu phải đạt {voucher.MinimumOrderAmount:N0}đ.";
+
+                        if (voucherError != null)
+                        {
+                            await transaction.RollbackAsync();
+                            ModelState.AddModelError("", $"Mã giảm giá không hợp lệ: {voucherError}");
+                            ViewBag.CustomerId = new SelectList(_context.Customers, "Id", "FullName", model.CustomerId);
+                            ViewBag.Categories = new SelectList(_context.ProductCategories.OrderBy(c => c.Name), "Id", "Name");
+                            return View(model);
+                        }
+
+                        // Tính discount
+                        discountAmount = voucher!.IsPercent
+                            ? subtotal * (voucher.DiscountValue / 100)
+                            : voucher.DiscountValue;
+                        if (discountAmount > subtotal) discountAmount = subtotal;
+
+                        model.VoucherId = voucher.Id;
+                        model.DiscountAmount = discountAmount;
+                    }
+
+                    var safeShippingFee = Math.Max(0, ShippingFee);
+                    model.ShippingFee = safeShippingFee;
+                    model.ShippingStoreId = ShippingStoreId;
+
+                    decimal totalAmount = subtotal - discountAmount + safeShippingFee;
+                    if (totalAmount < 0) totalAmount = 0;
+
+                    model.PaymentMethod = PaymentMethod;
+                    model.PaymentStatus = PaymentMethod == PaymentMethod.COD
+                        ? PaymentStatus.Pending
+                        : PaymentStatus.Pending;
+                    model.TotalAmount = totalAmount;
+                    model.OrderDetails = orderDetails;
+                    _context.Orders.Add(model);
+                    await _context.SaveChangesAsync();
+
+                    await transaction.CommitAsync();
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+
+                if (model.PaymentMethod != PaymentMethod.COD)
+                {
+                    var gateway = _paymentGatewayFactory.GetGateway(model.PaymentMethod);
+                    var returnUrl = Url.Action($"{model.PaymentMethod}Return", "Payment", null, Request.Scheme) ?? string.Empty;
+                    var paymentUrl = await gateway.CreatePaymentUrlAsync(model, returnUrl, returnUrl);
+                    return Redirect(paymentUrl);
+                }
 
                 TempData["SuccessMessage"] = $"Đã tạo đơn hàng #{model.Id} với {orderDetails.Count} sản phẩm.";
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.CustomerId = new SelectList(_context.Customers, "Id", "FullName", model.CustomerId);
-            ViewBag.Products = _context.Products.OrderBy(p => p.Name).ToList();
+            ViewBag.Categories = new SelectList(_context.ProductCategories.OrderBy(c => c.Name), "Id", "Name");
             return View(model);
         }
 

@@ -38,6 +38,19 @@ namespace CMS.Backend.Models.Dtos
 
         [Required(ErrorMessage = "Danh sách sản phẩm không được trống")]
         public ICollection<OrderItemInputDto> Items { get; set; } = new List<OrderItemInputDto>();
+
+        public int? ShippingStoreId { get; set; }
+
+        public bool IsPickup { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = "Mã quận/huyện GHN không hợp lệ")]
+        public int? GhnDistrictId { get; set; }
+
+        [StringLength(20, ErrorMessage = "Mã phường/xã GHN không được vượt quá 20 ký tự")]
+        public string? GhnWardCode { get; set; }
+
+        [EnumDataType(typeof(CMS.Data.Entities.PaymentMethod), ErrorMessage = "Phương thức thanh toán không hợp lệ")]
+        public CMS.Data.Entities.PaymentMethod PaymentMethod { get; set; } = CMS.Data.Entities.PaymentMethod.COD;
     }
 
     public sealed class OrderDetailOptionDto
@@ -71,7 +84,12 @@ namespace CMS.Backend.Models.Dtos
         public string? ReceiverPhone { get; set; }
         public string? ShippingAddress { get; set; }
         public decimal DiscountAmount { get; set; }
+        public decimal ShippingFee { get; set; }
+        public int? ShippingStoreId { get; set; }
         public decimal TotalAmount { get; set; }
+        public string PaymentMethod { get; set; } = string.Empty;
+        public string PaymentStatus { get; set; } = string.Empty;
+        public string? PaymentUrl { get; set; }
         public IReadOnlyCollection<OrderDetailDto> Items { get; set; } = Array.Empty<OrderDetailDto>();
     }
 

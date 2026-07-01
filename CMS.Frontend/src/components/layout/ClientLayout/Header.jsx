@@ -4,20 +4,12 @@ import { useAuth } from '../../../context/AuthContext';
 import { useDelivery } from '../../../context/DeliveryContext';
 import categoryApi from '../../../api/categoryApi';
 import productService from '../../../services/productService';
+import axiosClient from '../../../api/axiosClient';
 import logoImg from '../../../assets/images/logo.png';
 import deliveryImg from '../../../assets/images/delivery-686d7142750173aa8bc5f1d11ea195e4.png';
 import DeliveryModal from '../../common/DeliveryModal';
+import { getFullImageUrl } from '../../../utils/imageHelper';
 import styles from './Header.module.css';
-
-const getFullImageUrl = (path) => {
-  if (!path) return '';
-  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
-    return path;
-  }
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5188';
-  const cleanPath = path.startsWith('/') ? path : `/${path}`;
-  return `${baseUrl}${cleanPath}`;
-};
 
 const normalizeCategory = (item) => ({
   id: String(item.id),
@@ -58,6 +50,8 @@ const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [menuCategories, setMenuCategories] = useState([]);
+  const [aboutCategories, setAboutCategories] = useState([]);
+  const [aboutRootName, setAboutRootName] = useState('VỀ CHÚNG TÔI');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -72,7 +66,35 @@ const Header = () => {
       }
     };
 
+    const fetchAboutCategories = async () => {
+      try {
+        const response = await axiosClient.get('/api/post-categories');
+        const items = response?.data?.data || [];
+        const aboutRoot = items.find(
+          (c) => !c.parentId && items.some((child) => child.parentId === c.id)
+        );
+        if (aboutRoot) {
+          setAboutRootName(aboutRoot.name.toUpperCase());
+          const buildTree = (parentId) => {
+            return items
+              .filter((c) => c.parentId === parentId)
+              .map((c) => ({
+                id: String(c.id),
+                name: c.name,
+                slug: c.slug || '',
+                children: buildTree(c.id)
+              }));
+          };
+          setAboutCategories(buildTree(aboutRoot.id));
+        }
+      } catch (error) {
+        console.error('Khong tai duoc danh muc ve chung toi:', error);
+        setAboutCategories([]);
+      }
+    };
+
     fetchMenuCategories();
+    fetchAboutCategories();
   }, []);
 
   useEffect(() => {
@@ -98,7 +120,7 @@ const Header = () => {
         });
 
         if (!cancelled) {
-          setSearchSuggestions(results);
+          setSearchSuggestions(Array.isArray(results?.items) ? results.items : []);
           setIsSearchOpen(true);
         }
       } catch (error) {
@@ -321,7 +343,27 @@ const Header = () => {
             )}
           </div>
           <Link to="/menu/packaged" className={styles.navLink}>SẢN PHẨM ĐÓNG GÓI</Link>
-          <Link to="/about" className={styles.navLink}>VỀ CHÚNG TÔI</Link>
+          <div className={styles.navItem}>
+            <Link to="/about" className={styles.navLink}>{aboutRootName}</Link>
+            {aboutCategories.length > 0 && (
+              <div className={styles.megaDropdown}>
+                {aboutCategories.map((category) => (
+                  <div key={category.id} className={styles.dropdownColumn}>
+                    <Link to={`/about?category=${category.slug}`} className={styles.dropdownTitle}>
+                      <span>{category.name}</span>
+                    </Link>
+                    <div className={styles.dropdownList}>
+                      {category.children.map((child) => (
+                        <Link key={child.id} to={`/about?category=${child.slug}`} className={styles.dropdownLink}>
+                          {child.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           <Link to="/promotions" className={styles.navLink}>KHUYẾN MÃI</Link>
           <Link to="/profile" className={styles.navLink}>HỘI VIÊN</Link>
         </div>

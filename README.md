@@ -259,6 +259,15 @@ NguyenTrucTruong_Solution/
   * Chức năng **Quên & Đặt lại mật khẩu** qua mã Token bảo mật gửi trực tiếp đến Email bằng dịch vụ SMTP.
   * Tối ưu quy trình Đặt hàng nâng cao (Checkout Flow 2 cột, voucher giảm giá trực tiếp, đồng bộ địa chỉ GPS vào sổ địa chỉ).
   * Chuyển đổi nhãn Best Seller/New sang cơ chế **Dynamic Ribbon/Badge** dựa trên lượt bán thực tế trong Database.
+* **Buổi 10**:
+  * Tích hợp cổng thanh toán trực tuyến: Hỗ trợ thanh toán đa kênh qua **VNPAY, MoMo, ZaloPay** (sử dụng Factory Pattern cho các Gateway và xử lý callback/IPN).
+  * Tích hợp đơn vị vận chuyển **Giao Hàng Nhanh (GHN Shipping API)**: Tính phí ship tự động và tạo vận đơn vận chuyển.
+  * Tích hợp đăng nhập mạng xã hội **Firebase Social Login**: Đăng ký/Đăng nhập bằng tài khoản Google, Facebook, đồng bộ thông tin `FirebaseUid` và `SignInProvider` vào cơ sở dữ liệu.
+  * Tối ưu hóa điều hướng & Giao diện:
+    * Đồng bộ và thiết kế hiển thị Breadcrumbs đồng bộ trên toàn bộ ứng dụng.
+    * Phát triển menu danh mục đa cấp thu gọn dạng cây (Collapsible Tree Navigation) cho Sidebar trang Giới thiệu (`AboutPage`).
+  * Xử lý định vị & localization: Khắc phục lỗi định dạng số thập phân tọa độ GPS bằng `InvariantDoubleModelBinder`.
+  * Bổ sung Unit Tests bằng **xUnit**: Viết test cases cho Customer Auth Validation và Order API Service.
 
 ---
 

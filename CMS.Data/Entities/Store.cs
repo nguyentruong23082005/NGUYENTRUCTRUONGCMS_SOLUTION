@@ -20,6 +20,8 @@ namespace CMS.Data.Entities
         public string? District { get; set; }
         public string? Ward { get; set; }
         
+        public int? GhnDistrictId { get; set; }
+        
         public string? ImageUrl { get; set; }
         public string? GoogleMapUrl { get; set; }
         

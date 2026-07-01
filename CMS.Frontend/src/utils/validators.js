@@ -6,8 +6,25 @@
 // Kiểm tra email hợp lệ
 export const isValidEmail = (email) => {
   if (!email) return false;
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email.trim());
+
+  const normalizedEmail = email.trim().toLowerCase();
+  const emailRegex = /^[a-z0-9._%+-]+@(?:[a-z0-9-]+\.)+[a-z]{2,}$/;
+  const blockedTypoDomains = new Set([
+    'gmai.co',
+    'gmail.co',
+    'gmal.com',
+    'gmial.com',
+    'gmai.com',
+    'yaho.com',
+    'yahoo.co',
+    'hotmai.com',
+    'hotmial.com',
+    'outlok.com',
+    'outlook.co'
+  ]);
+  const domain = normalizedEmail.split('@')[1];
+
+  return emailRegex.test(normalizedEmail) && !blockedTypoDomains.has(domain);
 };
 
 // Kiểm tra số điện thoại Việt Nam (10-11 chữ số)

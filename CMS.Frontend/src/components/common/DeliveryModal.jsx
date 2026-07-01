@@ -23,10 +23,40 @@ const getHaversineDistance = (lat1, lon1, lat2, lon2) => {
 // Hàm phân tích cấu trúc địa chỉ trả về từ Nominatim
 const parseNominatimAddress = (item) => {
   const addr = item.address || {};
-  const province = addr.city || addr.state || addr.province || '';
-  const district = addr.suburb || addr.district || addr.city_district || addr.county || addr.town || '';
-  const ward = addr.quarter || addr.suburb || addr.ward || addr.village || addr.subdistrict || '';
   
+  let province = addr.state || '';
+  let district = addr.city || addr.district || addr.city_district || addr.suburb || addr.county || addr.town || '';
+  let ward = addr.quarter || addr.suburb || addr.ward || addr.village || addr.subdistrict || '';
+  
+  // Bóc tách ngược từ display_name để chuẩn hóa địa chỉ Việt Nam một cách tổng quát và sạch sẽ nhất
+  if (item.display_name) {
+    const parts = item.display_name.split(',').map(p => p.trim());
+    
+    // 1. Loại bỏ quốc gia (Việt Nam / Vietnam) ở cuối
+    if (parts.length > 0 && /việt nam|vietnam/i.test(parts[parts.length - 1])) {
+      parts.pop();
+    }
+    
+    // 2. Loại bỏ mã bưu điện (Zip code) ở cuối nếu có
+    if (parts.length > 0 && /^\d+$/.test(parts[parts.length - 1])) {
+      parts.pop();
+    }
+    
+    // 3. Phân tách theo thứ tự chuẩn của Việt Nam từ phải qua trái
+    // - Phần tử cuối cùng là Tỉnh/Thành
+    if (parts.length > 0) {
+      province = parts[parts.length - 1];
+    }
+    // - Phần tử kế cuối là Quận/Huyện
+    if (parts.length > 1) {
+      district = parts[parts.length - 2];
+    }
+    // - Phần tử trước đó nữa là Phường/Xã
+    if (parts.length > 2) {
+      ward = parts[parts.length - 3];
+    }
+  }
+
   // Lấy số nhà và tên đường
   const houseNumber = addr.house_number || '';
   const road = addr.road || '';

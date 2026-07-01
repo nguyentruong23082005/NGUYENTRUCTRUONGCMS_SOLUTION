@@ -1,9 +1,11 @@
 using CMS.Backend.Helpers;
 using CMS.Backend.Models;
 using CMS.Backend.Models.Dtos;
+using CMS.Backend.Services.Shipping;
 using CMS.Data;
 using CMS.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,7 +20,9 @@ namespace CMS.Backend.Services.Api
         private readonly ApplicationDbContext _db;
         private readonly IStockLockStrategy _stockLockStrategy;
         private readonly IVoucherApiService _voucherService;
+        private readonly IGhnShippingService _shippingService;
         private readonly OrderPolicy _orderPolicy;
+        private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
         private readonly ILogger<OrderApiService> _logger;
 
@@ -26,19 +30,23 @@ namespace CMS.Backend.Services.Api
             ApplicationDbContext db,
             IStockLockStrategy stockLockStrategy,
             IVoucherApiService voucherService,
+            IGhnShippingService shippingService,
             IOptions<OrderPolicy> orderPolicy,
+            IConfiguration configuration,
             IEmailService emailService,
             ILogger<OrderApiService> logger)
         {
             _db = db;
             _stockLockStrategy = stockLockStrategy;
             _voucherService = voucherService;
+            _shippingService = shippingService;
             _orderPolicy = orderPolicy.Value;
+            _configuration = configuration;
             _emailService = emailService;
             _logger = logger;
         }
 
-        public async Task<OrderDto> PlaceOrderAsync(int customerId, PlaceOrderDto dto)
+        public async Task<OrderDto> PlaceOrderAsync(int customerId, PlaceOrderDto dto, bool suppressEmail = false)
         {
             if (dto.Items == null || !dto.Items.Any())
             {
@@ -153,47 +161,76 @@ namespace CMS.Backend.Services.Api
                     orderDetails.Add(detail);
                 }
 
-                // 4. Áp dụng Voucher
+                // 4. Áp dụng Voucher (lock row trong transaction để tránh race condition)
                 decimal discountAmount = 0;
                 int? voucherId = null;
 
                 if (!string.IsNullOrWhiteSpace(dto.VoucherCode))
                 {
-                    var voucherValidation = await _voucherService.ValidateVoucherAsync(dto.VoucherCode, customerId, subtotal);
-                    if (!voucherValidation.IsValid)
+                    var codeUpper = dto.VoucherCode.Trim().ToUpper();
+
+                    // UPDLOCK + ROWLOCK: chặn concurrent reads trên cùng row voucher
+                    var voucher = await _db.Vouchers
+                        .FromSqlRaw("SELECT * FROM Vouchers WITH (UPDLOCK, ROWLOCK) WHERE Code = {0}", codeUpper)
+                        .FirstOrDefaultAsync();
+
+                    if (voucher == null)
+                        throw new InvalidOperationException("Mã giảm giá không tồn tại.");
+                    if (!voucher.IsActive)
+                        throw new InvalidOperationException("Mã giảm giá đã bị ngưng hoạt động.");
+                    if (voucher.ExpiryDate < DateTime.Now)
+                        throw new InvalidOperationException("Mã giảm giá đã hết hạn sử dụng.");
+
+                    // Kiểm tra khách hàng đã dùng voucher này chưa (per-customer check)
+                    var alreadyUsed = await _db.CustomerVouchers
+                        .AnyAsync(cv => cv.CustomerId == customerId && cv.VoucherId == voucher.Id && cv.IsUsed);
+                    if (alreadyUsed)
+                        throw new InvalidOperationException("Bạn đã sử dụng mã giảm giá này rồi.");
+
+                    if (subtotal < voucher.MinimumOrderAmount)
+                        throw new InvalidOperationException($"Đơn hàng tối thiểu phải đạt {voucher.MinimumOrderAmount:N0}đ để áp dụng.");
+
+                    // Tính discount
+                    discountAmount = voucher.IsPercent
+                        ? subtotal * (voucher.DiscountValue / 100)
+                        : voucher.DiscountValue;
+                    if (discountAmount > subtotal) discountAmount = subtotal;
+
+                    voucherId = voucher.Id;
+
+                    // Đánh dấu đã dùng (trong cùng transaction)
+                    var customerVoucher = await _db.CustomerVouchers
+                        .FirstOrDefaultAsync(cv => cv.CustomerId == customerId && cv.VoucherId == voucher.Id);
+
+                    if (customerVoucher == null)
                     {
-                        throw new InvalidOperationException(voucherValidation.Message);
+                        _db.CustomerVouchers.Add(new CustomerVoucher
+                        {
+                            CustomerId = customerId,
+                            VoucherId = voucher.Id,
+                            ClaimedAt = DateTime.UtcNow,
+                            IsUsed = true,
+                            UsedAt = DateTime.UtcNow
+                        });
                     }
-
-                    discountAmount = voucherValidation.DiscountAmount;
-                    voucherId = voucherValidation.Voucher?.Id;
-
-                    if (voucherId.HasValue)
+                    else
                     {
-                        var customerVoucher = await _db.CustomerVouchers
-                            .FirstOrDefaultAsync(cv => cv.CustomerId == customerId && cv.VoucherId == voucherId.Value);
-
-                        if (customerVoucher == null)
-                        {
-                            customerVoucher = new CustomerVoucher
-                            {
-                                CustomerId = customerId,
-                                VoucherId = voucherId.Value,
-                                ClaimedAt = DateTime.UtcNow,
-                                IsUsed = true,
-                                UsedAt = DateTime.UtcNow
-                            };
-                            _db.CustomerVouchers.Add(customerVoucher);
-                        }
-                        else
-                        {
-                            customerVoucher.IsUsed = true;
-                            customerVoucher.UsedAt = DateTime.UtcNow;
-                        }
+                        customerVoucher.IsUsed = true;
+                        customerVoucher.UsedAt = DateTime.UtcNow;
                     }
                 }
 
-                var totalAmount = subtotal - discountAmount;
+                decimal shippingFee = 0;
+                int? shippingStoreId = dto.ShippingStoreId;
+
+                if (!dto.IsPickup)
+                {
+                    var shippingResult = await CalculateTrustedShippingAsync(dto);
+                    shippingFee = shippingResult.Fee;
+                    shippingStoreId = shippingResult.NearestStoreId;
+                }
+
+                var totalAmount = subtotal - discountAmount + shippingFee;
                 if (totalAmount < 0) totalAmount = 0;
 
                 // 5. Lưu Order
@@ -206,6 +243,10 @@ namespace CMS.Backend.Services.Api
                     ReceiverName = receiverName,
                     ReceiverPhone = receiverPhone,
                     ShippingAddress = shippingAddress,
+                    ShippingFee = shippingFee,
+                    ShippingStoreId = shippingStoreId,
+                    PaymentMethod = dto.PaymentMethod,
+                    PaymentStatus = PaymentStatus.Pending,
                     DiscountAmount = discountAmount,
                     TotalAmount = totalAmount,
                     OrderDate = DateTime.Now,
@@ -218,14 +259,18 @@ namespace CMS.Backend.Services.Api
                 await transaction.CommitAsync();
 
                 // Gửi email xác nhận đơn hàng (TC31, fire-and-forget, an toàn)
-                var customer = await _db.Customers.FindAsync(customerId);
-                if (customer != null)
+                // Chỉ gửi email nếu KHÔNG bị suppress (ví dụ: thanh toán online cần đợi payment URL thành công)
+                if (!suppressEmail)
                 {
-                    _ = _emailService.SendOrderConfirmationEmailAsync(
-                        customer.Email, customer.FullName, order.Id, totalAmount, shippingAddress)
-                        .ContinueWith(t => _logger.LogError(t.Exception,
-                            "Lỗi gửi email đơn hàng #{OrderId} cho {Email}", order.Id, customer.Email),
-                            TaskContinuationOptions.OnlyOnFaulted);
+                    var customer = await _db.Customers.FindAsync(customerId);
+                    if (customer != null)
+                    {
+                        _ = _emailService.SendOrderConfirmationEmailAsync(
+                            customer.Email, customer.FullName, order.Id, totalAmount, shippingAddress)
+                            .ContinueWith(t => _logger.LogError(t.Exception,
+                                "Lỗi gửi email đơn hàng #{OrderId} cho {Email}", order.Id, customer.Email),
+                                TaskContinuationOptions.OnlyOnFaulted);
+                    }
                 }
 
                 // Tải lại order đầy đủ quan hệ để map sang Dto trả về
@@ -415,7 +460,11 @@ namespace CMS.Backend.Services.Api
                 ReceiverPhone = order.ReceiverPhone,
                 ShippingAddress = order.ShippingAddress,
                 DiscountAmount = order.DiscountAmount,
+                ShippingFee = order.ShippingFee,
+                ShippingStoreId = order.ShippingStoreId,
                 TotalAmount = order.TotalAmount,
+                PaymentMethod = order.PaymentMethod.ToString(),
+                PaymentStatus = order.PaymentStatus.ToString(),
                 Items = order.OrderDetails.Select(od => new OrderDetailDto
                 {
                     Id = od.Id,
@@ -435,6 +484,101 @@ namespace CMS.Backend.Services.Api
                     }).ToList() : new List<OrderDetailOptionDto>()
                 }).ToList()
             };
+        }
+
+        private async Task<ShippingFeeResult> CalculateTrustedShippingAsync(PlaceOrderDto dto)
+        {
+            if (!dto.GhnDistrictId.HasValue || string.IsNullOrWhiteSpace(dto.GhnWardCode))
+            {
+                throw new InvalidOperationException("Vui lòng chọn địa chỉ giao hàng có quận/huyện và phường/xã GHN hợp lệ để tính phí vận chuyển.");
+            }
+
+            var districtId = dto.GhnDistrictId.Value;
+            var wardCode = dto.GhnWardCode.Trim();
+            var defaultWeight = _configuration.GetValue<int>("GHN:DefaultWeight", 500);
+
+            if (dto.ShippingStoreId.HasValue)
+            {
+                var storeExists = await _db.Stores.AnyAsync(s =>
+                    s.Id == dto.ShippingStoreId.Value &&
+                    !s.IsDeleted &&
+                    s.GhnDistrictId.HasValue);
+
+                if (!storeExists)
+                {
+                    _logger.LogWarning("Ignoring invalid shipping store hint {ShippingStoreId} during API checkout.", dto.ShippingStoreId.Value);
+                }
+            }
+
+            var shippingResult = await _shippingService.CalculateBestFeeAsync(districtId, wardCode, defaultWeight, dto.ShippingStoreId);
+            if (shippingResult.Fee <= 0)
+            {
+                _logger.LogWarning("GHN returned invalid shipping fee for DistrictId {DistrictId}, WardCode {WardCode}.", districtId, wardCode);
+                throw new InvalidOperationException("Không thể tính phí vận chuyển, vui lòng thử lại sau hoặc chọn địa chỉ khác.");
+            }
+
+            return shippingResult;
+        }
+
+        public async Task RollbackOrderAsync(int orderId)
+        {
+            using var transaction = await _db.Database.BeginTransactionAsync(System.Data.IsolationLevel.RepeatableRead);
+            try
+            {
+                var order = await _db.Orders
+                    .Include(o => o.OrderDetails)
+                        .ThenInclude(od => od.OrderDetailOptions)
+                    .FirstOrDefaultAsync(o => o.Id == orderId);
+
+                if (order == null) return;
+
+                // 1. Hoàn trả voucher nếu có
+                if (order.VoucherId.HasValue)
+                {
+                    var cv = await _db.CustomerVouchers
+                        .FirstOrDefaultAsync(x => x.CustomerId == order.CustomerId && x.VoucherId == order.VoucherId.Value);
+                    if (cv != null)
+                    {
+                        cv.IsUsed = false;
+                        cv.UsedAt = null;
+                    }
+                }
+
+                // 2. Hoàn trả tồn kho cho sản phẩm và topping
+                foreach (var detail in order.OrderDetails)
+                {
+                    var product = await _stockLockStrategy.LockProductAsync(detail.ProductId);
+                    if (product != null)
+                    {
+                        product.StockQuantity += detail.Quantity;
+                        product.TotalSold = Math.Max(0, product.TotalSold - detail.Quantity);
+                    }
+
+                    if (detail.OrderDetailOptions != null)
+                    {
+                        foreach (var odo in detail.OrderDetailOptions)
+                        {
+                            var optVal = await _stockLockStrategy.LockOptionValueAsync(odo.OptionValueId);
+                            if (optVal != null && optVal.StockQuantity.HasValue)
+                            {
+                                optVal.StockQuantity = optVal.StockQuantity.Value + detail.Quantity;
+                            }
+                        }
+                    }
+                }
+
+                // 3. Xóa hẳn đơn hàng khỏi database
+                _db.Orders.Remove(order);
+
+                await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Lỗi khi rollback đơn hàng #{orderId}");
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
     }
 }

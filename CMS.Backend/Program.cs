@@ -11,12 +11,14 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using CMS.Data;
 using CMS.Backend.Services.Api;
+using CMS.Backend.Services.Payment;
 using CMS.Backend.Middleware;
 using CMS.Backend.Models;
 
 using CMS.Backend.ModelBinders;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtKey = builder.Configuration["Jwt:Key"];
@@ -62,6 +64,30 @@ builder.Services.AddScoped<IStockLockStrategy>(sp =>
     }
     return new SqlServerStockLockStrategy(db);
 });
+
+// Đăng ký dịch vụ Shipping + Polly Retry (Giai đoạn 2)
+builder.Services.AddHttpClient<CMS.Backend.Services.Shipping.IGhnShippingService, CMS.Backend.Services.Shipping.GhnShippingService>(client =>
+{
+    var ghnConfig = builder.Configuration.GetSection("GHN");
+    int timeoutSeconds = ghnConfig.GetValue<int>("TimeoutSeconds", 10);
+    client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
+    client.BaseAddress = new Uri(ghnConfig["BaseUrl"] ?? "https://dev-online-gateway.ghn.vn/shiip/public-api");
+    client.DefaultRequestHeaders.Add("Token", ghnConfig["Token"]);
+})
+.AddTransientHttpErrorPolicy(policyBuilder =>
+{
+    var ghnConfig = builder.Configuration.GetSection("GHN");
+    int maxRetries = ghnConfig.GetValue<int>("MaxRetries", 2);
+    return policyBuilder.WaitAndRetryAsync(maxRetries, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+});
+
+// Đăng ký dịch vụ Payment Gateway (Giai đoạn 3)
+builder.Services.AddScoped<IPaymentGateway, VnPayGateway>();
+builder.Services.AddHttpClient<MoMoGateway>();
+builder.Services.AddHttpClient<ZaloPayGateway>();
+builder.Services.AddScoped<IPaymentGateway>(sp => sp.GetRequiredService<MoMoGateway>());
+builder.Services.AddScoped<IPaymentGateway>(sp => sp.GetRequiredService<ZaloPayGateway>());
+builder.Services.AddScoped<IPaymentGatewayFactory, PaymentGatewayFactory>();
 
 // Cấu hình CORS cho ReactJS Frontend (Buổi 6)
 builder.Services.AddCors(options =>

@@ -9,7 +9,7 @@ const StoresPage = () => {
         <title>Danh sách cửa hàng Phúc Long - Tìm vị trí cửa hàng</title>
       </Helmet>
 
-      <StoreLocator variant="list" />
+      <StoreLocator variant="map" />
     </main>
   );
 };

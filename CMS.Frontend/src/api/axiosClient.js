@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { STORAGE_KEYS } from '../utils/constants';
+import { STORAGE_KEYS, API_BASE_URL } from '../utils/constants';
 import storage from '../utils/storage';
 
 // Khởi tạo Axios client instance (Cấu hình qua file môi trường .env)
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://localhost:7296',
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },

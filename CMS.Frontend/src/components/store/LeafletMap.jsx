@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap, LayersControl } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import styles from './LeafletMap.module.css';
@@ -12,8 +12,8 @@ L.Icon.Default.mergeOptions({
   shadowUrl: new URL('leaflet/dist/images/marker-shadow.png', import.meta.url).href,
 });
 
-// Icon xanh lá cho store đang được chọn
-const activeIcon = new L.Icon({
+// Định nghĩa các marker icons tùy biến theo brand Phúc Long
+const storeIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
   iconSize: [25, 41],
@@ -22,7 +22,17 @@ const activeIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
-// Icon đỏ cho vị trí user
+// Icon màu cam nổi bật cho cửa hàng đang chọn
+const activeIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [28, 45],
+  iconAnchor: [14, 45],
+  popupAnchor: [1, -38],
+  shadowSize: [45, 45],
+});
+
+// Icon đỏ cho vị trí khách hàng
 const userIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -92,12 +102,43 @@ const LeafletMap = ({
         scrollWheelZoom
         zoomControl
       >
-        {/* Carto Voyager tiles — chất lượng cao, miễn phí */}
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-          maxZoom={20}
-        />
+        {/* Bộ chuyển đổi loại bản đồ (Google Roadmap, Satellite, Hybrid và CartoDB Positron) */}
+        <LayersControl position="topright">
+          <LayersControl.BaseLayer checked name="Bản đồ đường bộ (Google)">
+            <TileLayer
+              attribution='&copy; <a href="https://maps.google.com">Google Maps</a>'
+              url="https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+              subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
+              maxZoom={20}
+            />
+          </LayersControl.BaseLayer>
+
+          <LayersControl.BaseLayer name="Bản đồ vệ tinh (Google)">
+            <TileLayer
+              attribution='&copy; <a href="https://maps.google.com">Google Maps</a>'
+              url="https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+              subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
+              maxZoom={20}
+            />
+          </LayersControl.BaseLayer>
+
+          <LayersControl.BaseLayer name="Bản đồ lai (Google Hybrid)">
+            <TileLayer
+              attribution='&copy; <a href="https://maps.google.com">Google Maps</a>'
+              url="https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
+              subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
+              maxZoom={20}
+            />
+          </LayersControl.BaseLayer>
+
+          <LayersControl.BaseLayer name="Bản đồ tối giản (CartoDB Positron)">
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
+              url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+              maxZoom={20}
+            />
+          </LayersControl.BaseLayer>
+        </LayersControl>
 
         {/* Fly to selected store */}
         {flyCenter && <MapFlyTo center={flyCenter} zoom={15} />}
@@ -123,7 +164,7 @@ const LeafletMap = ({
             <Marker
               key={store.id}
               position={[Number(store.latitude), Number(store.longitude)]}
-              icon={isActive ? activeIcon : new L.Icon.Default()}
+              icon={isActive ? activeIcon : storeIcon}
               eventHandlers={{ click: () => onSelectStore(store) }}
               ref={(ref) => { if (ref) popupRefs.current[store.id] = ref; }}
             >

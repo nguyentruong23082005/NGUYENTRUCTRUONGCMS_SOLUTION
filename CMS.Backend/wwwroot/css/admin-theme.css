@@ -833,3 +833,57 @@ textarea:focus-visible {
     color: #000000 !important;
 }
 
+/* Custom premium status badges */
+.badge-status-pending {
+    background-color: #f3f4f6 !important;
+    color: #4b5563 !important;
+    border: 1px solid #e5e7eb !important;
+}
+.badge-status-confirmed {
+    background-color: #eff6ff !important;
+    color: #1d4ed8 !important;
+    border: 1px solid #dbeafe !important;
+}
+.badge-status-preparing {
+    background-color: #fef3c7 !important;
+    color: #d97706 !important;
+    border: 1px solid #fde68a !important;
+}
+.badge-status-ready {
+    background-color: #fdf2f8 !important;
+    color: #db2777 !important;
+    border: 1px solid #fce7f3 !important;
+}
+.badge-status-shipping {
+    background-color: #e0e7ff !important;
+    color: #4338ca !important;
+    border: 1px solid #c7d2fe !important;
+}
+.badge-status-success {
+    background-color: #ecfdf5 !important;
+    color: #047857 !important;
+    border: 1px solid #d1fae5 !important;
+}
+.badge-status-danger {
+    background-color: #fef2f2 !important;
+    color: #b91c1c !important;
+    border: 1px solid #fee2e2 !important;
+}
+
+/* Custom premium payment badges */
+.badge-payment-paid {
+    background-color: #ecfdf5 !important;
+    color: #047857 !important;
+    border: 1px solid #d1fae5 !important;
+}
+.badge-payment-failed {
+    background-color: #fef2f2 !important;
+    color: #b91c1c !important;
+    border: 1px solid #fee2e2 !important;
+}
+.badge-payment-pending {
+    background-color: #fffbeb !important;
+    color: #d97706 !important;
+    border: 1px solid #fef3c7 !important;
+}
+

@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useDelivery } from '../../context/DeliveryContext';
 import useCustomers from '../../hooks/useCustomers';
+import useVouchers from '../../hooks/useVouchers';
 import { getFullImageUrl } from '../../utils/imageHelper';
 import orderApi from '../../api/orderApi';
 import styles from './Checkout.module.css';
@@ -12,9 +13,10 @@ import styles from './Checkout.module.css';
 const Checkout = () => {
   const { cartItems, cartTotalPrice, clearCart, updateCartQuantity, removeFromCart, showToast } = useCart();
   const { user, isAuthenticated } = useAuth();
-  const { deliveryType, deliveryAddress, structuredAddress, openModal, setDelivery } = useDelivery();
+  const { deliveryType, deliveryAddress, structuredAddress, selectedStore, openModal, setDelivery } = useDelivery();
   const { getProfile, getAddresses } = useCustomers();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Thông tin người nhận — lấy từ API hồ sơ thật
   const [fullName, setFullName] = useState('');
@@ -54,8 +56,19 @@ const Checkout = () => {
   const [notes,         setNotes]         = useState('');
   const [voucherCode,   setVoucherCode]   = useState('');
   const [voucherApplied, setVoucherApplied] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState('vnpay');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+  // GHN Shipping states
+  const [ghnDistrictId, setGhnDistrictId] = useState(null);
+  const [ghnWardCode, setGhnWardCode] = useState(null);
+  const [shippingFee, setShippingFee] = useState(0);
+  const [isCalculatingFee, setIsCalculatingFee] = useState(false);
+  const [shippingStoreId, setShippingStoreId] = useState(null);
+  const [nearestStoreName, setNearestStoreName] = useState('');
+
+  const { validateVoucher } = useVouchers();
 
   // Tab: delivery | pickup — đồng bộ với DeliveryContext
   const [activeTab, setActiveTab] = useState(deliveryType === 'pickup' ? 'pickup' : 'delivery');
@@ -73,11 +86,140 @@ const Checkout = () => {
     new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n);
 
   // ─── Submit ────────────────────────────────────────────────
+  // Local helper to normalize Vietnamese text for fuzzy matching
+  const normalizeText = (str) => {
+    if (!str) return '';
+    return str.normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd')
+      .replace(/Đ/g, 'd')
+      .toLowerCase()
+      .replace(/^(tỉnh|thành phố|thành phồ|tphcm|tp|quận|huyện|phường|xã|thị xã|thị trấn|phuong|quan|huyen|tinh|xa)\s+/g, '')
+      .trim();
+  };
+
+  const fuzzyMatch = (a, b) => {
+    const normA = normalizeText(a);
+    const normB = normalizeText(b);
+    if (!normA || !normB) return false;
+    return normA === normB || normA.includes(normB) || normB.includes(normA);
+  };
+
+  // Resolve GHN address and calculate fee
+  useEffect(() => {
+    if (activeTab === 'pickup') {
+      setShippingFee(0);
+      setGhnDistrictId(null);
+      setGhnWardCode(null);
+      return;
+    }
+
+    const resolveGhnAddress = async () => {
+      if (!selectedStore || !structuredAddress || !structuredAddress.province || !structuredAddress.district || !structuredAddress.ward) {
+        setShippingFee(0);
+        return;
+      }
+
+      setIsCalculatingFee(true);
+      try {
+        let provinceName = structuredAddress.province;
+        let districtName = structuredAddress.district;
+
+        // 1. Fetch provinces
+        const provRes = await orderApi.getShippingProvinces();
+        const provinces = provRes.data?.data || [];
+        const matchedProvince = provinces.find(p => fuzzyMatch(p.name, provinceName));
+        
+        if (!matchedProvince) {
+          console.warn('Could not match province:', provinceName);
+          setShippingFee(0);
+          return;
+        }
+
+        // 2. Fetch districts
+        const distRes = await orderApi.getShippingDistricts(matchedProvince.id);
+        const districts = distRes.data?.data || [];
+        const matchedDistrict = districts.find(d => fuzzyMatch(d.name, districtName));
+
+        if (!matchedDistrict) {
+          console.warn('Could not match district:', districtName);
+          setShippingFee(0);
+          return;
+        }
+
+        setGhnDistrictId(matchedDistrict.id);
+
+        // 3. Fetch wards
+        const wardRes = await orderApi.getShippingWards(matchedDistrict.id);
+        const wards = wardRes.data?.data || [];
+        let matchedWard = wards.find(w => fuzzyMatch(w.name, structuredAddress.ward));
+
+        if (!matchedWard && wards.length > 0) {
+          console.warn('Could not match ward, using first ward as fallback:', structuredAddress.ward);
+          matchedWard = wards[0];
+        }
+
+        if (!matchedWard) {
+          console.warn('No wards found in district:', structuredAddress.ward);
+          setShippingFee(20000); // Phí mặc định nếu không tìm thấy phường nào
+          return;
+        }
+
+        setGhnWardCode(matchedWard.code);
+
+        // 4. Calculate shipping fee (Truyền thêm selectedStore?.id để chỉ tính phí từ cửa hàng này)
+        const feeRes = await orderApi.calculateShippingFee(matchedDistrict.id, matchedWard.code, selectedStore?.id);
+        if (feeRes.data?.success && feeRes.data?.data) {
+          const { fee, nearestStoreId, nearestStoreName } = feeRes.data.data;
+          setShippingFee(fee);
+          setShippingStoreId(nearestStoreId);
+          setNearestStoreName(nearestStoreName);
+        }
+      } catch (err) {
+        console.error('Lỗi khi tính phí vận chuyển:', err);
+        setShippingFee(0);
+      } finally {
+        setIsCalculatingFee(false);
+      }
+    };
+
+    resolveGhnAddress();
+  }, [structuredAddress, activeTab, selectedStore]);
+
+  const handleApplyVoucher = async () => {
+    if (!voucherCode.trim()) return;
+    try {
+      const res = await validateVoucher(voucherCode.trim(), cartTotalPrice);
+      if (res && res.success && res.data) {
+        setDiscountAmount(res.data.discountAmount || 0);
+        setVoucherApplied(true);
+        showToast('Áp dụng mã giảm giá thành công!');
+      }
+    } catch (err) {
+      console.error(err);
+      setDiscountAmount(0);
+      setVoucherApplied(false);
+      const errMsg = err.response?.data?.message || 'Mã giảm giá không hợp lệ hoặc đã hết hạn.';
+      showToast(errMsg, 'error');
+    }
+  };
+
+  // ─── Submit ────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isAuthenticated) {
+      showToast('Vui lòng đăng nhập để tiếp tục thanh toán!', 'error');
+      navigate('/login', { replace: true, state: { from: location } });
+      return;
+    }
+
     if (!fullName.trim()) { showToast('Vui lòng nhập họ tên người nhận!', 'error'); return; }
     if (!phone.trim() || !/^[0-9]{10,11}$/.test(phone.trim())) {
       showToast('Số điện thoại không hợp lệ (10-11 chữ số)!', 'error'); return;
+    }
+    if (activeTab === 'delivery' && !isCalculatingFee && shippingFee <= 0) {
+      showToast('Vui lòng chọn địa chỉ giao hàng hợp lệ để tính phí vận chuyển!', 'error');
+      return;
     }
     if (!agreedToTerms) { showToast('Vui lòng đồng ý với điều khoản!', 'error'); return; }
 
@@ -86,6 +228,17 @@ const Checkout = () => {
     const shippingAddress = deliveryAddress ||
       [structuredAddress?.street, structuredAddress?.ward, structuredAddress?.district, structuredAddress?.province]
         .filter(Boolean).join(', ');
+
+    // Map payment method string from UI to backend enum values:
+    // COD = 0, VNPay = 1, MoMo = 2, ZaloPay = 3
+    let mappedPaymentMethod = 0;
+    if (paymentMethod === 'vnpay' || paymentMethod === 'card') {
+      mappedPaymentMethod = 1;
+    } else if (paymentMethod === 'momo') {
+      mappedPaymentMethod = 2;
+    } else if (paymentMethod === 'zalopay') {
+      mappedPaymentMethod = 3;
+    }
 
     const payload = {
       customerAddressId: null,
@@ -99,17 +252,32 @@ const Checkout = () => {
         quantity:     item.quantity,
         optionValueIds: item.optionValueIds || [],
       })),
+      isPickup: activeTab === 'pickup',
+      shippingStoreId: activeTab === 'pickup' ? (selectedStore?.id || null) : shippingStoreId,
+      ghnDistrictId: activeTab === 'pickup' ? null : ghnDistrictId,
+      ghnWardCode: activeTab === 'pickup' ? null : ghnWardCode,
+      paymentMethod: mappedPaymentMethod,
     };
 
     try {
-      await orderApi.create(payload);
-      setIsSuccess(true);
+      const res = await orderApi.create(payload);
+      const orderData = res.data?.data;
+      
       clearCart();
+      
+      if (orderData?.paymentUrl) {
+        showToast('Đặt hàng thành công! Đang chuyển hướng đến cổng thanh toán...');
+        window.location.href = orderData.paymentUrl;
+        return;
+      }
+
+      setIsSuccess(true);
       showToast('Đặt hàng thành công! Phúc Long sẽ liên hệ sớm nhất.');
       setTimeout(() => navigate('/'), 4000);
     } catch (err) {
       console.error(err);
-      showToast('Có lỗi xảy ra. Vui lòng thử lại!', 'error');
+      const errMsg = err.response?.data?.message || 'Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!';
+      showToast(errMsg, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -421,7 +589,7 @@ const Checkout = () => {
               </div>
               <div className={styles.summaryRow}>
                 <span>Phí vận chuyển</span>
-                <span>0 đ</span>
+                <span>{isCalculatingFee ? 'Đang tính...' : formatPrice(shippingFee)}</span>
               </div>
 
               {/* Mã giảm giá */}
@@ -439,7 +607,7 @@ const Checkout = () => {
                   <button
                     type="button"
                     className={styles.voucherBtn}
-                    onClick={() => { if (voucherCode.trim()) setVoucherApplied(true); }}
+                    onClick={handleApplyVoucher}
                   >Áp dụng</button>
                 </div>
                 {voucherApplied && (
@@ -447,9 +615,16 @@ const Checkout = () => {
                 )}
               </div>
 
+              {voucherApplied && discountAmount > 0 && (
+                <div className={styles.summaryRow} style={{ color: '#E53935' }}>
+                  <span>Giảm giá</span>
+                  <span>-{formatPrice(discountAmount)}</span>
+                </div>
+              )}
+
               <div className={`${styles.summaryRow} ${styles.summaryTotalRow}`}>
                 <span>Tổng tiền (Đã có VAT)</span>
-                <span className={styles.totalAmt}>{formatPrice(cartTotalPrice)}</span>
+                <span className={styles.totalAmt}>{formatPrice(Math.max(0, cartTotalPrice + shippingFee - discountAmount))}</span>
               </div>
             </div>
 
@@ -457,11 +632,10 @@ const Checkout = () => {
             <div className={styles.paymentBox}>
               <p className={styles.summaryTitle}>Phương thức thanh toán</p>
               {[
-                { value: 'card', label: 'Thẻ ngân hàng/Thẻ tín dụng/Ví điện tử' },
+                { value: 'vnpay',   label: 'Cổng thanh toán VNPAY (Thẻ ATM/Thẻ tín dụng)' },
                 { value: 'momo',    label: 'Ví MoMo'      },
                 { value: 'zalopay', label: 'Ví ZaloPay'   },
-                { value: 'shopee',  label: 'Ví ShopeePay' },
-                { value: 'cod',     label: 'Thanh toán tiền mặt khi nhận hàng' },
+                { value: 'cod',     label: 'Thanh toán tiền mặt khi nhận hàng (COD)' },
               ].map(({ value, label }) => (
                 <label key={value} className={styles.radioRow}>
                   <input

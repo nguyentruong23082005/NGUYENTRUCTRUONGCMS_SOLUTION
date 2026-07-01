@@ -323,6 +323,15 @@ namespace CMS.Data.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PaymentTransactionId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ReceiverName")
                         .HasColumnType("nvarchar(max)");
 
@@ -331,6 +340,12 @@ namespace CMS.Data.Migrations
 
                     b.Property<string>("ShippingAddress")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("ShippingFee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("ShippingStoreId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -742,6 +757,9 @@ namespace CMS.Data.Migrations
 
                     b.Property<string>("District")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("GhnDistrictId")
+                        .HasColumnType("int");
 
                     b.Property<string>("GoogleMapUrl")
                         .HasColumnType("nvarchar(max)");

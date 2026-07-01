@@ -303,6 +303,44 @@ const OrderList = () => {
                             </div>
                           </div>
                         </div>
+
+                        <div className={styles.orderInfoCard} style={{ marginTop: 12 }}>
+                          <div className={styles.orderInfoCardTitle}>Thông Tin Thanh Toán</div>
+                          <div className={styles.orderInfoRow}>
+                            <span style={{ fontWeight: 500 }}>Phương thức:</span>
+                            <span style={{ marginLeft: 'auto', fontWeight: 600 }}>
+                              {order.paymentMethod === 'COD' 
+                                ? 'Thanh toán khi nhận hàng (COD)' 
+                                : order.paymentMethod === 'VNPay' 
+                                  ? 'Cổng VNPay' 
+                                  : order.paymentMethod === 'MoMo' 
+                                    ? 'Ví MoMo' 
+                                    : order.paymentMethod === 'ZaloPay' 
+                                      ? 'Ví ZaloPay' 
+                                      : order.paymentMethod}
+                            </span>
+                          </div>
+                          <div className={styles.orderInfoRow}>
+                            <span style={{ fontWeight: 500 }}>Trạng thái:</span>
+                            <span 
+                              style={{ 
+                                marginLeft: 'auto', 
+                                fontWeight: 700,
+                                color: order.paymentStatus === 'Paid' 
+                                  ? '#006F3C' 
+                                  : order.paymentStatus === 'Failed' 
+                                    ? '#B71C1C' 
+                                    : '#E65100'
+                              }}
+                            >
+                              {order.paymentStatus === 'Paid' 
+                                ? 'Đã thanh toán' 
+                                : order.paymentStatus === 'Failed' 
+                                  ? 'Thanh toán thất bại' 
+                                  : 'Chờ thanh toán'}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
 

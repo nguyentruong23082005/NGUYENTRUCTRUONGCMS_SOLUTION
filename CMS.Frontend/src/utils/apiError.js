@@ -1,3 +1,5 @@
+import { API_BASE_URL } from './constants';
+
 // Tiện ích xử lý lỗi API cho hướng A: chỉ dùng dữ liệu thật.
 // Khi backend chưa chạy hoặc API mất kết nối, UI hiển thị trạng thái rỗng/không khả dụng thay vì spam console lỗi đỏ.
 export const isNetworkUnavailable = (error) => {
@@ -15,7 +17,7 @@ export const getApiErrorMessage = (error, fallbackMessage = 'Không thể tải 
 export const logApiError = (context, error) => {
   if (isNetworkUnavailable(error)) {
     console.warn(`${context}: Backend API chưa kết nối.`, {
-      baseUrl: import.meta.env.VITE_API_URL || 'https://localhost:7296',
+      baseUrl: API_BASE_URL,
     });
     return;
   }

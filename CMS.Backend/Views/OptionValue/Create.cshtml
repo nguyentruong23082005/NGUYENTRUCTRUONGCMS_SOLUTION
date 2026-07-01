@@ -5,7 +5,7 @@
     <form asp-action="Create" method="post">
         @Html.AntiForgeryToken()<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
         <div class="row g-3">
-            <div class="col-md-6"><label asp-for="OptionGroupId" class="form-label fw-semibold">Nhóm tùy chọn</label><select asp-for="OptionGroupId" class="form-select" asp-items="ViewBag.OptionGroups"><option value="">-- Chọn nhóm --</option></select><span asp-validation-for="OptionGroupId" class="text-danger"></span></div>
+            <div class="col-md-6"><label asp-for="OptionGroupId" class="form-label fw-semibold">Nhóm tùy chọn</label><select asp-for="OptionGroupId" class="form-select" asp-items="ViewBag.OptionGroups"><option value="">Chọn nhóm</option></select><span asp-validation-for="OptionGroupId" class="text-danger"></span></div>
             <div class="col-md-6"><label asp-for="Name" class="form-label fw-semibold">Tên giá trị</label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
             <div class="col-md-6"><label asp-for="PriceSurcharge" class="form-label fw-semibold">Phụ thu</label><input asp-for="PriceSurcharge" class="form-control" /><span asp-validation-for="PriceSurcharge" class="text-danger"></span></div>
             <div class="col-md-6"><label asp-for="StockQuantity" class="form-label fw-semibold">Tồn kho</label><input asp-for="StockQuantity" class="form-control" placeholder="Để trống nếu không giới hạn" /><span asp-validation-for="StockQuantity" class="text-danger"></span></div>

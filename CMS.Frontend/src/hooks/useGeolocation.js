@@ -74,5 +74,5 @@ export default function useGeolocation() {
     [userLocation, getDistance],
   );
 
-  return { userLocation, loading, error, granted, requestLocation, getDistance, sortByDistance };
+  return { userLocation, setUserLocation, loading, error, granted, setGranted, requestLocation, getDistance, sortByDistance };
 }
